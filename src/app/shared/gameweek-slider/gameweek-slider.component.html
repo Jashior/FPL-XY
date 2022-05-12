@@ -1,0 +1,9 @@
+<nz-slider
+  nzRange
+  [nzStep]="1"
+  [nzMin]="minGameweek"
+  [nzMax]="maxGameweek"
+  [nzMarks]="marks"
+  [(ngModel)]="gameweekRangeValue"
+  (nzOnAfterChange)="onAfterChange($event)"
+></nz-slider>

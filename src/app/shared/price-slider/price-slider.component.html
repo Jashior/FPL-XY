@@ -1,0 +1,10 @@
+<nz-slider
+  nzRange
+  [nzStep]="0.1"
+  [nzMin]="3"
+  [nzMax]="15"
+  [(ngModel)]="priceRangeValue"
+  (nzOnAfterChange)="onAfterChange($event)"
+  [nzTipFormatter]="priceRangeFormatter"
+  [nzMarks]="marks"
+></nz-slider>

@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-slider:hover .ant-slider-track {
+    background-color: #177DDC;
+}
+.ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+    border-color: #177DDC;
+}
+.ant-slider-dot-active {
+    border-color: #177DDC;
+}
+.ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
+    border-color: #177DDC;
+}
+.ant-alert-info {
+    border: 1px solid #177DDC;
+}
+.ant-slider-handle {
+    border: solid 2px #177DDC !important;
+}
+.ant-slider-track {
+    background-color: #177DDC !important;
+}

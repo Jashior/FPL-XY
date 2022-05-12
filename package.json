@@ -1,0 +1,54 @@
+{
+  "name": "fplv",
+  "version": "0.0.0",
+  "engines": {
+    "node": "16.14.2"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "node server.js",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "start:prod": "node server.js",
+    "heroku-postbuild": "ng build --configuration=production"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~12.2.0",
+    "@angular/common": "~12.2.0",
+    "@angular/compiler": "~12.2.0",
+    "@angular/core": "~12.2.0",
+    "@angular/forms": "~12.2.0",
+    "@angular/platform-browser": "~12.2.0",
+    "@angular/platform-browser-dynamic": "~12.2.0",
+    "@angular/router": "~12.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "echarts": "^5.3.2",
+    "express": "^4.17.3",
+    "express-mongo-sanitize": "^2.2.0",
+    "mongoose": "^6.2.10",
+    "ng-zorro-antd": "^12.1.1",
+    "ngx-echarts": "^8.0.1",
+    "nodemon": "^2.0.15",
+    "rxjs": "~6.6.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~12.2.8",
+    "@angular/cli": "~12.2.8",
+    "@angular/compiler-cli": "~12.2.0",
+    "@types/jasmine": "~3.8.0",
+    "@types/node": "^12.11.1",
+    "jasmine-core": "~3.8.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.0.3",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "tailwindcss": "^2.2.19",
+    "typescript": "~4.3.5"
+  }
+}

@@ -1,0 +1,10 @@
+<nz-slider
+  nzRange
+  [nzStep]="1"
+  [nzMin]="0"
+  [nzMax]="100"
+  [(ngModel)]="tsbRangeValue"
+  (nzOnAfterChange)="onAfterChange($event)"
+  [nzTipFormatter]="tsbRangeFormatter"
+  [nzMarks]="marks"
+></nz-slider>

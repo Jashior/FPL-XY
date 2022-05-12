@@ -1,0 +1,18 @@
+<nz-select
+  class="w-full"
+  [nzMaxTagCount]="4"
+  [nzMaxTagPlaceholder]="tagPlaceHolder"
+  nzMode="multiple"
+  nzPlaceHolder="Filter Positions"
+  [(ngModel)]="selectedPositions"
+  (ngModelChange)="onChange($event)"
+>
+  <nz-option
+    *ngFor="let item of Positions"
+    [nzLabel]="item"
+    [nzValue]="item"
+  ></nz-option>
+</nz-select>
+<ng-template #tagPlaceHolder let-selectedPositions
+  >and {{ selectedPositions.length }} more selected</ng-template
+>

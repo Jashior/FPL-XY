@@ -1,0 +1,57 @@
+<div class="flex flex-col gap-4 justify-center items-center w-full">
+  <div
+    class="w-full flex flex-col lg:flex-row gap-2 justify-center items-center lg:pl-20"
+  >
+    <div class="selectX w-48">
+      <nz-select
+        class="w-48"
+        [(ngModel)]="selectedXAxis"
+        (ngModelChange)="updateXAxis($event)"
+        [nzDropdownMatchSelectWidth]="false"
+        [nzShowSearch]="true"
+      >
+        <nz-option
+          *ngFor="let axis of possibleAxis"
+          [nzLabel]="axis['viewValue']"
+          [nzValue]="axis['value']"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <div
+      class="selectY flex-col justify-center items-center lg:flex lg:flex-row lg:justify-between lg:w-full lg:pr-20"
+    >
+      <nz-select
+        class="w-48"
+        [(ngModel)]="selectedYAxis"
+        (ngModelChange)="updateYAxis($event)"
+        [nzDropdownMatchSelectWidth]="false"
+      >
+        <nz-option
+          *ngFor="let axis of possibleAxis"
+          [nzLabel]="axis['viewValue']"
+          [nzValue]="axis['value']"
+        ></nz-option>
+      </nz-select>
+      <div class="scaleAxes flex justify-center items-center">
+        <div class="pt-2">
+          <small>Scale Axes</small>
+          <nz-switch
+            class="pl-2"
+            [(ngModel)]="normAxis"
+            (ngModelChange)="loadChartOptions()"
+          ></nz-switch>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading">
+    <div
+      echarts
+      [options]="chartOption"
+      [theme]="getChartTheme()"
+      class="chart p-2 md:p-0"
+      (chartClick)="onChartEvent($event, 'chartClick')"
+    ></div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div *ngIf="loading" class="pt-40 flex justify-center items-center">
+  <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+</div>
+
+<div
+  *ngIf="!loading"
+  class="flex flex-col lg:flex-row p-8 lg:p-8 container gap-8 justify-center items-center lg:items-baseline rounded-lg"
+>
+  <div
+    class="w-64 flex flex-col justify-center align-middle text-center gap-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
+  >
+    <div class="w-full">
+      <app-year-select></app-year-select>
+    </div>
+    <nz-divider
+      class="min-w-max border-dash dark:border-dash-dark"
+      nzDashed
+    ></nz-divider>
+    <div>
+      <div class="pb-2">Minutes Played</div>
+      <app-min-minutes></app-min-minutes>
+    </div>
+    <div>
+      Price
+      <app-price-slider></app-price-slider>
+    </div>
+    <div>
+      Ownership %
+      <app-tsb-slider></app-tsb-slider>
+    </div>
+    <div>
+      <app-position-select></app-position-select>
+    </div>
+    <div>
+      <app-team-select></app-team-select>
+    </div>
+    <div>
+      Gameweeks
+      <app-gameweek-slider></app-gameweek-slider>
+    </div>
+    <div>
+      <app-player-search></app-player-search>
+    </div>
+  </div>
+
+  <div *ngIf="playersF$" class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8">
+    <app-graph [playersF$]="playersF$" [playersGW$]="playersGW$"></app-graph>
+  </div>
+</div>

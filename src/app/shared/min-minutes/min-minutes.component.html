@@ -1,0 +1,8 @@
+<nz-input-number
+  [(ngModel)]="minMinutesValue"
+  [nzMin]="0"
+  [nzMax]="3420"
+  [nzStep]="1"
+  (ngModelChange)="onChange($event)"
+  class="w-48"
+></nz-input-number>

@@ -1,0 +1,30 @@
+<div
+  class="min-h-full bg-page-bg dark:bg-page-bg-dark flex flex-col justify-between items-center"
+>
+  <div class="min-w-full flex flex-col justify-center items-center">
+    <a
+      routerLink="/home"
+      routerLinkActive="active"
+      class="text-black dark:text-white pt-2"
+      >Home</a
+    >
+    <nz-divider
+      class="min-w-max my-1 border-dash dark:border-dash-dark"
+      nzDashed
+    ></nz-divider>
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="min-w-full flex flex-col justify-between items-center pb-6">
+    <nz-divider
+      class="min-w-max my-1 border-dash dark:border-dash-dark"
+      nzDashed
+    ></nz-divider>
+    <div class="px-4 text-xs text-center">
+      Made with Angular, Express.js, Node.js, MongoDB, Apache ECharts, NG-ZORRO,
+      Tailwind CSS
+      <br />
+      Resources from: FPL API, Understat, vaastav/Fantasy-Premier-League
+    </div>
+  </div>
+</div>

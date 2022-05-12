@@ -1,0 +1,12 @@
+<nz-select
+  [(ngModel)]="selectedYear"
+  (ngModelChange)="updateYear($event)"
+  nzPlaceHolder="Year"
+  class="w-32"
+>
+  <nz-option
+    *ngFor="let option of optionList"
+    [nzValue]="option"
+    [nzLabel]="option"
+  ></nz-option>
+</nz-select>
