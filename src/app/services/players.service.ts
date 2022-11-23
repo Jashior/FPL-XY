@@ -5,6 +5,7 @@ import { Player } from '../models/Player';
 import { HttpClient } from '@angular/common/http';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export interface Meta {
   current_year_string: string;
@@ -43,10 +44,14 @@ export class PlayersService {
     positions: this.Positions,
   });
   public highlightedPlayers$ = new BehaviorSubject<number[]>([]);
-  private loadingRaw$ = new BehaviorSubject<boolean>(false);
+
+  // Loading states
+  private _loading$ = new BehaviorSubject<boolean>(false);
+  private loading$ = this._loading$;
 
   constructor(private http: HttpClient) {
     this.initData();
+    this.loading$.subscribe((x) => console.log(`Loading: ${x}`));
   }
 
   initData() {
@@ -67,7 +72,7 @@ export class PlayersService {
   }
 
   public setLoading(loadingState: boolean): void {
-    this.loadingRaw$.next(loadingState);
+    this.loading$.next(loadingState);
   }
 
   public setYearString(yearString: string): void {
@@ -125,7 +130,7 @@ export class PlayersService {
   }
 
   public getLoadingState(): Observable<boolean> {
-    return this.loadingRaw$;
+    return this.loading$;
   }
 
   public getTeams(): Observable<string[]> {

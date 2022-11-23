@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, timer } from 'rxjs';
-import { map, debounceTime, shareReplay } from 'rxjs/operators';
+import {
+  map,
+  debounceTime,
+  shareReplay,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
 import { PlayersService } from '../services/players.service';
@@ -14,7 +19,9 @@ export class VisualComponent implements OnInit {
   players$?: Observable<Player[]>;
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
+
   playersF$?: Observable<Player[]>;
+
   teams$?: Observable<string[]>;
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
@@ -112,7 +119,7 @@ export class VisualComponent implements OnInit {
       // .pipe(debounceTime(200))
       .pipe(
         map(([players, gwrange]) => {
-          this.playersService.setLoading(true);
+          // this.playersService.setLoading(true);
           if (players.length == 0) return [];
           if (gwrange[0] == -1 || gwrange[1] == -1) return players;
           // console.log(
@@ -122,7 +129,7 @@ export class VisualComponent implements OnInit {
             return this.calcPlayerStatsInGW(p, gwrange);
           });
           // console.log(`Finished calcing`);
-          this.playersService.setLoading(false);
+          // this.playersService.setLoading(false);
           return playersGW;
         })
       )
@@ -139,6 +146,7 @@ export class VisualComponent implements OnInit {
           if (players.length == 0) return players;
           if (filter.teams.length == 0) return [];
           // console.log(`Filtering players based off filter`);
+
           let playersF: Player[] = players
             .map((p) => {
               if (highlights.length == 0) {
