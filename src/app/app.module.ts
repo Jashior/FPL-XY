@@ -24,6 +24,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import { PriceSliderComponent } from './shared/price-slider/price-slider.component';
 import { TsbSliderComponent } from './shared/tsb-slider/tsb-slider.component';
@@ -73,6 +74,7 @@ const routes: Routes = [
     NzSpinModule,
     NzButtonModule,
     NzDividerModule,
+    NzIconModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'), // or import('./path-to-my-custom-echarts')
     }),

@@ -46,3 +46,6 @@ Thumbs.db
 
 # Secret file
 .env
+
+# Additional file from heroku migration
+misc.txt

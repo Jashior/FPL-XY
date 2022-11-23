@@ -5,6 +5,8 @@ const titleDictionary: any = {
   bps_90: 'BPS Per 90',
   price: 'Price(m)',
   minutes_t: 'Minutes Played',
+  npxAttRet_t: 'Exp attack return',
+  npxAttRet_90: 'Exp attack return /90',
   npxG_t: 'npxG',
   npxG_90: 'npxG per 90',
   xA_t: 'xA',
@@ -78,6 +80,8 @@ export const roundToNearestDictionary: any = {
   xGBuildup_90: 0.05,
   xGChain_t: 0.1,
   xGChain_90: 0.05,
+  npxAttRet_t: 0.1,
+  npxAttRet_90: 0.05,
 };
 
 export function getAxisTitle(axis: string): string {

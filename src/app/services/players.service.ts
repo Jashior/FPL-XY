@@ -23,10 +23,13 @@ export interface About {
 export class PlayersService {
   Positions = Positions;
   private API_URL = environment.BASE_API_URL;
-  private currentYearString: string = '2021-22';
+  private currentYearString: string = '2022-23';
   private maxGameweek: number = 38;
   private currentGameweek: number = 1;
-  private possibleYearStrings$ = new BehaviorSubject<string[]>(['2021-22']);
+  private possibleYearStrings$ = new BehaviorSubject<string[]>([
+    '2021-22',
+    '2022-23',
+  ]);
   private teams$ = new BehaviorSubject<string[]>([]);
   private players$ = new BehaviorSubject<Player[]>([]);
   private gwRange$ = new BehaviorSubject<number[]>([-1, -1]);
@@ -53,8 +56,10 @@ export class PlayersService {
       this.possibleYearStrings$.next(resp[0].possible_year_strings);
       // console.log(`${this.currentYearString}`);
       // console.log(`[${this.possibleYearStrings$}]`);
+      this.resetHighlightedPlayers();
       this.loadInfoForCurrentYear();
       this.loadPlayers();
+      this.loadFilter();
     });
   }
 
@@ -78,7 +83,10 @@ export class PlayersService {
   public loadFilter(): void {
     this.getTeams().subscribe((teams) => {
       this.filter$.next({
-        min_minutes: Math.floor((this.currentGameweek * 90) / 2 / 50) * 50,
+        min_minutes: Math.max(
+          45,
+          Math.floor((this.currentGameweek * 90) / 2 / 50) * 50
+        ),
         min_tsb: 0,
         max_tsb: 100,
         min_price: 3,
@@ -191,6 +199,10 @@ export class PlayersService {
     } else {
       this.addHighlightedPlayer(id);
     }
+  }
+
+  public resetHighlightedPlayers() {
+    this.highlightedPlayers$.next([]);
   }
 
   public setHighlightedPlayers(ids: number[]) {

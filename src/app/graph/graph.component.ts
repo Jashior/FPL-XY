@@ -33,6 +33,7 @@ export class GraphComponent implements OnInit {
   axisMaxRangeNorm: any = {};
   filter?: Filter;
   roundToNearestDictionary = roundToNearestDictionary;
+
   COLOR_MAP = {
     GOALKEEPER: '#f7f494',
     DEFENDER: '#87f7cf',
@@ -272,8 +273,8 @@ export class GraphComponent implements OnInit {
               return getLabel(param.data);
             },
             fontSize: 13,
-            minMargin: 3,
-            opacity: 0.8,
+            minMargin: 2,
+            opacity: 1,
             silent: true,
           },
           labelLayout: {

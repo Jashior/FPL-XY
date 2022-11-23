@@ -91,6 +91,12 @@ export class VisualComponent implements OnInit {
     // .reduce((ac, e) => ac + e);
     p.npg_difference_t = p.npg_t - p.npxG_t;
 
+    // Didn't introduce attacking return until 22-23 season
+    if (p.npxAttRet) {
+      p.npxAttRet_t = p.npxAttRet.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npxAttRet_90 = 90 * (p.npxAttRet_t / minutes) || 0;
+    }
+
     return p;
   }
 

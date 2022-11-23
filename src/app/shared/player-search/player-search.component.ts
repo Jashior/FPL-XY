@@ -17,6 +17,7 @@ export class PlayerSearchComponent implements OnInit {
   constructor(private playersService: PlayersService) {
     this.isLoading = true;
     playersService.getPlayers().subscribe((data) => {
+      this.optionList = [];
       for (let player of data) {
         this.optionList.push({
           name: player.name,

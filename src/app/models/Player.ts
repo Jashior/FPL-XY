@@ -38,6 +38,9 @@ export interface Player {
   npg_90: number;
   npg_difference: number[];
   npg_difference_t: number;
+  npxAttRet: number[];
+  npxAttRet_t: number;
+  npxAttRet_90: number;
   npxG: number[];
   npxG_t: number;
   npxG_90: number;
