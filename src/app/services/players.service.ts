@@ -67,7 +67,6 @@ export class PlayersService {
       this.loadInfoForCurrentYear();
       this.loadPlayers();
       this.loadFilter();
-      this.setLoading(false);
     });
   }
 
@@ -114,6 +113,7 @@ export class PlayersService {
       .get<Player[]>(`${this.API_URL}/getPlayers/${this.currentYearString}`)
       .subscribe((players) => {
         this.players$.next(players);
+        this.setLoading(false);
       });
   }
 
