@@ -8,3 +8,6 @@ services:
     dockerfilePath: Dockerfile.render
     plan: free # optional; defaults to starter
     numInstances: 1
+    envVars:
+      - key: test # Imported from Heroku app
+        value: test
