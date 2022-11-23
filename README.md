@@ -4,7 +4,7 @@ An Angular app to visualize statistics of the players of Fantasy Premier League.
 
 # Demo
 
-https://fplxy.herokuapp.com
+https://fplxy.onrender.com/
 
 ![FPL-XY demo][demo]
 
