@@ -43,12 +43,14 @@ export class PlayersService {
     positions: this.Positions,
   });
   public highlightedPlayers$ = new BehaviorSubject<number[]>([]);
+  private loadingRaw$ = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {
     this.initData();
   }
 
   initData() {
+    this.setLoading(true);
     this.http.get<Meta[]>(`${this.API_URL}/getMeta/`).subscribe((resp) => {
       if (this.currentYearString == '') {
         this.currentYearString == resp[0].current_year_string;
@@ -60,7 +62,12 @@ export class PlayersService {
       this.loadInfoForCurrentYear();
       this.loadPlayers();
       this.loadFilter();
+      this.setLoading(false);
     });
+  }
+
+  public setLoading(loadingState: boolean): void {
+    this.loadingRaw$.next(loadingState);
   }
 
   public setYearString(yearString: string): void {
@@ -115,6 +122,10 @@ export class PlayersService {
 
   public getYearString(): string {
     return this.currentYearString;
+  }
+
+  public getLoadingState(): Observable<boolean> {
+    return this.loadingRaw$;
   }
 
   public getTeams(): Observable<string[]> {

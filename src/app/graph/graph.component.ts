@@ -60,10 +60,12 @@ export class GraphComponent implements OnInit {
 
   ngOnInit(): void {
     this.playersF$?.subscribe((players) => {
+      this.playersService.setLoading(true);
       this.loading = true;
       this.playersF = players;
       this.loadMinMax(players, this.axisMinRangeNorm, this.axisMaxRangeNorm);
       this.loadChartOptions();
+      this.playersService.setLoading(false);
       this.loading = false;
     });
     this.playersGW$?.subscribe((players) => {

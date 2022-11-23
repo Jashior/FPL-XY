@@ -18,7 +18,7 @@ export class VisualComponent implements OnInit {
   teams$?: Observable<string[]>;
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
-  loading: boolean = false;
+  loadingRaw$?: Observable<boolean>; // loading data
 
   constructor(private playersService: PlayersService) {}
 
@@ -101,18 +101,18 @@ export class VisualComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.loading = true;
     this.players$ = this.playersService.getPlayers();
     this.gwrange$ = this.playersService.getGameweekRange();
     this.teams$ = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
+    this.loadingRaw$ = this.playersService.getLoadingState();
 
     this.playersGW$ = combineLatest([this.players$, this.gwrange$])
       // .pipe(debounceTime(200))
       .pipe(
         map(([players, gwrange]) => {
-          this.loading = true;
+          this.playersService.setLoading(true);
           if (players.length == 0) return [];
           if (gwrange[0] == -1 || gwrange[1] == -1) return players;
           // console.log(
@@ -122,7 +122,7 @@ export class VisualComponent implements OnInit {
             return this.calcPlayerStatsInGW(p, gwrange);
           });
           // console.log(`Finished calcing`);
-          this.loading = false;
+          this.playersService.setLoading(false);
           return playersGW;
         })
       )
@@ -160,7 +160,7 @@ export class VisualComponent implements OnInit {
               );
             });
           // console.log(`Finished filtering, Found ${playersF.length} players`);
-          // this.loading = false;
+
           return playersF;
         })
       )
