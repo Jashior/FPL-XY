@@ -64,4 +64,25 @@ export interface Player {
   xGBuildup: number[];
   xGBuildup_t: number;
   xGBuildup_90: Number;
+  GC: number[];
+  GC_t: number;
+  GC_90: number;
+  xGC: number[];
+  xGC_t: number;
+  xGC_90: number;
+  saves: number[];
+  saves_t: number;
+  saves_90: number;
+  pen_saves: number[];
+  pen_saves_t: number;
+  pen_saves_90: number;
+  pen_misses: number[];
+  pen_misses_t: number;
+  pen_misses_90: number;
+  OG: number[];
+  OG_t: number;
+  OG_90: number;
+  CS: number[];
+  CS_t: number;
+  CS_90: number;
 }

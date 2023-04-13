@@ -39,6 +39,18 @@ const titleDictionary: any = {
   xGBuildup_90: 'xG Build up per 90',
   xGChain_t: 'xG Chain',
   xGChain_90: 'xG Chain per 90',
+  GC_t: 'Goals Conceded',
+  GC_90: 'Goals Conceded per 90',
+  xGC_t: 'xG Conceded',
+  xGC_90: 'xG Conceded per 90',
+  saves_t: 'Saves',
+  saves_90: 'Saves per 90',
+  pen_saves_t: 'Pen Saves',
+  pen_misses_t: 'Pen Misses',
+  OG_t: 'Own Goals',
+  OG_90: 'Own Goals per 90',
+  CS_t: 'Clean Sheets',
+  CS_90: 'Clean Sheets per 90',
 };
 
 export const roundToNearestDictionary: any = {
@@ -82,6 +94,18 @@ export const roundToNearestDictionary: any = {
   xGChain_90: 0.05,
   npxAttRet_t: 0.1,
   npxAttRet_90: 0.05,
+  GC_t: 1,
+  GC_90: 0.05,
+  xGC_t: 0.1,
+  xGC_90: 0.05,
+  saves_t: 1,
+  saves_90: 0.05,
+  pen_saves_t: 1,
+  pen_misses_t: 1,
+  OG_t: 1,
+  OG_90: 0.05,
+  CS_t: 1,
+  CS_90: 0.05,
 };
 
 export function getAxisTitle(axis: string): string {

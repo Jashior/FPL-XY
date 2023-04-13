@@ -104,6 +104,38 @@ export class VisualComponent implements OnInit {
       p.npxAttRet_90 = 90 * (p.npxAttRet_t / minutes) || 0;
     }
 
+    // Following was mostly introduced from FPL api update 22-23 season
+
+    if (p.GC) {
+      p.GC_t = p.GC.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.GC_90 = 90 * (p.GC_t / minutes) || 0;
+    }
+    if (p.xGC) {
+      p.xGC_t = p.xGC.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xGC_90 = 90 * (p.xGC_t / minutes) || 0;
+    }
+    if (p.saves) {
+      p.saves_t = p.saves.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.saves_90 = 90 * (p.saves_t / minutes) || 0;
+    }
+    if (p.pen_saves) {
+      p.pen_saves_t = p.pen_saves.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.pen_saves_90 = 90 * (p.pen_saves_t / minutes) || 0;
+    }
+    if (p.pen_misses) {
+      p.pen_misses_t = p.pen_misses
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e);
+      p.pen_misses_90 = 90 * (p.pen_misses_t / minutes) || 0;
+    }
+    if (p.OG) {
+      p.OG_t = p.OG.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.OG_90 = 90 * (p.OG_t / minutes) || 0;
+    }
+    if (p.CS) {
+      p.CS_t = p.CS.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.CS_90 = 90 * (p.CS_t / minutes) || 0;
+    }
     return p;
   }
 
