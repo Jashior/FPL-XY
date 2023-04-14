@@ -98,7 +98,7 @@ export class PlayersService {
       this.filter$.next({
         min_minutes:
           this.currentGameweek > 9
-            ? 200
+            ? 450
             : Math.max(
                 45,
                 Math.floor((this.currentGameweek * 90) / 2 / 50) * 50
