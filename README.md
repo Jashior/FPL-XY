@@ -6,8 +6,6 @@ An Angular app to visualize statistics of the players of Fantasy Premier League.
 
 https://fpl-xy.vercel.app/home
 
-https://fplxy.onrender.com/
-
 ![FPL-XY demo][demo]
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.8.
