@@ -26,7 +26,7 @@ export class GraphComponent implements OnInit {
   chartOption: EChartsOption = {};
   possibleAxis: any = getAxisViewValueArray();
   selectedXAxis = 'price';
-  selectedYAxis = 'npxGxA_90';
+  selectedYAxis = 'points_t';
   axisMinRange: any = {};
   axisMaxRange: any = {};
   axisMinRangeNorm: any = {};
