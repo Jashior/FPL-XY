@@ -96,10 +96,13 @@ export class PlayersService {
   public loadFilter(): void {
     this.getTeams().subscribe((teams) => {
       this.filter$.next({
-        min_minutes: Math.max(
-          45,
-          Math.floor((this.currentGameweek * 90) / 2 / 50) * 50
-        ),
+        min_minutes:
+          this.currentGameweek > 9
+            ? 200
+            : Math.max(
+                45,
+                Math.floor((this.currentGameweek * 90) / 2 / 50) * 50
+              ),
         min_tsb: 0,
         max_tsb: 100,
         min_price: 3,
