@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  BASE_API_URL: 'http://localhost:8080/api',
+  BASE_API_URL: 'https://dep-silk.vercel.app/api',
+  // BASE_API_URL: 'http://localhost:8080/api',
+  // BASE_API_URL: 'http://localhost:3000/api',
 };
 
 /*

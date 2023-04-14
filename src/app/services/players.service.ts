@@ -60,6 +60,7 @@ export class PlayersService {
       if (this.currentYearString == '') {
         this.currentYearString == resp[0].current_year_string;
       }
+      console.log(this.currentYearString);
       this.possibleYearStrings$.next(resp[0].possible_year_strings);
       // console.log(`${this.currentYearString}`);
       // console.log(`[${this.possibleYearStrings$}]`);
@@ -82,6 +83,7 @@ export class PlayersService {
     this.http
       .get<About[]>(`${this.API_URL}/getAbout/${this.currentYearString}`)
       .subscribe((about) => {
+        // console.log(about);
         if (about[0]) {
           this.teams$.next(about[0].teams);
           this.currentGameweek = about[0].current_gameweek;
@@ -112,6 +114,7 @@ export class PlayersService {
     this.http
       .get<Player[]>(`${this.API_URL}/getPlayers/${this.currentYearString}`)
       .subscribe((players) => {
+        // console.log(players);
         this.players$.next(players);
         this.setLoading(false);
       });

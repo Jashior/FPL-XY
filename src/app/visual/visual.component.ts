@@ -146,12 +146,13 @@ export class VisualComponent implements OnInit {
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
     this.loadingRaw$ = this.playersService.getLoadingState();
-
     this.playersGW$ = combineLatest([this.players$, this.gwrange$])
       // .pipe(debounceTime(200))
       .pipe(
         map(([players, gwrange]) => {
           // this.playersService.setLoading(true);
+          // console.log(`players.length: ${players.length}`);
+          // console.log(`gw range: ${gwrange[0]} -> ${gwrange[1]}`);
           if (players.length == 0) return [];
           if (gwrange[0] == -1 || gwrange[1] == -1) return players;
           // console.log(
