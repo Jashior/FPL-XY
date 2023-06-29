@@ -27,6 +27,6 @@ export class TeamSelectComponent implements OnInit {
   }
 
   getIcon(team: string) {
-    return `../../../assets/team-icons/${team}.png`;
+    return `../../../assets/team-icons/${team}.svg`;
   }
 }

@@ -6,6 +6,7 @@
   nzPlaceHolder="Filter Teams"
   [(ngModel)]="selectedTeams"
   (ngModelChange)="onChange($event)"
+  [nzMaxTagCount]="2"
 >
   <nz-option
     *ngFor="let team of Teams"
@@ -14,11 +15,14 @@
     nzCustomContent
   >
     <span class="flex justify-between">
-      {{ team }}
+      <span>{{ team }}</span>
       <img src="{{ getIcon(team) }}" class="w-6 h-6" alt="" />
     </span>
   </nz-option>
 </nz-select>
+<ng-template #nzCustomContent>
+  <i nz-icon nzType="loading" class="loading-icon"></i>
+</ng-template>
 <ng-template #tagPlaceHolder let-selectedTeams
   >and {{ selectedTeams.length }} more selected</ng-template
 >

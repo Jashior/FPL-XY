@@ -24,3 +24,12 @@
 .ant-slider-track {
     background-color: #177DDC !important;
 }
+.ant-select-item-option-active{
+    background-color: #177DDC
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+    background-color: #177DDC
+}
+.ant-select-selected-icon{
+    display: none;
+}

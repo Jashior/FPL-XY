@@ -179,7 +179,7 @@ export class GraphComponent implements OnInit {
       <u><b>${data.name}</b></u> 
       <img src="${getIcon(
         data.team
-      )}" alt="" style="width:1.5rem;height:1.5rem;float="left";display:"inline-block;float:"left";">
+      )}" alt="" style="width:2rem;height:2rem;float="left";display:"inline-block;float:"left";">
       </span>
       <small>${data.price}m • ${data.minutes_t} mins</small>
       </br>
@@ -340,5 +340,5 @@ export class GraphComponent implements OnInit {
 }
 
 function getIcon(team: any) {
-  return `../../assets/team-icons/${team}.png`;
+  return `../../assets/team-icons/${team}.svg`;
 }
