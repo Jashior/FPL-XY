@@ -33,7 +33,20 @@
           [nzValue]="axis['value']"
         ></nz-option>
       </nz-select>
-      <div class="scaleAxes flex justify-center items-center">
+    </div>
+    <div
+      class="flex-col justify-center items-center lg:flex lg:flex-row lg:justify-end lg:w-full lg:pr-20"
+    >
+      <div class="pr-6 flex justify-center items-center">
+        <small class="pt-2">Regression</small>
+        <div
+          class="pt-2 pl-2"
+          nz-checkbox
+          [(ngModel)]="regression"
+          (ngModelChange)="loadChartOptions()"
+        ></div>
+      </div>
+      <div class="flex justify-center items-center">
         <div class="pt-2">
           <small *ngIf="graphMode">Graph</small>
           <small *ngIf="!graphMode">Table</small>
@@ -51,7 +64,9 @@
       <ng-template #unCheckedTemplate
         ><span nz-icon nzType="table" nzTheme="outline"></span
       ></ng-template>
-      <!-- <div class="scaleAxes flex justify-center items-center">
+    </div>
+
+    <!-- <div class="scaleAxes flex justify-center items-center">
         <div class="pt-2">
           <small>Scale Axes</small>
           <nz-switch
@@ -61,7 +76,6 @@
           ></nz-switch>
         </div>
       </div> -->
-    </div>
   </div>
 
   <nz-divider

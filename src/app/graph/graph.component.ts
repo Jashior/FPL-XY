@@ -33,6 +33,7 @@ export class GraphComponent implements OnInit {
   axisMaxRangeNorm: any = {};
   filter?: Filter;
   roundToNearestDictionary = roundToNearestDictionary;
+  regression: boolean = true;
 
   COLOR_MAP = {
     GOALKEEPER: '#f7f494',
@@ -332,12 +333,14 @@ export class GraphComponent implements OnInit {
               triggerOn: 'none',
             },
             silent: true,
-            data: [
-              [
-                { coord: this.getRegressionCoords()[0], symbol: 'none' },
-                { coord: this.getRegressionCoords()[1], symbol: 'none' },
-              ],
-            ],
+            data: this.regression
+              ? [
+                  [
+                    { coord: this.getRegressionCoords()[0], symbol: 'none' },
+                    { coord: this.getRegressionCoords()[1], symbol: 'none' },
+                  ],
+                ]
+              : [], // Empty array when this.regression is false
           },
         },
       ],
