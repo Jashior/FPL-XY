@@ -5,6 +5,8 @@
   [nzDropdownMatchSelectWidth]="true"
   [(ngModel)]="selectedExcluded"
   (ngModelChange)="onChange($event)"
+  nzAllowClear
+  [(nzOpen)]="isOpenSelect"
 >
   <ng-container *ngFor="let player of optionList">
     <nz-option

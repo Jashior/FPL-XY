@@ -7,6 +7,7 @@
   [(ngModel)]="selectedTeams"
   (ngModelChange)="onChange($event)"
   [nzMaxTagCount]="2"
+  nzAllowClear
 >
   <nz-option
     *ngFor="let team of Teams"

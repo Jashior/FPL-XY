@@ -6,6 +6,7 @@
   nzPlaceHolder="Filter Positions"
   [(ngModel)]="selectedPositions"
   (ngModelChange)="onChange($event)"
+  nzAllowClear
 >
   <nz-option
     *ngFor="let item of Positions"

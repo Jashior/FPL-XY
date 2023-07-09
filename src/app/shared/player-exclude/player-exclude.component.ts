@@ -10,6 +10,7 @@ export class PlayerExcludeComponent implements OnInit {
   optionList: { name: string; id: number; team: string }[] = [];
   selectedExcluded: number[] = [];
   isLoading: boolean = false;
+  isOpenSelect: boolean = false;
 
   constructor(private playersService: PlayersService) {
     this.isLoading = true;
@@ -29,10 +30,15 @@ export class PlayerExcludeComponent implements OnInit {
   ngOnInit(): void {}
 
   onChange(val: number[] = []) {
+    this.close();
     this.playersService.setExcluded(this.selectedExcluded);
   }
 
   getIcon(team: string) {
     return `../../../assets/team-icons/${team}.svg`;
+  }
+
+  close(): void {
+    this.isOpenSelect = false;
   }
 }

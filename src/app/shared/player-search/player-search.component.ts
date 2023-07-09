@@ -13,6 +13,7 @@ export class PlayerSearchComponent implements OnInit {
   optionList: { name: string; id: number; team: string }[] = [];
   isLoading: boolean = false;
   selectedUser: any;
+  isOpenSelect: boolean = false;
 
   constructor(private playersService: PlayersService) {
     this.isLoading = true;
@@ -35,10 +36,15 @@ export class PlayerSearchComponent implements OnInit {
   ngOnInit(): void {}
 
   onChange(value: number[]): void {
+    this.close();
     this.playersService.setHighlightedPlayers(value);
   }
 
   getIcon(team: string) {
     return `../../../assets/team-icons/${team}.svg`;
+  }
+
+  close(): void {
+    this.isOpenSelect = false;
   }
 }
