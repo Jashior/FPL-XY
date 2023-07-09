@@ -33,3 +33,6 @@
 .ant-select-selected-icon{
     display: none;
 }
+.ant-select-close-icon{ 
+    vertical-align: 1.2em !important;
+}
