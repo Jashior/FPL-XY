@@ -1,9 +1,4 @@
-<div *ngIf="loadingRaw$ | async" class="pt-40 flex justify-center items-center">
-  <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
-</div>
-
 <div
-  *ngIf="!(loadingRaw$ | async)"
   class="flex flex-col lg:flex-row p-8 lg:p-8 container gap-8 justify-center items-center lg:items-baseline rounded-lg"
 >
   <div

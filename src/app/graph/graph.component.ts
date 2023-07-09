@@ -11,7 +11,6 @@ import {
 import { PlayersService } from '../services/players.service';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
-import { BreakpointBooleanMap } from 'ng-zorro-antd/core/services';
 
 @Component({
   selector: 'app-graph',
@@ -21,6 +20,7 @@ import { BreakpointBooleanMap } from 'ng-zorro-antd/core/services';
 export class GraphComponent implements OnInit {
   @Input() playersF$?: Observable<Player[]>;
   @Input() playersGW$?: Observable<Player[]>;
+  loadingRaw$: Observable<boolean>;
   normAxis: boolean = true;
   playersF: Player[] = [];
   chartOption: EChartsOption = {};
@@ -54,6 +54,7 @@ export class GraphComponent implements OnInit {
   }
 
   constructor(private playersService: PlayersService) {
+    this.loadingRaw$ = this.playersService.getLoadingState();
     this.playersService.getFilter().subscribe((filter) => {
       this.filter = filter;
     });

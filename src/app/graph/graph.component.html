@@ -70,7 +70,16 @@
   >
   </nz-divider>
 
-  <div class="chart">
+  <div
+    class="chart justify-center items-center w-full"
+    *ngIf="(loadingRaw$ | async) || loading"
+  >
+    <div class="flex justify-center items-center h-full">
+      <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+  </div>
+
+  <div class="chart" *ngIf="!(loadingRaw$ | async) && !loading">
     <div *ngIf="graphMode">
       <div
         echarts
@@ -83,7 +92,11 @@
     </div>
 
     <div *ngIf="!graphMode">
-      <nz-table #filterTable [nzData]="playersF" [nzLoading]="loading">
+      <nz-table
+        #filterTable
+        [nzData]="playersF"
+        [nzLoading]="loadingRaw$ | async"
+      >
         <thead>
           <tr>
             <th>Name</th>
