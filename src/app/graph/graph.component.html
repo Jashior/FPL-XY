@@ -35,6 +35,24 @@
       </nz-select>
       <div class="scaleAxes flex justify-center items-center">
         <div class="pt-2">
+          <small *ngIf="graphMode">Graph</small>
+          <small *ngIf="!graphMode">Table</small>
+          <nz-switch
+            class="pl-2"
+            [(ngModel)]="graphMode"
+            [nzCheckedChildren]="checkedTemplate"
+            [nzUnCheckedChildren]="unCheckedTemplate"
+          ></nz-switch>
+        </div>
+      </div>
+      <ng-template #checkedTemplate
+        ><span nz-icon nzType="dot-chart" nzTheme="outline" class="pb-4"></span
+      ></ng-template>
+      <ng-template #unCheckedTemplate
+        ><span nz-icon nzType="table" nzTheme="outline"></span
+      ></ng-template>
+      <!-- <div class="scaleAxes flex justify-center items-center">
+        <div class="pt-2">
           <small>Scale Axes</small>
           <nz-switch
             class="pl-2"
@@ -42,17 +60,62 @@
             (ngModelChange)="loadChartOptions()"
           ></nz-switch>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 
-  <div *ngIf="!loading">
-    <div
-      echarts
-      [options]="chartOption"
-      [theme]="getChartTheme()"
-      class="chart p-2 md:p-0"
-      (chartClick)="onChartEvent($event, 'chartClick')"
-    ></div>
+  <nz-divider
+    class="min-w-max border-dash dark:border-dash-dark m-0 mt-2"
+    nzDashed
+  >
+  </nz-divider>
+
+  <div *ngIf="!loading" class="chart">
+    <div *ngIf="graphMode">
+      <div
+        echarts
+        [options]="chartOption"
+        [theme]="getChartTheme()"
+        [loading]="loading"
+        class="chart p-2 md:p-0"
+        (chartClick)="onChartEvent($event, 'chartClick')"
+      ></div>
+    </div>
+
+    <div *ngIf="!graphMode">
+      <nz-table #filterTable [nzData]="playersF">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Team</th>
+            <th>Position</th>
+            <th [nzSortFn]="getSortFunction(selectedXAxis)">
+              {{ getXAxisTitle() }}
+            </th>
+            <th
+              [nzSortOrder]="'descend'"
+              [nzSortFn]="getSortFunction(selectedYAxis)"
+            >
+              {{ getYAxisTitle() }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of filterTable.data">
+            <td>{{ data.name }}</td>
+            <td>
+              <img src="{{ getIcon(data.team) }}" class="w-6 h-6" alt="" />
+            </td>
+            <td>{{ data.position }}</td>
+            <td>
+              {{ data[selectedXAxis] | number : getPipeString(selectedXAxis) }}
+            </td>
+            <td>
+              {{ data[selectedYAxis] | number : getPipeString(selectedYAxis) }}
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
   </div>
 </div>

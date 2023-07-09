@@ -44,7 +44,14 @@ export class GraphComponent implements OnInit {
   highlighted?: number[];
   gwrange?: number[];
   loading: boolean = true;
+  graphMode: boolean = true;
   chartInstance: any;
+
+  getSortFunction(axis: string | number) {
+    return (a: Player, b: Player) => {
+      return a[axis] - b[axis];
+    };
+  }
 
   constructor(private playersService: PlayersService) {
     this.playersService.getFilter().subscribe((filter) => {
@@ -150,6 +157,14 @@ export class GraphComponent implements OnInit {
     )}`;
   }
 
+  getYAxisTitle() {
+    return getAxisTitle(this.selectedYAxis);
+  }
+
+  getXAxisTitle() {
+    return getAxisTitle(this.selectedXAxis);
+  }
+
   getInnerWidth() {
     return window.innerWidth;
   }
@@ -196,7 +211,6 @@ export class GraphComponent implements OnInit {
   }
 
   loadChartOptions() {
-    // console.log(`players of length ${this.playersF.length}`);
     this.chartOption = {
       title: {
         text: this.getTitle(),
@@ -336,6 +350,20 @@ export class GraphComponent implements OnInit {
 
   resetToggle() {
     // this.resetPlayerToggle.emit();
+  }
+
+  getIcon(team: any) {
+    return `../../assets/team-icons/${team}.svg`;
+  }
+
+  getPipeString(axis: string) {
+    if (axis == 'price') {
+      return '1.1-1';
+    }
+    if (axis.includes('_90')) {
+      return '1.2-2';
+    }
+    return '1.0-2';
   }
 }
 

@@ -1,4 +1,5 @@
 export interface Player {
+  [key: string]: any;
   team: string;
   name: string;
   fpl_id: number;
