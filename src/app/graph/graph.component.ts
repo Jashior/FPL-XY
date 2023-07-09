@@ -209,6 +209,31 @@ export class GraphComponent implements OnInit {
     return getToolTip(params.data, params.dimensionNames, params.encode);
   }
 
+  getRegressionCoords() {
+    // Calculate regression line
+    const regressionLine = this.calculateRegressionLine(this.playersF);
+
+    // Generate coordinates for trendline based on x-axis range
+    const xMin = this.axisMinRangeNorm[this.selectedXAxis];
+    const xMax = this.axisMaxRangeNorm[this.selectedXAxis];
+
+    // Calculate y-values for the trendline using the regression equation
+    const yMin = regressionLine.slope * xMin + regressionLine.intercept;
+    const yMax = regressionLine.slope * xMax + regressionLine.intercept;
+
+    // Adjust coordinates if they exceed axis bounds
+    const xAxisMin = this.axisMinRangeNorm[this.selectedXAxis];
+    const xAxisMax = this.axisMaxRangeNorm[this.selectedXAxis];
+    const yAxisMin = this.axisMinRangeNorm[this.selectedYAxis];
+    const yAxisMax = this.axisMaxRangeNorm[this.selectedYAxis];
+
+    const adjustedTrendlineCoordinates = [
+      [Math.max(xAxisMin, xMin), Math.max(yAxisMin, yMin)],
+      [Math.min(xAxisMax, xMax), Math.min(yAxisMax, yMax)],
+    ];
+    return adjustedTrendlineCoordinates;
+  }
+
   loadChartOptions() {
     this.chartOption = {
       title: {
@@ -295,6 +320,25 @@ export class GraphComponent implements OnInit {
             hideOverlap: true,
             fontSize: 9,
           },
+          markLine: {
+            animation: false,
+            lineStyle: {
+              type: 'dashed',
+              color: '#177DDC',
+              opacity: 0.75,
+            },
+            tooltip: {
+              show: false,
+              triggerOn: 'none',
+            },
+            silent: true,
+            data: [
+              [
+                { coord: this.getRegressionCoords()[0], symbol: 'none' },
+                { coord: this.getRegressionCoords()[1], symbol: 'none' },
+              ],
+            ],
+          },
         },
       ],
       visualMap: [
@@ -363,6 +407,32 @@ export class GraphComponent implements OnInit {
       return '1.2-2';
     }
     return '1.0-2';
+  }
+
+  // Calculate regression line using linear regression algorithm
+  calculateRegressionLine(data: any[]) {
+    const sumX = data.reduce(
+      (total, point) => total + point[this.selectedXAxis],
+      0
+    );
+    const sumY = data.reduce(
+      (total, point) => total + point[this.selectedYAxis],
+      0
+    );
+    const n = data.length;
+    const meanX = sumX / n;
+    const meanY = sumY / n;
+    let numerator = 0;
+    let denominator = 0;
+    for (const point of data) {
+      numerator +=
+        (point[this.selectedXAxis] - meanX) *
+        (point[this.selectedYAxis] - meanY);
+      denominator += Math.pow(point[this.selectedXAxis] - meanX, 2);
+    }
+    const slope = numerator / denominator;
+    const intercept = meanY - slope * meanX;
+    return { slope, intercept };
   }
 }
 
