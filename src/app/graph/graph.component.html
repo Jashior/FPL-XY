@@ -70,7 +70,7 @@
   >
   </nz-divider>
 
-  <div *ngIf="!loading" class="chart">
+  <div class="chart">
     <div *ngIf="graphMode">
       <div
         echarts
@@ -83,7 +83,7 @@
     </div>
 
     <div *ngIf="!graphMode">
-      <nz-table #filterTable [nzData]="playersF">
+      <nz-table #filterTable [nzData]="playersF" [nzLoading]="loading">
         <thead>
           <tr>
             <th>Name</th>
