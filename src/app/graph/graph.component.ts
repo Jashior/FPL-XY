@@ -47,11 +47,13 @@ export class GraphComponent implements OnInit {
   graphMode: boolean = true;
   chartInstance: any;
 
-  getSortFunction(axis: string | number) {
-    return (a: Player, b: Player) => {
-      return a[axis] - b[axis];
-    };
-  }
+  sortFnX = (a: Player, b: Player) => {
+    return a[this.selectedXAxis] - b[this.selectedYAxis];
+  };
+
+  sortFnY = (a: Player, b: Player) => {
+    return a[this.selectedYAxis] - b[this.selectedYAxis];
+  };
 
   constructor(private playersService: PlayersService) {
     this.loadingRaw$ = this.playersService.getLoadingState();
@@ -158,12 +160,8 @@ export class GraphComponent implements OnInit {
     )}`;
   }
 
-  getYAxisTitle() {
-    return getAxisTitle(this.selectedYAxis);
-  }
-
-  getXAxisTitle() {
-    return getAxisTitle(this.selectedXAxis);
+  getAxisTitle(axis: string) {
+    return getAxisTitle(axis);
   }
 
   getInnerWidth() {
