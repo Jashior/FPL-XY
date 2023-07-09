@@ -6,4 +6,5 @@ export interface Filter {
   max_price: number;
   teams: string[];
   positions: string[];
+  excluded_players: number[];
 }

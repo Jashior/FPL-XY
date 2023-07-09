@@ -1,0 +1,26 @@
+<nz-select
+  nzMode="multiple"
+  nzPlaceHolder="Exclude Players"
+  class="w-full"
+  [nzDropdownMatchSelectWidth]="true"
+  [(ngModel)]="selectedExcluded"
+  (ngModelChange)="onChange($event)"
+>
+  <ng-container *ngFor="let player of optionList">
+    <nz-option
+      *ngIf="!isLoading"
+      nzCustomContent
+      [nzValue]="player.id"
+      [nzLabel]="player.name"
+    >
+      <span class="flex justify-between">
+        {{ player.name }}
+        <img src="{{ getIcon(player.team) }}" class="w-6 h-6" alt="" />
+      </span>
+    </nz-option>
+  </ng-container>
+  <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+    <i nz-icon nzType="loading" class="loading-icon"></i>
+    Loading Data...
+  </nz-option>
+</nz-select>

@@ -197,7 +197,8 @@ export class VisualComponent implements OnInit {
                 p.tsb >= filter.min_tsb &&
                 p.minutes_t >= filter.min_minutes &&
                 filter.teams.indexOf(p.team) >= 0 &&
-                filter.positions.indexOf(p.position) >= 0
+                filter.positions.indexOf(p.position) >= 0 &&
+                !filter.excluded_players.includes(p.fpl_id)
               );
             });
           // console.log(`Finished filtering, Found ${playersF.length} players`);

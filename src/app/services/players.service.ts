@@ -42,6 +42,7 @@ export class PlayersService {
     max_price: 15,
     teams: [],
     positions: this.Positions,
+    excluded_players: [],
   });
   public highlightedPlayers$ = new BehaviorSubject<number[]>([]);
 
@@ -60,7 +61,7 @@ export class PlayersService {
       if (this.currentYearString == '') {
         this.currentYearString == resp[0].current_year_string;
       }
-      console.log(this.currentYearString);
+      // console.log(this.currentYearString);
       this.possibleYearStrings$.next(resp[0].possible_year_strings);
       // console.log(`${this.currentYearString}`);
       // console.log(`[${this.possibleYearStrings$}]`);
@@ -109,6 +110,7 @@ export class PlayersService {
         max_price: 15,
         teams: teams,
         positions: this.Positions,
+        excluded_players: [],
       });
     });
   }
@@ -189,6 +191,10 @@ export class PlayersService {
 
   public setTeams(val: string[]) {
     this.filter$.next({ ...this.filter$.getValue(), teams: val });
+  }
+
+  public setExcluded(val: number[]) {
+    this.filter$.next({ ...this.filter$.getValue(), excluded_players: val });
   }
 
   public setYear(val: string) {

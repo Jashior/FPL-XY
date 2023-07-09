@@ -35,6 +35,7 @@ import { TeamSelectComponent } from './shared/team-select/team-select.component'
 import { YearSelectComponent } from './shared/year-select/year-select.component';
 import { GraphComponent } from './graph/graph.component';
 import { PlayerSearchComponent } from './shared/player-search/player-search.component';
+import { PlayerExcludeComponent } from './shared/player-exclude/player-exclude.component';
 
 registerLocaleData(en);
 
@@ -58,6 +59,7 @@ const routes: Routes = [
     YearSelectComponent,
     GraphComponent,
     PlayerSearchComponent,
+    PlayerExcludeComponent,
   ],
   imports: [
     BrowserModule,

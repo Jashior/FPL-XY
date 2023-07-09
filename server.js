@@ -31,7 +31,7 @@ app.use("/api", routes);
 
 // Static Route, serve static page in dist folder IF in production mode
 if (process.env.NODE_ENV) {
-  console.log(`Production Environment: serving static Front End`);
+  // console.log(`Production Environment: serving static Front End`);
 
   var distDir = __dirname + "/dist/fplv";
   app.use(express.static(distDir));

@@ -26,7 +26,7 @@ const ABOUT_DICT = {
 router.get("/getPlayers/:y", async (req, res) => {
   let year = req.params.y;
   let Player = PLAYER_DICT[year];
-  console.log(`Getting all  from ${year}`);
+  // console.log(`Getting all  from ${year}`);
   const players = await Player.find({ total_minutes: { $gt: 0 } }).limit();
   res.send(players);
 });
@@ -36,14 +36,14 @@ router.get("/getPlayers/:y", async (req, res) => {
 router.get("/getAbout/:y", async (req, res) => {
   let year = req.params.y;
   let About = ABOUT_DICT[year];
-  console.log(`Getting About from ${year}`);
+  // console.log(`Getting About from ${year}`);
   const about = await About.find({});
   res.send(about);
 });
 
 // Meta data (not year specific)
 router.get("/getMeta/", async (req, res) => {
-  console.log(`Getting Metadata`);
+  // console.log(`Getting Metadata`);
   const meta = await Meta.find({});
   res.send(meta);
 });
