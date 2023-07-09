@@ -25,6 +25,7 @@
         [(ngModel)]="selectedYAxis"
         (ngModelChange)="updateYAxis($event)"
         [nzDropdownMatchSelectWidth]="false"
+        [nzShowSearch]="true"
       >
         <nz-option
           *ngFor="let axis of possibleAxis"
