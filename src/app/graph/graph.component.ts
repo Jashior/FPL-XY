@@ -233,8 +233,8 @@ export class GraphComponent implements OnInit {
     const yAxisMax = this.axisMaxRangeNorm[this.selectedYAxis];
 
     const adjustedTrendlineCoordinates = [
-      [Math.max(xAxisMin, xMin), Math.max(yAxisMin, yMin)],
-      [Math.min(xAxisMax, xMax), Math.min(yAxisMax, yMax)],
+      [Math.max(xAxisMin, xMin), Math.max(yAxisMin, Math.min(yAxisMax, yMin))],
+      [Math.min(xAxisMax, xMax), Math.max(yAxisMin, Math.min(yAxisMax, yMax))],
     ];
     return adjustedTrendlineCoordinates;
   }
