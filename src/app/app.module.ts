@@ -38,6 +38,7 @@ import { YearSelectComponent } from './shared/year-select/year-select.component'
 import { GraphComponent } from './graph/graph.component';
 import { PlayerSearchComponent } from './shared/player-search/player-search.component';
 import { PlayerExcludeComponent } from './shared/player-exclude/player-exclude.component';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 
 registerLocaleData(en);
 
@@ -81,6 +82,8 @@ const routes: Routes = [
     NzIconModule,
     NzTableModule,
     NzCheckboxModule,
+    NzRadioModule,
+    NzButtonModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'), // or import('./path-to-my-custom-echarts')
     }),
