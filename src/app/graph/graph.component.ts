@@ -48,12 +48,16 @@ export class GraphComponent implements OnInit {
   graphMode: boolean = true;
   chartInstance: any;
 
-  sortFnX = (a: Player, b: Player) => {
-    return a[this.selectedXAxis] - b[this.selectedYAxis];
-  };
+  sortFnX = (a: Player, b: Player) =>
+    a[this.selectedXAxis] - b[this.selectedXAxis];
+  sortFnY = (a: Player, b: Player) =>
+    a[this.selectedYAxis] - b[this.selectedYAxis];
 
-  sortFnY = (a: Player, b: Player) => {
-    return a[this.selectedYAxis] - b[this.selectedYAxis];
+  getSortFnX = () => {
+    return this.sortFnX;
+  };
+  getSortFnY = () => {
+    return this.sortFnY;
   };
 
   constructor(private playersService: PlayersService) {

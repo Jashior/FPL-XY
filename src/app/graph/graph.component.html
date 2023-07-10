@@ -116,10 +116,18 @@
             <th>Name</th>
             <th>Team</th>
             <th>Position</th>
-            <th [nzSortFn]="sortFnX">
+            <th
+              [nzSortOrder]="'descend'"
+              [nzSortFn]="getSortFnX()"
+              [nzSortPriority]="0"
+            >
               {{ getAxisTitle(selectedXAxis) }}
             </th>
-            <th [nzSortOrder]="'descend'" [nzSortFn]="sortFnY">
+            <th
+              [nzSortOrder]="'descend'"
+              [nzSortFn]="getSortFnY()"
+              [nzSortPriority]="1"
+            >
               {{ getAxisTitle(selectedYAxis) }}
             </th>
           </tr>
