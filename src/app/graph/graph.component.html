@@ -35,33 +35,27 @@
       </nz-select>
     </div>
     <div
-      class="flex-col justify-center items-center lg:flex lg:flex-row lg:justify-end lg:w-full lg:pr-20"
+      class="flex-col justify-center items-center lg:flex lg:flex-row lg:justify-end lg:w-full"
     >
-      <div class="pr-8 flex justify-center items-center">
-        <small class="pt-2">Regression</small>
+      <div class="pr-8 flex justify-center items-center h-full">
+        <small class="text-center">Regression</small> 
         <div
-          class="pt-2 pl-2"
+          class="text-center pl-2"
           nz-checkbox
           [(ngModel)]="regression"
           (ngModelChange)="loadChartOptions()"
         ></div>
       </div>
-      <div class="flex justify-center items-center">
-        <small class="w-8 inline-block pt-2" *ngIf="graphMode">Graph</small>
-        <small class="w-8 inline-block pt-2" *ngIf="!graphMode">Table</small>
-        <nz-switch
-          class="pl-2 pt-2"
-          [(ngModel)]="graphMode"
-          [nzCheckedChildren]="checkedTemplate"
-          [nzUnCheckedChildren]="unCheckedTemplate"
-        ></nz-switch>
+      <div class="pr-8 flex justify-center items-center">
+        <nz-radio-group [nzSize]="'small'" [(ngModel)]="graphMode">
+          <label nz-radio-button [nzValue]="true">
+            <span nz-icon nzType="dot-chart"></span>
+          </label>
+          <label nz-radio-button [nzValue]="false">
+            <span nz-icon nzType="table"></span>
+          </label>
+        </nz-radio-group>
       </div>
-      <ng-template #checkedTemplate
-        ><span nz-icon nzType="dot-chart" nzTheme="outline" class="pb-4"></span
-      ></ng-template>
-      <ng-template #unCheckedTemplate
-        ><span nz-icon nzType="table" nzTheme="outline"></span
-      ></ng-template>
     </div>
 
     <!-- <div class="scaleAxes flex justify-center items-center">
