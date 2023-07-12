@@ -2,19 +2,10 @@
   <nz-slider
     [(ngModel)]="minMinutesValue"
     [nzMin]="0"
-    [nzStep]="5"
+    [nzStep]="maxMinutesPossible <= 270 ? 1 : 10"
     [nzIncluded]="false"
     [nzMarks]="marks"
     [nzMax]="maxMinutesPossible"
-    (nzOnAfterChange)="onChange()"
+    (ngModelChange)="onChange()"
   ></nz-slider>
-  <!-- <nz-col nzSpan="8" nzXl="24" nzXXl="8">
-      <nz-input-number
-        [nzMin]="0"
-        [nzMax]="maxMinutesPossible"
-        class="ml-4"
-        [(ngModel)]="minMinutesValue"
-        (ngModelChange)="onChange()"
-      ></nz-input-number>
-    </nz-col> -->
 </div>
