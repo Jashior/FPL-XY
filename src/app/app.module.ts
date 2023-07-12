@@ -27,7 +27,6 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { PriceSliderComponent } from './shared/price-slider/price-slider.component';
 import { TsbSliderComponent } from './shared/tsb-slider/tsb-slider.component';
@@ -87,7 +86,6 @@ const routes: Routes = [
     NzRadioModule,
     NzButtonModule,
     NzToolTipModule,
-    NzGridModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'), // or import('./path-to-my-custom-echarts')
     }),
