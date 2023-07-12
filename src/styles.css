@@ -36,3 +36,6 @@
 .ant-select-close-icon{ 
     vertical-align: 1.2em !important;
 }
+.ant-input-number-input:focus {
+  outline: none;
+}

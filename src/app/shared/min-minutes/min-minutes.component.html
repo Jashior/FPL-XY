@@ -1,10 +1,20 @@
-<div *ngIf="loaded">
+<div class="pt-2" *ngIf="loaded">
   <nz-slider
     [(ngModel)]="minMinutesValue"
     [nzMin]="0"
     [nzStep]="5"
     [nzIncluded]="false"
+    [nzMarks]="marks"
     [nzMax]="maxMinutesPossible"
-    (ngModelChange)="onChange()"
+    (nzOnAfterChange)="onChange()"
   ></nz-slider>
+  <!-- <nz-col nzSpan="8" nzXl="24" nzXXl="8">
+      <nz-input-number
+        [nzMin]="0"
+        [nzMax]="maxMinutesPossible"
+        class="ml-4"
+        [(ngModel)]="minMinutesValue"
+        (ngModelChange)="onChange()"
+      ></nz-input-number>
+    </nz-col> -->
 </div>

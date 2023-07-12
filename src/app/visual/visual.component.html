@@ -1,7 +1,9 @@
 <div
+  *ngIf="!(loadingRaw$ | async); else loading"
   class="flex flex-col lg:flex-row p-8 lg:p-8 container gap-8 justify-center items-center lg:items-baseline rounded-lg"
 >
-  <div *ngIf="showSidePanel"
+  <div
+    *ngIf="(playersF$ | async) && showSidePanel"
     class="w-96 flex flex-col justify-center align-middle text-center gap-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
   >
     <div class="w-full">
@@ -12,7 +14,7 @@
       nzDashed
     ></nz-divider>
     <div>
-      <div>Min. Minutes Played</div>
+      <div>Min. Minutes Played {{ (filter$ | async)?.min_minutes }}</div>
       <app-min-minutes></app-min-minutes>
     </div>
     <div>
@@ -43,12 +45,25 @@
     </div>
   </div>
 
-  <div *ngIf="playersF$" class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8">
-    <app-graph 
-      [playersF$]="playersF$" 
-      [playersGW$]="playersGW$" 
+  <div
+    *ngIf="playersF$ | async"
+    class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8"
+  >
+    <app-graph
+      [playersF$]="playersF$"
+      [playersGW$]="playersGW$"
       [expandScreen]="false"
-      (expandScreenChanged)="handleScreenExpandedChanged($event)">
+      (expandScreenChanged)="handleScreenExpandedChanged($event)"
+    >
     </app-graph>
   </div>
 </div>
+
+<ng-template #loading>
+  <!-- Content to show when loadingRaw$ is true -->
+  <div class="flex justify-center items-center h-96">
+    <div class="flex flex-col items-center">
+      <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+  </div>
+</ng-template>

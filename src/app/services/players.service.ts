@@ -34,6 +34,7 @@ export class PlayersService {
   private teams$ = new BehaviorSubject<string[]>([]);
   private players$ = new BehaviorSubject<Player[]>([]);
   private gwRange$ = new BehaviorSubject<number[]>([-1, -1]);
+  public maxMinsGWRange$ = new BehaviorSubject<number>(0);
   public filter$ = new BehaviorSubject<Filter>({
     min_minutes: 50,
     min_tsb: 0,
@@ -133,6 +134,10 @@ export class PlayersService {
     return this.gwRange$;
   }
 
+  public getMaxMinsGwRange(): Observable<number> {
+    return this.maxMinsGWRange$;
+  }
+
   public getYearString(): string {
     return this.currentYearString;
   }
@@ -163,6 +168,13 @@ export class PlayersService {
 
   public setGwRange(gwrange: number[]): void {
     this.gwRange$.next(gwrange);
+  }
+
+  public setMaxMinsGwRange(mins: number): void {
+    this.maxMinsGWRange$.next(mins);
+    if (mins < this.filter$.getValue().min_minutes) {
+      this.setMinMinutes(mins);
+    }
   }
 
   public setMinPrice(val: number) {

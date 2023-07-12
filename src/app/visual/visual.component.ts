@@ -5,6 +5,8 @@ import {
   debounceTime,
   shareReplay,
   distinctUntilChanged,
+  take,
+  filter,
 } from 'rxjs/operators';
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
@@ -140,13 +142,13 @@ export class VisualComponent implements OnInit {
     return p;
   }
 
-  ngOnInit(): void {
+  load() {
     this.players$ = this.playersService.getPlayers();
     this.gwrange$ = this.playersService.getGameweekRange();
     this.teams$ = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
-    this.loadingRaw$ = this.playersService.getLoadingState();
+
     this.playersGW$ = combineLatest([this.players$, this.gwrange$])
       // .pipe(debounceTime(200))
       .pipe(
@@ -162,6 +164,13 @@ export class VisualComponent implements OnInit {
           let playersGW: Player[] = players.map((p) => {
             return this.calcPlayerStatsInGW(p, gwrange);
           });
+
+          let maxMinsPossible = playersGW.reduce(
+            (max, player) => (player.minutes_t > max ? player.minutes_t : max),
+            0
+          );
+          this.playersService.setMaxMinsGwRange(maxMinsPossible);
+
           // console.log(`Finished calcing`);
           // this.playersService.setLoading(false);
           return playersGW;
@@ -179,6 +188,7 @@ export class VisualComponent implements OnInit {
         map(([players, filter, highlights]) => {
           if (players.length == 0) return players;
           if (filter.teams.length == 0) return [];
+
           // console.log(`Filtering players based off filter`);
 
           let playersF: Player[] = players
@@ -212,5 +222,17 @@ export class VisualComponent implements OnInit {
 
   handleScreenExpandedChanged(screenExpanded: boolean) {
     this.showSidePanel = !screenExpanded;
+  }
+  ngOnInit(): void {
+    this.loadingRaw$ = this.playersService.getLoadingState();
+
+    this.loadingRaw$
+      .pipe(
+        take(1),
+        filter((loadingRaw) => loadingRaw === true)
+      )
+      .subscribe(() => {
+        this.load();
+      });
   }
 }
