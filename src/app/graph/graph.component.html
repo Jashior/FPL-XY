@@ -38,13 +38,21 @@
       class="flex-col justify-center items-center lg:flex lg:flex-row lg:justify-end lg:w-full"
     >
       <div class="pr-8 flex justify-center items-center h-full">
-        <small class="text-center">Regression</small> 
-        <div
+        <div *ngIf="graphMode">
+          <small class="text-center">Regression: </small>
+          <nz-switch
+            class="pl-2"
+            nzSize="small"
+            [(ngModel)]="regression"
+            (ngModelChange)="loadChartOptions()"
+          ></nz-switch>
+        </div>
+        <!-- <div
           class="text-center pl-2"
           nz-checkbox
           [(ngModel)]="regression"
           (ngModelChange)="loadChartOptions()"
-        ></div>
+        ></div> -->
       </div>
       <div class="pr-8 flex justify-center items-center">
         <nz-radio-group [nzSize]="'small'" [(ngModel)]="graphMode">
