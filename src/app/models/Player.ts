@@ -86,4 +86,5 @@ export interface Player {
   CS: number[];
   CS_t: number;
   CS_90: number;
+  total_minutes: number;
 }

@@ -10,17 +10,23 @@ import { PlayersService } from 'src/app/services/players.service';
 })
 export class MinMinutesComponent implements OnInit {
   minMinutesValue: number = 0;
-  minutesMaxPossible!: number;
+  maxMinutesPossible!: number;
+  loaded: boolean = false;
 
   constructor(private playersService: PlayersService) {
     this.playersService.getFilter().subscribe((filter) => {
       this.minMinutesValue = filter.min_minutes;
+      this.maxMinutesPossible = this.playersService.getCurrentGameweek() * 90;
+      this.loaded = true;
     });
   }
+
   ngOnInit(): void {}
 
-  onChange(value: number): void {
-    // console.log(`value: ${value}`);
-    this.playersService.setMinMinutes(value);
+  onChange(): void {
+    if (!this.loaded) {
+      return;
+    }
+    this.playersService.setMinMinutes(this.minMinutesValue);
   }
 }
