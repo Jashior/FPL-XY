@@ -39,6 +39,7 @@ import { GraphComponent } from './graph/graph.component';
 import { PlayerSearchComponent } from './shared/player-search/player-search.component';
 import { PlayerExcludeComponent } from './shared/player-exclude/player-exclude.component';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 registerLocaleData(en);
 
@@ -84,6 +85,7 @@ const routes: Routes = [
     NzCheckboxModule,
     NzRadioModule,
     NzButtonModule,
+    NzToolTipModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'), // or import('./path-to-my-custom-echarts')
     }),

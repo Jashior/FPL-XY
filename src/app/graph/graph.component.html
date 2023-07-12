@@ -63,6 +63,13 @@
             <span nz-icon nzType="table"></span>
           </label>
         </nz-radio-group>
+        <div class="w-2"></div>
+        <button *ngIf="!expandScreen" nz-button [nzSize]="'small'" nzType="default" nzTooltipTitle="Expand" nzTooltipPlacement="top" nz-button nz-tooltip (click)="toggleExpandScreen(true)">
+          <span nz-icon nzType="expand-alt" nzTheme="outline"></span>
+        </button>
+        <button *ngIf="expandScreen" nz-button [nzSize]="'small'" nzType="default" nzTooltipTitle="Shrink" nzTooltipPlacement="top" nz-button nz-tooltip (click)="toggleExpandScreen(false)">
+          <span nz-icon nzType="shrink" nzTheme="outline"></span>
+        </button>
       </div>
     </div>
 
@@ -93,15 +100,16 @@
     </div>
   </div>
 
-  <div class="chart" *ngIf="!(loadingRaw$ | async) && !loading">
+  <div *ngIf="!(loadingRaw$ | async) && !loading">
     <div *ngIf="graphMode">
       <div
         echarts
         [options]="chartOption"
         [theme]="getChartTheme()"
         [loading]="loading"
-        class="chart p-2 md:p-0"
+        class="p-2 md:p-0"
         (chartClick)="onChartEvent($event, 'chartClick')"
+        [ngClass]="{ 'expand w-full h-full': expandScreen, 'chart' : !expandScreen }"
       ></div>
     </div>
 
@@ -110,6 +118,7 @@
         #filterTable
         [nzData]="playersF"
         [nzLoading]="loadingRaw$ | async"
+        [ngClass]="{ 'expand w-full h-full': expandScreen, 'chart' : !expandScreen }"
       >
         <thead>
           <tr>

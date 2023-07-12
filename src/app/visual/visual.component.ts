@@ -26,6 +26,7 @@ export class VisualComponent implements OnInit {
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
   loadingRaw$?: Observable<boolean>; // loading data
+  showSidePanel: boolean = true;
 
   constructor(private playersService: PlayersService) {}
 
@@ -207,5 +208,9 @@ export class VisualComponent implements OnInit {
         })
       )
       .pipe(shareReplay(1));
+  }
+
+  handleScreenExpandedChanged(screenExpanded: boolean) {
+    this.showSidePanel = !screenExpanded;
   }
 }

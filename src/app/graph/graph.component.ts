@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { Observable } from 'rxjs';
 import { Player } from '../models/Player';
@@ -20,6 +20,8 @@ import { Positions } from '../models/Positions';
 export class GraphComponent implements OnInit {
   @Input() playersF$?: Observable<Player[]>;
   @Input() playersGW$?: Observable<Player[]>;
+  @Input() expandScreen: boolean = false;
+  @Output() expandScreenChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
   loadingRaw$: Observable<boolean>;
   normAxis: boolean = true;
   playersF: Player[] = [];
@@ -59,6 +61,15 @@ export class GraphComponent implements OnInit {
   getSortFnY = () => {
     return this.sortFnY;
   };
+
+  toggleExpandScreen(expand: boolean) {
+    this.loading = true;
+    setTimeout(() => { 
+      this.loading = false;
+      this.expandScreen = expand;
+      this.expandScreenChanged.emit(this.expandScreen);
+    }, 150);
+  }
 
   constructor(private playersService: PlayersService) {
     this.loadingRaw$ = this.playersService.getLoadingState();
