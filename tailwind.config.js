@@ -18,6 +18,16 @@ module.exports = {
         dash: "#1e2121",
         "dash-dark": "#3F4141",
       },
+      height: {
+        "700px": "700px",
+        "450px": "450px",
+        "420px": "420px",
+      },
+      width: {
+        "900px": "900px",
+        "600px": "600px",
+        "400px": "400px",
+      },
     },
   },
   variants: {

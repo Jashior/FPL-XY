@@ -41,7 +41,7 @@
         <div *ngIf="graphMode">
           <small class="text-center">Regression: </small>
           <nz-switch
-            class="pl-2"
+            class="pl-2 pb-2 lg:pb-0"
             nzSize="small"
             [(ngModel)]="regression"
             (ngModelChange)="loadChartOptions()"
@@ -64,10 +64,30 @@
           </label>
         </nz-radio-group>
         <div class="w-2"></div>
-        <button *ngIf="!expandScreen" nz-button [nzSize]="'small'" nzType="default" nzTooltipTitle="Expand" nzTooltipPlacement="top" nz-button nz-tooltip (click)="toggleExpandScreen(true)">
+        <button
+          *ngIf="!expandScreen"
+          nz-button
+          [nzSize]="'small'"
+          nzType="default"
+          nzTooltipTitle="Expand"
+          nzTooltipPlacement="top"
+          nz-button
+          nz-tooltip
+          (click)="toggleExpandScreen(true)"
+        >
           <span nz-icon nzType="expand-alt" nzTheme="outline"></span>
         </button>
-        <button *ngIf="expandScreen" nz-button [nzSize]="'small'" nzType="default" nzTooltipTitle="Shrink" nzTooltipPlacement="top" nz-button nz-tooltip (click)="toggleExpandScreen(false)">
+        <button
+          *ngIf="expandScreen"
+          nz-button
+          [nzSize]="'small'"
+          nzType="default"
+          nzTooltipTitle="Shrink"
+          nzTooltipPlacement="top"
+          nz-button
+          nz-tooltip
+          (click)="toggleExpandScreen(false)"
+        >
           <span nz-icon nzType="shrink" nzTheme="outline"></span>
         </button>
       </div>
@@ -92,7 +112,7 @@
   </nz-divider>
 
   <div
-    class="chart justify-center items-center w-full"
+    class="justify-center items-center"
     *ngIf="(loadingRaw$ | async) || loading"
   >
     <div class="flex justify-center items-center h-full">
@@ -107,9 +127,12 @@
         [options]="chartOption"
         [theme]="getChartTheme()"
         [loading]="loading"
-        class="p-2 md:p-0"
+        class="p-2 md:p-0 lg:w-900px md:w-600px w-400px lg:h-700px md:h-450px h-420px"
         (chartClick)="onChartEvent($event, 'chartClick')"
-        [ngClass]="{ 'expand w-full h-full': expandScreen, 'chart' : !expandScreen }"
+        [ngClass]="{
+          'expand w-full h-full': expandScreen,
+          chart: !expandScreen
+        }"
       ></div>
     </div>
 
@@ -118,7 +141,10 @@
         #filterTable
         [nzData]="playersF"
         [nzLoading]="loadingRaw$ | async"
-        [ngClass]="{ 'expand w-full h-full': expandScreen, 'chart' : !expandScreen }"
+        [ngClass]="{
+          'expand w-full h-full': expandScreen,
+          chart: !expandScreen
+        }"
       >
         <thead>
           <tr>
