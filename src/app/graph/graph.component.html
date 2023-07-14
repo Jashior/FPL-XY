@@ -129,7 +129,7 @@
         [loading]="loading"
         (chartClick)="onChartEvent($event, 'chartClick')"
         [ngClass]="{
-          'h-90vh w-90vw': expandScreen,
+          'h-80vh w-90vw': expandScreen,
           'p-2 md:p-0 lg:w-900px md:w-600px w-400px lg:h-700px md:h-450px h-420px':
             !expandScreen
         }"
@@ -143,8 +143,9 @@
         [nzLoading]="loadingRaw$ | async"
         class="w-full"
         [ngClass]="{
-          'h-70vh w-90vw': expandScreen,
-          '': !expandScreen
+          'h-80vh w-90vw': expandScreen,
+          'p-2 md:p-0 lg:w-900px md:w-600px w-400px lg:h-700px md:h-450px h-420px':
+            !expandScreen
         }"
       >
         <thead>

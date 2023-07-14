@@ -23,7 +23,7 @@ module.exports = {
         "450px": "450px",
         "420px": "420px",
         "90vh": "90vh",
-        "70vh": "70vh",
+        "80vh": "80vh",
       },
       width: {
         "900px": "900px",
