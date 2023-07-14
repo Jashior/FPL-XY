@@ -225,11 +225,10 @@ export class VisualComponent implements OnInit {
   }
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
-
     this.loadingRaw$
       .pipe(
-        take(1),
-        filter((loadingRaw) => loadingRaw === true)
+        filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
+        take(1)
       )
       .subscribe(() => {
         this.load();

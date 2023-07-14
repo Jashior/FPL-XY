@@ -1,9 +1,9 @@
 <div
-  *ngIf="!(loadingRaw$ | async); else loading"
+  *ngIf="!(loadingRaw$ | async) && (playersF$ | async); else loading"
   class="flex flex-col xl:flex-row p-8 xl:p-8 container gap-8 justify-center items-center xl:items-baseline rounded-lg"
 >
   <div
-    *ngIf="(playersF$ | async) && showSidePanel"
+    *ngIf="showSidePanel"
     class="w-96 flex flex-col justify-center align-middle text-center gap-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
   >
     <div class="w-full">
@@ -47,10 +47,7 @@
     </div>
   </div>
 
-  <div
-    *ngIf="playersF$ | async"
-    class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8"
-  >
+  <div class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8">
     <app-graph
       [playersF$]="playersF$"
       [playersGW$]="playersGW$"
