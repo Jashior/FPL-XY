@@ -55,11 +55,11 @@
         ></div> -->
       </div>
       <div class="pr-8 flex justify-center items-center">
-        <nz-radio-group [nzSize]="'small'" [(ngModel)]="graphMode">
-          <label nz-radio-button [nzValue]="true">
+        <nz-radio-group [nzSize]="'small'" [(ngModel)]="graphMode" class="flex">
+          <label nz-radio-button [nzValue]="true" class="inline-flex">
             <span nz-icon nzType="dot-chart"></span>
           </label>
-          <label nz-radio-button [nzValue]="false">
+          <label nz-radio-button [nzValue]="false" class="inline-flex">
             <span nz-icon nzType="table"></span>
           </label>
         </nz-radio-group>
@@ -120,18 +120,18 @@
     </div>
   </div>
 
-  <div *ngIf="!(loadingRaw$ | async) && !loading">
+  <div *ngIf="!(loadingRaw$ | async) && !loading" class="w-full">
     <div *ngIf="graphMode">
       <div
         echarts
         [options]="chartOption"
         [theme]="getChartTheme()"
         [loading]="loading"
-        class="p-2 md:p-0 lg:w-900px md:w-600px w-400px lg:h-700px md:h-450px h-420px"
         (chartClick)="onChartEvent($event, 'chartClick')"
         [ngClass]="{
-          'expand w-full h-full': expandScreen,
-          chart: !expandScreen
+          'h-90vh w-90vw': expandScreen,
+          'p-2 md:p-0 lg:w-900px md:w-600px w-400px lg:h-700px md:h-450px h-420px':
+            !expandScreen
         }"
       ></div>
     </div>
@@ -141,9 +141,10 @@
         #filterTable
         [nzData]="playersF"
         [nzLoading]="loadingRaw$ | async"
+        class="w-full"
         [ngClass]="{
-          'expand w-full h-full': expandScreen,
-          chart: !expandScreen
+          'h-70vh w-90vw': expandScreen,
+          '': !expandScreen
         }"
       >
         <thead>
