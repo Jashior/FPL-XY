@@ -13,6 +13,12 @@ export class TeamSelectComponent implements OnInit {
   constructor(private playersService: PlayersService) {
     this.playersService.getTeams().subscribe((teams) => {
       this.Teams = teams;
+      this.playersService.getFilter().subscribe((f) => {
+        this.selectedTeams = f.teams;
+        if (this.selectedTeams.length == this.Teams.length) {
+          this.selectedTeams = [];
+        }
+      });
     });
   }
 

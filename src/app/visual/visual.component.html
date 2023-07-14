@@ -3,7 +3,7 @@
   class="flex flex-col xl:flex-row p-8 xl:p-8 container gap-8 justify-center items-center xl:items-baseline rounded-lg"
 >
   <div
-    [hidden]="!(playersF$ | async) || !showSidePanel"
+    *ngIf="(playersF$ | async) && showSidePanel"
     class="w-96 flex flex-col justify-center align-middle text-center gap-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
   >
     <div class="w-full">

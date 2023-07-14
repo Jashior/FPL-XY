@@ -11,7 +11,14 @@ export class PositionSelectComponent implements OnInit {
   Positions = Positions;
   selectedPositions: string[] = [];
 
-  constructor(private playersService: PlayersService) {}
+  constructor(private playersService: PlayersService) {
+    this.playersService.getFilter().subscribe((f) => {
+      this.selectedPositions = f.positions;
+      if (this.selectedPositions.length == this.Positions.length) {
+        this.selectedPositions = [];
+      }
+    });
+  }
 
   ngOnInit(): void {}
 
