@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
@@ -6,20 +7,29 @@ import { PlayersService } from 'src/app/services/players.service';
   templateUrl: './year-select.component.html',
   styleUrls: ['./year-select.component.css'],
 })
-export class YearSelectComponent implements OnInit {
-  selectedYear;
+export class YearSelectComponent implements OnInit, OnDestroy {
+  selectedYear: string = "";
   optionList: string[] = [];
+  subscriptions: Subscription[] = [];
 
   constructor(private playersService: PlayersService) {
-    this.selectedYear = playersService.getYearString();
-    this.playersService.getPossibleYearStrings().subscribe((years) => {
-      this.optionList = years;
-    });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.selectedYear = this.playersService.getYearString();
+
+    this.subscriptions.push(
+      this.playersService.getPossibleYearStrings().subscribe((years) => {
+        this.optionList = years;
+      })
+    );
+  }
 
   updateYear(year: string) {
     this.playersService.setYear(year);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

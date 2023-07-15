@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PlayersService } from 'src/app/services/players.service';
 import { NzMarks } from 'ng-zorro-antd/slider';
-import { combineLatest } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 
 @Component({
@@ -9,23 +9,30 @@ import { debounceTime, filter } from 'rxjs/operators';
   templateUrl: './min-minutes.component.html',
   styleUrls: ['./min-minutes.component.css'],
 })
-export class MinMinutesComponent implements OnInit {
+export class MinMinutesComponent implements OnInit, OnDestroy {
   minMinutesValue: number = 0;
   maxMinutesPossible!: number;
   loaded: boolean = false;
   marks: NzMarks = {};
+  subscriptions: Subscription[] = [];
 
   constructor(private playersService: PlayersService) {
     this.loaded = false;
-    playersService.getGameweekRange().subscribe((data) => {
-      this.playersService.setMinMinutes(0);
-    });
+  }
 
-    combineLatest([
-      this.playersService.getLoadingState(),
-      this.playersService.getFilter(),
-      this.playersService.getMaxMinsGwRange(),
-    ])
+  ngOnInit() : void {
+    this.subscriptions.push(
+      this.playersService.getGameweekRange().subscribe((data) => {
+        this.playersService.setMinMinutes(0);
+      }
+    ));
+
+    this.subscriptions.push(
+      combineLatest([
+        this.playersService.getLoadingState(),
+        this.playersService.getFilter(),
+        this.playersService.getMaxMinsGwRange()
+      ])
       .pipe(
         filter(([loadingState]) => !loadingState),
         debounceTime(100)
@@ -40,11 +47,9 @@ export class MinMinutesComponent implements OnInit {
 
         // Set this.loaded to true
         this.loaded = true;
-        this.ngOnInit();
-      });
+      })
+    );
   }
-
-  ngOnInit(): void {}
 
   loadMarks(): void {
     let max = this.maxMinutesPossible.toString();
@@ -62,9 +67,12 @@ export class MinMinutesComponent implements OnInit {
   }
 
   onChange(): void {
-    if (!this.loaded) {
-      return;
+    if (this.loaded) {
+      this.playersService.setMinMinutes(this.minMinutesValue);
     }
-    this.playersService.setMinMinutes(this.minMinutesValue);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
@@ -6,14 +8,19 @@ import { PlayersService } from 'src/app/services/players.service';
   templateUrl: './team-select.component.html',
   styleUrls: ['./team-select.component.css'],
 })
-export class TeamSelectComponent implements OnInit {
+export class TeamSelectComponent implements OnInit, OnDestroy {
   Teams: string[] = [];
   selectedTeams: string[] = [];
+  unsubscribe$ = new Subject<void>();
+  teamsSubscription: Subscription | undefined;
 
   constructor(private playersService: PlayersService) {
-    this.playersService.getTeams().subscribe((teams) => {
+  }
+  
+  ngOnInit(): void {
+    this.teamsSubscription = this.playersService.getTeams().pipe(takeUntil(this.unsubscribe$)).subscribe((teams) => {
       this.Teams = teams;
-      this.playersService.getFilter().subscribe((f) => {
+      this.playersService.getFilter().pipe(takeUntil(this.unsubscribe$)).subscribe((f) => {
         this.selectedTeams = f.teams;
         if (this.selectedTeams.length == this.Teams.length) {
           this.selectedTeams = [];
@@ -21,8 +28,6 @@ export class TeamSelectComponent implements OnInit {
       });
     });
   }
-
-  ngOnInit(): void {}
 
   onChange(val: string[]) {
     if (val.length == 0) {
@@ -34,5 +39,13 @@ export class TeamSelectComponent implements OnInit {
 
   getIcon(team: string) {
     return `../../../assets/team-icons/${team}.svg`;
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+    if (this.teamsSubscription) {
+      this.teamsSubscription.unsubscribe();
+    }
   }
 }

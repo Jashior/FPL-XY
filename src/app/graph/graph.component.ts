@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { EChartsOption } from 'echarts';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Player } from '../models/Player';
 import {
   getAxisKeys,
@@ -17,12 +17,12 @@ import { Positions } from '../models/Positions';
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.css'],
 })
-export class GraphComponent implements OnInit {
+export class GraphComponent implements OnInit, OnDestroy {
   @Input() playersF$?: Observable<Player[]>;
   @Input() playersGW$?: Observable<Player[]>;
   @Input() expandScreen: boolean = false;
   @Output() expandScreenChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
-  loadingRaw$: Observable<boolean>;
+  loadingRaw$?: Observable<boolean>;
   normAxis: boolean = true;
   playersF: Player[] = [];
   chartOption: EChartsOption = {};
@@ -36,6 +36,11 @@ export class GraphComponent implements OnInit {
   filter?: Filter;
   roundToNearestDictionary = roundToNearestDictionary;
   regression: boolean = true;
+  highlighted?: number[];
+  gwrange?: number[];
+  loading: boolean = true;
+  graphMode: boolean = true;
+  chartInstance: any;
 
   COLOR_MAP = {
     GOALKEEPER: '#f7f494',
@@ -44,20 +49,67 @@ export class GraphComponent implements OnInit {
     FORWARD: '#72ccff',
     DARK: '#1e262f',
   };
-  highlighted?: number[];
-  gwrange?: number[];
-  loading: boolean = true;
-  graphMode: boolean = true;
-  chartInstance: any;
 
-  sortFnX = (a: Player, b: Player) =>
-    a[this.selectedXAxis] - b[this.selectedXAxis];
-  sortFnY = (a: Player, b: Player) =>
-    a[this.selectedYAxis] - b[this.selectedYAxis];
+  subscriptions: Subscription[] = [];
+
+  constructor(private playersService: PlayersService) {
+  }
+
+  ngOnInit(): void {
+    this.loadingRaw$ = this.playersService.getLoadingState();
+
+    this.subscriptions.push(
+      this.playersService.getFilter().subscribe((filter) => {
+        this.filter = filter;
+      }),
+
+      this.playersService.getHighlightedPlayers().subscribe((highlighted) => {
+        this.highlighted = highlighted;
+      }),
+
+      this.playersService.getGameweekRange().subscribe((gwrange) => {
+        this.gwrange = gwrange;
+      })
+    );
+
+    if (this.playersF$) {
+      this.subscriptions.push(
+        this.playersF$?.subscribe((players) => {
+          this.loading = true;
+          this.playersF = players;
+          this.loadMinMax(players, this.axisMinRangeNorm, this.axisMaxRangeNorm);
+          this.loadChartOptions();
+          this.loading = false;
+        })
+      );
+    };
+
+    if(this.playersGW$) {
+      this.subscriptions.push(
+        this.playersGW$?.subscribe((players) => {
+          this.loadMinMax(players, this.axisMinRange, this.axisMaxRange);
+        })
+      );
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  getChartTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)')['matches']
+      ? 'chalk'
+      : 'vintage';
+  }
+
+  sortFnX = (a: Player, b: Player) => a[this.selectedXAxis] - b[this.selectedXAxis];
+  sortFnY = (a: Player, b: Player) => a[this.selectedYAxis] - b[this.selectedYAxis];
 
   getSortFnX = () => {
     return this.sortFnX;
   };
+
   getSortFnY = () => {
     return this.sortFnY;
   };
@@ -69,43 +121,6 @@ export class GraphComponent implements OnInit {
       this.expandScreen = expand;
       this.expandScreenChanged.emit(this.expandScreen);
     }, 150);
-  }
-
-  constructor(private playersService: PlayersService) {
-    this.loadingRaw$ = this.playersService.getLoadingState();
-    this.playersService.getFilter().subscribe((filter) => {
-      this.filter = filter;
-    });
-    this.playersService.getHighlightedPlayers().subscribe((highlighted) => {
-      this.highlighted = highlighted;
-    });
-    this.playersService.getGameweekRange().subscribe((gwrange) => {
-      this.gwrange = gwrange;
-    });
-  }
-
-  ngOnInit(): void {
-    this.playersF$?.subscribe((players) => {
-      this.loading = true;
-      this.playersF = players;
-      this.loadMinMax(players, this.axisMinRangeNorm, this.axisMaxRangeNorm);
-      this.loadChartOptions();
-      this.loading = false;
-    });
-    this.playersGW$?.subscribe((players) => {
-      this.loadMinMax(players, this.axisMinRange, this.axisMaxRange);
-    });
-  }
-
-  ngOnChanges(): void {}
-
-  getChartTheme() {
-    // theme: string = window.matchMedia('(prefers-color-scheme: dark)')['matches']
-    // ? 'chalk'
-    // : 'vintage';
-    return window.matchMedia('(prefers-color-scheme: dark)')['matches']
-      ? 'chalk'
-      : 'vintage';
   }
 
   loadMinMax(
@@ -405,12 +420,6 @@ export class GraphComponent implements OnInit {
 
   togglePlayer(data: Player) {
     this.playersService.toggleHighlightedPlayer(data.fpl_id);
-    // this.togglePlayerToggle.emit();
-    // this.togglePlayerEvent.emit({ name: data.name, id: data.fpl_id });
-  }
-
-  resetToggle() {
-    // this.resetPlayerToggle.emit();
   }
 
   getIcon(team: any) {

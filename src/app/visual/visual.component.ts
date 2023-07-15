@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatest, timer } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import {
   map,
   debounceTime,
   shareReplay,
-  distinctUntilChanged,
   take,
   filter,
 } from 'rxjs/operators';
@@ -31,6 +30,96 @@ export class VisualComponent implements OnInit {
   showSidePanel: boolean = true;
 
   constructor(private playersService: PlayersService) {}
+
+  ngOnInit(): void {
+    this.loadingRaw$ = this.playersService.getLoadingState();
+    this.loadingRaw$
+      .pipe(
+        filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
+        take(1)
+      )
+      .subscribe(() => {
+        this.load();
+      }
+    );
+  }
+
+  load() {
+    this.players$ = this.playersService.getPlayers();
+    this.gwrange$ = this.playersService.getGameweekRange();
+    this.teams$ = this.playersService.getTeams();
+    this.filter$ = this.playersService.getFilter();
+    this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
+
+    this.playersGW$ = combineLatest([this.players$, this.gwrange$])
+      .pipe(
+        map(([players, gwrange]) => {
+          // this.playersService.setLoading(true);
+          // console.log(`players.length: ${players.length}`);
+          // console.log(`gw range: ${gwrange[0]} -> ${gwrange[1]}`);
+          if (players.length == 0) return [];
+          if (gwrange[0] == -1 || gwrange[1] == -1) return players;
+          // console.log(
+          //   `Running calcs for ${players.length} players xG_90 etc. within range ${gwrange}`
+          // );
+          let playersGW: Player[] = players.map((p) => {
+            return this.calcPlayerStatsInGW(p, gwrange);
+          });
+
+          let maxMinsPossible = playersGW.reduce(
+            (max, player) => (player.minutes_t > max ? player.minutes_t : max),
+            0
+          );
+          this.playersService.setMaxMinsGwRange(maxMinsPossible);
+
+          // console.log(`Finished calcing`);
+          // this.playersService.setLoading(false);
+          return playersGW;
+        })
+      )
+      .pipe(shareReplay(1));
+
+    this.playersF$ = combineLatest([
+      this.playersGW$,
+      this.filter$,
+      this.highlightedPlayers$,
+    ])
+      .pipe(debounceTime(400))
+      .pipe(
+        map(([players, filter, highlights]) => {
+          if (players.length == 0) return players;
+          if (filter.teams.length == 0) return [];
+
+          // console.log(`Filtering players based off filter`);
+
+          let playersF: Player[] = players
+            .map((p) => {
+              if (highlights.length == 0) {
+                p.highlight = 1;
+              } else {
+                p.highlight = highlights.indexOf(p.fpl_id) >= 0 ? 2 : 0;
+              }
+              return p;
+            })
+            .filter((p) => {
+              return (
+                p.price >= filter.min_price &&
+                p.price <= filter.max_price &&
+                p.tsb <= filter.max_tsb &&
+                p.tsb >= filter.min_tsb &&
+                p.minutes_t >= filter.min_minutes &&
+                filter.teams.indexOf(p.team) >= 0 &&
+                filter.positions.indexOf(p.position) >= 0 &&
+                !filter.excluded_players.includes(p.fpl_id)
+              );
+            });
+          // console.log(`Finished filtering, Found ${playersF.length} players`);
+
+          return playersF;
+        })
+      )
+      .pipe(shareReplay(1));
+  }
 
   calcPlayerStatsInGW(p: Player, gwrange: number[]): Player {
     let st = gwrange[0];
@@ -142,96 +231,7 @@ export class VisualComponent implements OnInit {
     return p;
   }
 
-  load() {
-    this.players$ = this.playersService.getPlayers();
-    this.gwrange$ = this.playersService.getGameweekRange();
-    this.teams$ = this.playersService.getTeams();
-    this.filter$ = this.playersService.getFilter();
-    this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
-
-    this.playersGW$ = combineLatest([this.players$, this.gwrange$])
-      // .pipe(debounceTime(200))
-      .pipe(
-        map(([players, gwrange]) => {
-          // this.playersService.setLoading(true);
-          // console.log(`players.length: ${players.length}`);
-          // console.log(`gw range: ${gwrange[0]} -> ${gwrange[1]}`);
-          if (players.length == 0) return [];
-          if (gwrange[0] == -1 || gwrange[1] == -1) return players;
-          // console.log(
-          //   `Running calcs for ${players.length} players xG_90 etc. within range ${gwrange}`
-          // );
-          let playersGW: Player[] = players.map((p) => {
-            return this.calcPlayerStatsInGW(p, gwrange);
-          });
-
-          let maxMinsPossible = playersGW.reduce(
-            (max, player) => (player.minutes_t > max ? player.minutes_t : max),
-            0
-          );
-          this.playersService.setMaxMinsGwRange(maxMinsPossible);
-
-          // console.log(`Finished calcing`);
-          // this.playersService.setLoading(false);
-          return playersGW;
-        })
-      )
-      .pipe(shareReplay(1));
-
-    this.playersF$ = combineLatest([
-      this.playersGW$,
-      this.filter$,
-      this.highlightedPlayers$,
-    ])
-      .pipe(debounceTime(400))
-      .pipe(
-        map(([players, filter, highlights]) => {
-          if (players.length == 0) return players;
-          if (filter.teams.length == 0) return [];
-
-          // console.log(`Filtering players based off filter`);
-
-          let playersF: Player[] = players
-            .map((p) => {
-              if (highlights.length == 0) {
-                p.highlight = 1;
-              } else {
-                p.highlight = highlights.indexOf(p.fpl_id) >= 0 ? 2 : 0;
-              }
-              return p;
-            })
-            .filter((p) => {
-              return (
-                p.price >= filter.min_price &&
-                p.price <= filter.max_price &&
-                p.tsb <= filter.max_tsb &&
-                p.tsb >= filter.min_tsb &&
-                p.minutes_t >= filter.min_minutes &&
-                filter.teams.indexOf(p.team) >= 0 &&
-                filter.positions.indexOf(p.position) >= 0 &&
-                !filter.excluded_players.includes(p.fpl_id)
-              );
-            });
-          // console.log(`Finished filtering, Found ${playersF.length} players`);
-
-          return playersF;
-        })
-      )
-      .pipe(shareReplay(1));
-  }
-
   handleScreenExpandedChanged(screenExpanded: boolean) {
     this.showSidePanel = !screenExpanded;
-  }
-  ngOnInit(): void {
-    this.loadingRaw$ = this.playersService.getLoadingState();
-    this.loadingRaw$
-      .pipe(
-        filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
-        take(1)
-      )
-      .subscribe(() => {
-        this.load();
-      });
   }
 }

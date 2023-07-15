@@ -52,7 +52,6 @@ export class PlayersService {
 
   constructor(private http: HttpClient) {
     this.initData();
-    this.loading$.subscribe((x) => console.log(`Loading: ${x}`));
   }
 
   initData() {
