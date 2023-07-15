@@ -49,3 +49,6 @@ Thumbs.db
 
 # Additional file from heroku migration
 misc.txt
+
+# Database files
+db/

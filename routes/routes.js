@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const dotenv = require("dotenv");
+dotenv.config();
 
 // Player Models
 const Player2122 = require("../models/Player").player2122;
@@ -11,6 +13,9 @@ const About2223 = require("../models/About").about2223;
 
 // Meta
 const Meta = require("../models/Meta").meta;
+
+// DEV
+const developerMode = !process.env.NODE_ENV;
 
 const PLAYER_DICT = {
   "2021-22": Player2122,
@@ -24,28 +29,43 @@ const ABOUT_DICT = {
 // Example: /api/getPlayers/2022-23
 // Get all tracks with >0 minutes played
 router.get("/getPlayers/:y", async (req, res) => {
-  let year = req.params.y;
-  let Player = PLAYER_DICT[year];
-  // console.log(`Getting all  from ${year}`);
-  const players = await Player.find({ total_minutes: { $gt: 0 } }).limit();
-  res.send(players);
+  if (developerMode) {
+    const players = require("../db/PLAYERS_2022-23.json");
+    res.send(players);
+  } else {
+    let year = req.params.y;
+    let Player = PLAYER_DICT[year];
+    // console.log(`Getting all  from ${year}`);
+    const players = await Player.find({ total_minutes: { $gt: 0 } }).limit();
+    res.send(players);
+  }
 });
 
 // Example /api/getAbout/2021-22
 // Meta data for that year
 router.get("/getAbout/:y", async (req, res) => {
-  let year = req.params.y;
-  let About = ABOUT_DICT[year];
-  // console.log(`Getting About from ${year}`);
-  const about = await About.find({});
-  res.send(about);
+  if (developerMode) {
+    const about = require("../db/ABOUT_2022-23.json");
+    res.send(about);
+  } else {
+    let year = req.params.y;
+    let About = ABOUT_DICT[year];
+    // console.log(`Getting About from ${year}`);
+    const about = await About.find({});
+    res.send(about);
+  }
 });
 
 // Meta data (not year specific)
 router.get("/getMeta/", async (req, res) => {
-  // console.log(`Getting Metadata`);
-  const meta = await Meta.find({});
-  res.send(meta);
+  if (developerMode) {
+    const meta = require("../db/meta.json");
+    res.send(meta);
+  } else {
+    // console.log(`Getting Metadata`);
+    const meta = await Meta.find({});
+    res.send(meta);
+  }
 });
 
 module.exports = router;
