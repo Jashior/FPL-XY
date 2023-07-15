@@ -42,6 +42,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { ResetButtonComponent } from './shared/reset-button/reset-button.component';
 
 registerLocaleData(en);
 
@@ -66,6 +67,7 @@ const routes: Routes = [
     GraphComponent,
     PlayerSearchComponent,
     PlayerExcludeComponent,
+    ResetButtonComponent,
   ],
   imports: [
     BrowserModule,

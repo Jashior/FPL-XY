@@ -30,6 +30,10 @@ export class PlayerExcludeComponent implements OnInit, OnDestroy {
           });
         }
         this.isLoading = false;
+      }),
+
+      this.playersService.getFilter().subscribe((f) => {
+        this.selectedExcluded = f.excluded_players;
       })
     );
   }

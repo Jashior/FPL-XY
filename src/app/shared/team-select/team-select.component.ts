@@ -9,22 +9,20 @@ import { PlayersService } from 'src/app/services/players.service';
   styleUrls: ['./team-select.component.css'],
 })
 export class TeamSelectComponent implements OnInit, OnDestroy {
-  Teams: string[] = [];
+  teams: string[] = [];
   selectedTeams: string[] = [];
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   constructor(private playersService: PlayersService) {}
 
   ngOnInit(): void {
-    combineLatest([
-      this.playersService.getTeams(),
-      this.playersService.getFilter(),
-    ])
+    this.teams = this.playersService.getTeams();
+    this.playersService
+      .getFilter()
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(([teams, filter]) => {
-        this.Teams = teams;
+      .subscribe((filter) => {
         this.selectedTeams = filter.teams;
-        if (this.selectedTeams.length === this.Teams.length) {
+        if (this.selectedTeams.length === this.teams.length) {
           this.selectedTeams = [];
         }
       });
@@ -32,7 +30,7 @@ export class TeamSelectComponent implements OnInit, OnDestroy {
 
   onChange(val: string[]) {
     if (val.length == 0) {
-      this.playersService.setTeams(this.Teams);
+      this.playersService.setTeams(this.teams);
       return;
     }
     this.playersService.setTeams(this.selectedTeams);
