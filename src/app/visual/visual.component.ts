@@ -12,6 +12,7 @@ import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
 import { PlayersService } from '../services/players.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Positions } from '../models/Positions';
 
 @Component({
   selector: 'app-visual',
@@ -36,8 +37,9 @@ export class VisualComponent implements OnInit, OnDestroy {
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
+  Positions = Positions;
 
-  teams$?: Observable<string[]>;
+  teams: string[] = [];
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
   loadingRaw$?: Observable<boolean>; // loading data
@@ -68,7 +70,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   load() {
     this.players$ = this.playersService.getPlayers();
     this.gwrange$ = this.playersService.getGameweekRange();
-    this.teams$ = this.playersService.getTeams();
+    this.teams = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
 

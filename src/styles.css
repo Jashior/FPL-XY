@@ -9,6 +9,9 @@
 .ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
     border-color: #177DDC;
 }
+.anticon-reload:hover{
+    color: #177DDC
+}
 .ant-slider-dot-active {
     border-color: #177DDC;
 }
@@ -39,3 +42,4 @@
 .anticon{
     vertical-align: 0.15em !important;
 } 
+
