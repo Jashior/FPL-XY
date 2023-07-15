@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import {
   map,
   debounceTime,
   shareReplay,
   take,
   filter,
+  takeUntil,
 } from 'rxjs/operators';
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
@@ -16,11 +17,11 @@ import { PlayersService } from '../services/players.service';
   templateUrl: './visual.component.html',
   styleUrls: ['./visual.component.css'],
 })
-export class VisualComponent implements OnInit {
+export class VisualComponent implements OnInit, OnDestroy {
+  private unsubscribe$ = new Subject<void>();
   players$?: Observable<Player[]>;
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
-
   playersF$?: Observable<Player[]>;
 
   teams$?: Observable<string[]>;
@@ -40,8 +41,7 @@ export class VisualComponent implements OnInit {
       )
       .subscribe(() => {
         this.load();
-      }
-    );
+      });
   }
 
   load() {
@@ -53,6 +53,7 @@ export class VisualComponent implements OnInit {
 
     this.playersGW$ = combineLatest([this.players$, this.gwrange$])
       .pipe(
+        takeUntil(this.unsubscribe$),
         map(([players, gwrange]) => {
           // this.playersService.setLoading(true);
           // console.log(`players.length: ${players.length}`);
@@ -84,8 +85,9 @@ export class VisualComponent implements OnInit {
       this.filter$,
       this.highlightedPlayers$,
     ])
-      .pipe(debounceTime(400))
       .pipe(
+        takeUntil(this.unsubscribe$),
+        debounceTime(400),
         map(([players, filter, highlights]) => {
           if (players.length == 0) return players;
           if (filter.teams.length == 0) return [];
@@ -233,5 +235,10 @@ export class VisualComponent implements OnInit {
 
   handleScreenExpandedChanged(screenExpanded: boolean) {
     this.showSidePanel = !screenExpanded;
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

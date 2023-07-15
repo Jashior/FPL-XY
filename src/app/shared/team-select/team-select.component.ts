@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayersService } from 'src/app/services/players.service';
 
@@ -11,22 +11,23 @@ import { PlayersService } from 'src/app/services/players.service';
 export class TeamSelectComponent implements OnInit, OnDestroy {
   Teams: string[] = [];
   selectedTeams: string[] = [];
-  unsubscribe$ = new Subject<void>();
-  teamsSubscription: Subscription | undefined;
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
-  constructor(private playersService: PlayersService) {
-  }
-  
+  constructor(private playersService: PlayersService) {}
+
   ngOnInit(): void {
-    this.teamsSubscription = this.playersService.getTeams().pipe(takeUntil(this.unsubscribe$)).subscribe((teams) => {
-      this.Teams = teams;
-      this.playersService.getFilter().pipe(takeUntil(this.unsubscribe$)).subscribe((f) => {
-        this.selectedTeams = f.teams;
-        if (this.selectedTeams.length == this.Teams.length) {
+    combineLatest([
+      this.playersService.getTeams(),
+      this.playersService.getFilter(),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(([teams, filter]) => {
+        this.Teams = teams;
+        this.selectedTeams = filter.teams;
+        if (this.selectedTeams.length === this.Teams.length) {
           this.selectedTeams = [];
         }
       });
-    });
   }
 
   onChange(val: string[]) {
@@ -44,8 +45,5 @@ export class TeamSelectComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-    if (this.teamsSubscription) {
-      this.teamsSubscription.unsubscribe();
-    }
   }
 }
