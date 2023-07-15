@@ -49,7 +49,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   load() {
     this.players$ = this.playersService.getPlayers();
     this.gwrange$ = this.playersService.getGameweekRange();
-    this.playersService.getTeams().pipe(takeUntil(this.unsubscribe$)).subscribe((teams) => this.teams = teams);
+    this.teams = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
 
@@ -242,33 +242,5 @@ export class VisualComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-  }
-
-  resetSidePanelSelections(): void {
-    // price slider
-    this.playersService.setMinPrice(3);
-    this.playersService.setMaxPrice(15);
-
-    // ownership slider
-    this.playersService.setMinTsb(0);
-    this.playersService.setMaxTsb(100);
-
-    // position filter
-    this.playersService.setPositions(this.Positions);
-
-    // team filter
-    this.playersService.setTeams(this.teams);
-
-    // minutes slider
-    this.playersService.setMinMinutes(0);
-
-    // highlight player filter
-    this.playersService.setHighlightedPlayers([]);
-
-    // gameweek slider
-    this.playersService.setGwRange([1, 38]);
-
-    // exlude player filter
-    this.playersService.setExcluded([]);
   }
 }
