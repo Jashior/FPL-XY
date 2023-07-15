@@ -47,7 +47,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   load() {
     this.players$ = this.playersService.getPlayers();
     this.gwrange$ = this.playersService.getGameweekRange();
-    this.teams$ = this.playersService.getTeams();
+    this.teams = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
 
