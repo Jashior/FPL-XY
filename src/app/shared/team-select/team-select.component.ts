@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject, Subscription, combineLatest } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
@@ -6,23 +8,27 @@ import { PlayersService } from 'src/app/services/players.service';
   templateUrl: './team-select.component.html',
   styleUrls: ['./team-select.component.css'],
 })
-export class TeamSelectComponent implements OnInit {
+export class TeamSelectComponent implements OnInit, OnDestroy {
   Teams: string[] = [];
   selectedTeams: string[] = [];
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
-  constructor(private playersService: PlayersService) {
-    this.playersService.getTeams().subscribe((teams) => {
-      this.Teams = teams;
-      this.playersService.getFilter().subscribe((f) => {
-        this.selectedTeams = f.teams;
-        if (this.selectedTeams.length == this.Teams.length) {
+  constructor(private playersService: PlayersService) {}
+
+  ngOnInit(): void {
+    combineLatest([
+      this.playersService.getTeams(),
+      this.playersService.getFilter(),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(([teams, filter]) => {
+        this.Teams = teams;
+        this.selectedTeams = filter.teams;
+        if (this.selectedTeams.length === this.Teams.length) {
           this.selectedTeams = [];
         }
       });
-    });
   }
-
-  ngOnInit(): void {}
 
   onChange(val: string[]) {
     if (val.length == 0) {
@@ -34,5 +40,10 @@ export class TeamSelectComponent implements OnInit {
 
   getIcon(team: string) {
     return `../../../assets/team-icons/${team}.svg`;
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

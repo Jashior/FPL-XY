@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
@@ -6,19 +7,23 @@ import { PlayersService } from 'src/app/services/players.service';
   templateUrl: './gameweek-slider.component.html',
   styleUrls: ['./gameweek-slider.component.css'],
 })
-export class GameweekSliderComponent implements OnInit {
+export class GameweekSliderComponent implements OnInit, OnDestroy {
   minGameweek?: number = 1;
   maxGameweek?: number = 38;
   gameweekRangeValue?: number[];
   marks = {};
+  subscriptions: Subscription[] = [];
 
   constructor(private playersService: PlayersService) {
-    this.playersService.getGameweekRange().subscribe((gwrange) => {
-      this.gameweekRangeValue = [gwrange[0], gwrange[1]];
-    });
   }
 
   ngOnInit(): void {
+    this.subscriptions.push(
+      this.playersService.getGameweekRange().subscribe((gwrange) => {
+        this.gameweekRangeValue = [gwrange[0], gwrange[1]];
+      })
+    );
+    
     innerWidth = window.innerWidth;
     if (innerWidth > 600) {
       this.marks = {
@@ -31,5 +36,9 @@ export class GameweekSliderComponent implements OnInit {
   onAfterChange(value: number[] | number): void {
     if (typeof value == 'number') return;
     this.playersService.setGwRange([value[0], value[1]]);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

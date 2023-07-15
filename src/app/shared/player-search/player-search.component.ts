@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { number } from 'echarts';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
@@ -9,31 +7,38 @@ import { PlayersService } from 'src/app/services/players.service';
   templateUrl: './player-search.component.html',
   styleUrls: ['./player-search.component.css'],
 })
-export class PlayerSearchComponent implements OnInit {
+export class PlayerSearchComponent implements OnInit, OnDestroy {
   optionList: { name: string; id: number; team: string }[] = [];
   isLoading: boolean = false;
   selectedUser: any;
   isOpenSelect: boolean = false;
+  subscriptions: Subscription[] = [];
 
   constructor(private playersService: PlayersService) {
     this.isLoading = true;
-    playersService.getPlayers().subscribe((data) => {
-      this.optionList = [];
-      for (let player of data) {
-        this.optionList.push({
-          name: player.name,
-          id: player.fpl_id,
-          team: player.team,
-        });
-      }
-      this.isLoading = false;
-    });
-    playersService.getHighlightedPlayers().subscribe((data) => {
-      this.selectedUser = data;
-    });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.playersService.getPlayers().subscribe((data) => {
+        this.optionList = [];
+        for (let player of data) {
+          this.optionList.push({
+            name: player.name,
+            id: player.fpl_id,
+            team: player.team,
+          });
+        }
+        this.isLoading = false;
+      })
+    );
+
+    this.subscriptions.push(
+      this.playersService.getHighlightedPlayers().subscribe((data) => {
+        this.selectedUser = data;
+      })
+    );
+  }
 
   onChange(value: number[]): void {
     this.close();
@@ -46,5 +51,9 @@ export class PlayerSearchComponent implements OnInit {
 
   close(): void {
     this.isOpenSelect = false;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

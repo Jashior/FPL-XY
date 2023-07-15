@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
-import { Filter } from 'src/app/models/Filter';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
@@ -8,20 +7,24 @@ import { PlayersService } from 'src/app/services/players.service';
   templateUrl: './price-slider.component.html',
   styleUrls: ['./price-slider.component.css'],
 })
-export class PriceSliderComponent implements OnInit {
+export class PriceSliderComponent implements OnInit, OnDestroy {
   priceRangeValue?: number[];
   marks = {};
   innerWidth: any;
+  subscriptions: Subscription[] = [];
 
   constructor(private playersService: PlayersService) {
-    this.playersService.getFilter().subscribe((filter) => {
-      let min = filter.min_price;
-      let max = filter.max_price;
-      this.priceRangeValue = [min, max];
-    });
   }
 
   ngOnInit(): void {
+    this.subscriptions.push(
+      this.playersService.getFilter().subscribe((filter) => {
+        let min = filter.min_price;
+        let max = filter.max_price;
+        this.priceRangeValue = [min, max];
+      })
+    );
+
     this.innerWidth = window.innerWidth;
     if (this.innerWidth > 1300) {
       this.marks = {
@@ -42,5 +45,9 @@ export class PriceSliderComponent implements OnInit {
 
   priceRangeFormatter(value: number): string {
     return `£${value}m`;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }
