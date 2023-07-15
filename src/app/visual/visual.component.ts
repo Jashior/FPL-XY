@@ -11,7 +11,13 @@ import {
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
 import { PlayersService } from '../services/players.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Positions } from '../models/Positions';
 
 @Component({
@@ -22,14 +28,14 @@ import { Positions } from '../models/Positions';
     trigger('fadeInSidePanel', [
       state('in', style({ opacity: 1 })),
       state('out', style({ opacity: 0 })),
-      transition('out => in', animate('300ms ease-in'))
+      transition('out => in', animate('400ms ease-in')),
     ]),
     trigger('fadeInGraph', [
       state('in', style({ opacity: 1 })),
       state('out', style({ opacity: 0 })),
-      transition('out => in', animate('900ms ease-in'))
+      transition('out => in', animate('400ms ease-in')),
     ]),
-  ]
+  ],
 })
 export class VisualComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
@@ -54,16 +60,16 @@ export class VisualComponent implements OnInit, OnDestroy {
     this.loadingRaw$
       .pipe(
         filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
-        take(1)
+        takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
+        this.fadeInSidePanel = false;
+        this.fadeInGraph = false;
         this.load();
-        setTimeout(() => { 
-          this.fadeInSidePanel = true; 
-          setTimeout(() => {
-            this.fadeInGraph = true;
-          }, 450)
-        }, 1000)
+        setTimeout(() => {
+          this.fadeInSidePanel = true;
+          this.fadeInGraph = true;
+        }, 500);
       });
   }
 
@@ -73,7 +79,6 @@ export class VisualComponent implements OnInit, OnDestroy {
     this.teams = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
-
     this.playersGW$ = combineLatest([this.players$, this.gwrange$])
       .pipe(
         takeUntil(this.unsubscribe$),
