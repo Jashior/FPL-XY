@@ -5,7 +5,7 @@
   <div
     *ngIf="showSidePanel"
     [@fadeInSidePanel]="fadeInSidePanel ? 'in' : 'out'"
-    class="w-96 flex flex-col justify-center align-middle text-center gap-4 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
+    class="w-96 flex flex-col justify-center align-middle text-center gap-5 pb-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
   >
     <div class="w-full">
       <app-year-select></app-year-select>
@@ -47,7 +47,7 @@
       <app-player-exclude></app-player-exclude>
     </div>
 
-    <div class="flex flex-col gap-6 pt-1">
+    <div class="flex flex-col gap-3">
       <nz-row [nzGutter]="14" class="py-0 my-0">
         <nz-col [nzSpan]="12">
           <nz-statistic
