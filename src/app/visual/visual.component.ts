@@ -23,8 +23,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
-
-  teams$?: Observable<string[]>;
+  teams: string[] = [];
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
   loadingRaw$?: Observable<boolean>; // loading data
