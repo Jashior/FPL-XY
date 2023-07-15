@@ -11,28 +11,27 @@ var mongoSanitize = require("express-mongo-sanitize");
 app.use(cors());
 app.use(mongoSanitize());
 
-// Database Connection //
-const mongoString = process.env.MONGO_URL;
-
-mongoose.connect(mongoString);
-const database = mongoose.connection;
-
-database.on("error", (error) => {
-  console.log(error);
-});
-
-database.once("connected", () => {
-  console.log("Database Connected");
-});
-
 // Routes (before wildcard *)
 const routes = require("./routes/routes");
 app.use("/api", routes);
 
 // Static Route, serve static page in dist folder IF in production mode
 if (process.env.NODE_ENV) {
-  // console.log(`Production Environment: serving static Front End`);
+  // Database Connection //
+  const mongoString = process.env.MONGO_URL;
 
+  mongoose.connect(mongoString);
+  const database = mongoose.connection;
+
+  database.on("error", (error) => {
+    console.log(error);
+  });
+
+  database.once("connected", () => {
+    console.log("Database Connected");
+  });
+
+  // console.log(`Production Environment: serving static Front End`);
   var distDir = __dirname + "/dist/fplv";
   app.use(express.static(distDir));
   app.get("*", function (req, res) {
