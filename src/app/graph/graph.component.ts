@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { Observable, Subscription } from 'rxjs';
 import { Player } from '../models/Player';
@@ -11,17 +18,41 @@ import {
 import { PlayersService } from '../services/players.service';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+  AnimationEvent,
+} from '@angular/animations';
+import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.css'],
+  animations: [
+    trigger('fadeBetweenGraphAndTable', [
+      state('in', style({ opacity: 1 })),
+      state('out', style({ opacity: 0 })),
+      transition('in => out', animate('550ms ease-out')),
+      transition('out => in', animate('550ms ease-in')),
+    ]),
+    trigger('fadeOnResize', [
+      state('Resizing', style({ opacity: 0 })),
+      state('Resized', style({ opacity: 1 })),
+      transition('Resizing => Resized', animate('1000ms ease-in')),
+    ]),
+  ],
 })
 export class GraphComponent implements OnInit, OnDestroy {
   @Input() playersF$?: Observable<Player[]>;
   @Input() playersGW$?: Observable<Player[]>;
   @Input() expandScreen: boolean = false;
-  @Output() expandScreenChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() expandScreenChanged: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
   loadingRaw$?: Observable<boolean>;
   normAxis: boolean = true;
   playersF: Player[] = [];
@@ -41,6 +72,8 @@ export class GraphComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   graphMode: boolean = true;
   chartInstance: any;
+  graphModeVisible: boolean = true;
+  resizeState: 'Resizing' | 'Resized' = 'Resized';
 
   COLOR_MAP = {
     GOALKEEPER: '#f7f494',
@@ -52,8 +85,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  constructor(private playersService: PlayersService) {
-  }
+  constructor(private playersService: PlayersService) {}
 
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
@@ -77,20 +109,24 @@ export class GraphComponent implements OnInit, OnDestroy {
         this.playersF$?.subscribe((players) => {
           this.loading = true;
           this.playersF = players;
-          this.loadMinMax(players, this.axisMinRangeNorm, this.axisMaxRangeNorm);
+          this.loadMinMax(
+            players,
+            this.axisMinRangeNorm,
+            this.axisMaxRangeNorm
+          );
           this.loadChartOptions();
           this.loading = false;
         })
       );
-    };
+    }
 
-    if(this.playersGW$) {
+    if (this.playersGW$) {
       this.subscriptions.push(
         this.playersGW$?.subscribe((players) => {
           this.loadMinMax(players, this.axisMinRange, this.axisMaxRange);
         })
       );
-    };
+    }
   }
 
   ngOnDestroy(): void {
@@ -103,8 +139,10 @@ export class GraphComponent implements OnInit, OnDestroy {
       : 'vintage';
   }
 
-  sortFnX = (a: Player, b: Player) => a[this.selectedXAxis] - b[this.selectedXAxis];
-  sortFnY = (a: Player, b: Player) => a[this.selectedYAxis] - b[this.selectedYAxis];
+  sortFnX = (a: Player, b: Player) =>
+    a[this.selectedXAxis] - b[this.selectedXAxis];
+  sortFnY = (a: Player, b: Player) =>
+    a[this.selectedYAxis] - b[this.selectedYAxis];
 
   getSortFnX = () => {
     return this.sortFnX;
@@ -115,12 +153,12 @@ export class GraphComponent implements OnInit, OnDestroy {
   };
 
   toggleExpandScreen(expand: boolean) {
-    this.loading = true;
-    setTimeout(() => { 
-      this.loading = false;
-      this.expandScreen = expand;
-      this.expandScreenChanged.emit(this.expandScreen);
-    }, 150);
+    this.resizeState = 'Resizing';
+    this.expandScreen = expand;
+    this.expandScreenChanged.emit(this.expandScreen);
+    setTimeout(() => {
+      this.resizeState = 'Resized';
+    }, 250);
   }
 
   loadMinMax(
@@ -460,6 +498,22 @@ export class GraphComponent implements OnInit, OnDestroy {
     const slope = numerator / denominator;
     const intercept = meanY - slope * meanX;
     return { slope, intercept };
+  }
+
+  toggleFadeTransition(): void {
+    this.graphModeVisible = !this.graphModeVisible;
+  }
+
+  captureScreenshot() {
+    const element: HTMLElement | null = this.graphMode
+      ? document.getElementById('graph-display')
+      : (document.getElementsByClassName('ant-table')[0] as HTMLElement);
+    if (element) {
+      html2canvas(element).then((canvas) => {
+        const image = canvas.toDataURL('image/png');
+        saveAs(image, `${this.getTitle()}.png`);
+      });
+    }
   }
 }
 

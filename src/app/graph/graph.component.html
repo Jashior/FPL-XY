@@ -37,11 +37,11 @@
     <div
       class="flex-col justify-center items-center lg:flex lg:flex-row lg:justify-end lg:w-full"
     >
-      <div class="pr-8 flex justify-center items-center h-full">
-        <div *ngIf="graphMode">
-          <small class="text-center">Regression: </small>
+      <div class="pr-8 flex justify-center items-center h-full lg:pb-0 pb-2">
+        <div *ngIf="graphMode" class="flex">
+          <small class="mt-1">Regression: </small>
           <nz-switch
-            class="pl-2 pb-2 lg:pb-0"
+            class="pl-2"
             nzSize="small"
             [(ngModel)]="regression"
             (ngModelChange)="loadChartOptions()"
@@ -56,14 +56,37 @@
       </div>
       <div class="pr-8 flex justify-center items-center">
         <nz-radio-group [nzSize]="'small'" [(ngModel)]="graphMode" class="flex">
-          <label nz-radio-button [nzValue]="true" class="inline-flex">
+          <label
+            nz-radio-button
+            [nzValue]="true"
+            class="inline-flex"
+            (click)="toggleFadeTransition()"
+          >
             <span nz-icon nzType="dot-chart"></span>
           </label>
-          <label nz-radio-button [nzValue]="false" class="inline-flex">
+          <label
+            nz-radio-button
+            [nzValue]="false"
+            class="inline-flex"
+            (click)="toggleFadeTransition()"
+          >
             <span nz-icon nzType="table"></span>
           </label>
         </nz-radio-group>
         <div class="w-2"></div>
+        <button
+          [nzSize]="'small'"
+          nzType="default"
+          nzTooltipTitle="Save image"
+          nzTooltipPlacement="top"
+          nz-button
+          nz-tooltip
+          (click)="captureScreenshot()"
+        >
+          <span nz-icon nzType="camera" nzTheme="outline"></span>
+        </button>
+        <div class="w-1"></div>
+
         <button
           *ngIf="!expandScreen"
           nz-button
@@ -120,7 +143,13 @@
     </div>
   </div>
 
-  <div *ngIf="!(loadingRaw$ | async) && !loading" class="w-full">
+  <div
+    *ngIf="!(loadingRaw$ | async) && !loading"
+    class="w-full"
+    [@fadeBetweenGraphAndTable]="graphModeVisible ? 'in' : 'out'"
+    [@fadeOnResize]="resizeState"
+    id="graph-display"
+  >
     <div *ngIf="graphMode">
       <div
         echarts
@@ -135,7 +164,13 @@
         }"
       ></div>
     </div>
-
+  </div>
+  <div
+    *ngIf="!(loadingRaw$ | async) && !loading"
+    class="w-full"
+    [@fadeBetweenGraphAndTable]="graphModeVisible ? 'out' : 'in'"
+    [@fadeOnResize]="resizeState"
+  >
     <div *ngIf="!graphMode">
       <nz-table
         #filterTable
@@ -144,8 +179,7 @@
         class="w-full"
         [ngClass]="{
           'h-80vh w-90vw': expandScreen,
-          'p-2 md:p-0 lg:w-900px md:w-600px w-400px lg:h-700px md:h-450px h-420px':
-            !expandScreen
+          'p-2 md:p-0 lg:w-900px md:w-600px w-400px h-700px': !expandScreen
         }"
       >
         <thead>

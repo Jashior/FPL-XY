@@ -11,12 +11,31 @@ import {
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
 import { PlayersService } from '../services/players.service';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Positions } from '../models/Positions';
 
 @Component({
   selector: 'app-visual',
   templateUrl: './visual.component.html',
   styleUrls: ['./visual.component.css'],
+  animations: [
+    trigger('fadeInSidePanel', [
+      state('in', style({ opacity: 1 })),
+      state('out', style({ opacity: 0 })),
+      transition('out => in', animate('400ms ease-in')),
+    ]),
+    trigger('fadeInGraph', [
+      state('in', style({ opacity: 1 })),
+      state('out', style({ opacity: 0 })),
+      transition('out => in', animate('400ms ease-in')),
+    ]),
+  ],
 })
 export class VisualComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
@@ -25,14 +44,13 @@ export class VisualComponent implements OnInit, OnDestroy {
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
-  playersF: any = [];
-  Positions = Positions;
-
   teams: string[] = [];
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
   loadingRaw$?: Observable<boolean>; // loading data
   showSidePanel: boolean = true;
+  fadeInSidePanel: boolean = false;
+  fadeInGraph: boolean = false;
 
   constructor(private playersService: PlayersService) {}
 
@@ -41,10 +59,16 @@ export class VisualComponent implements OnInit, OnDestroy {
     this.loadingRaw$
       .pipe(
         filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
-        take(1)
+        takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
+        this.fadeInSidePanel = false;
+        this.fadeInGraph = false;
         this.load();
+        setTimeout(() => {
+          this.fadeInSidePanel = true;
+          this.fadeInGraph = true;
+        }, 500);
       });
   }
 
@@ -54,7 +78,6 @@ export class VisualComponent implements OnInit, OnDestroy {
     this.teams = this.playersService.getTeams();
     this.filter$ = this.playersService.getFilter();
     this.highlightedPlayers$ = this.playersService.getHighlightedPlayers();
-
     this.playersGW$ = combineLatest([this.players$, this.gwrange$])
       .pipe(
         takeUntil(this.unsubscribe$),
@@ -122,7 +145,6 @@ export class VisualComponent implements OnInit, OnDestroy {
             });
           // console.log(`Finished filtering, Found ${playersF.length} players`);
 
-          this.playersF = playersF;
           return playersF;
         })
       )
@@ -241,10 +263,6 @@ export class VisualComponent implements OnInit, OnDestroy {
 
   playersCount(): number {
     return this.players.length;
-  }
-
-  playersFilterCount(): number {
-    return this.playersF.length;
   }
 
   handleScreenExpandedChanged(screenExpanded: boolean) {
