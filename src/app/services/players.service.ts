@@ -30,12 +30,12 @@ export class PlayersService {
     '2021-22',
     '2022-23',
   ]);
-  private teams$ = new BehaviorSubject<string[]>([]);
+  private teams: string[] = [];
   private players$ = new BehaviorSubject<Player[]>([]);
   private gwRange$ = new BehaviorSubject<number[]>([-1, -1]);
   public maxMinsGWRange$ = new BehaviorSubject<number>(0);
   public filter$ = new BehaviorSubject<Filter>({
-    min_minutes: 50,
+    min_minutes: 0,
     min_tsb: 0,
     max_tsb: 100,
     min_price: 3,
@@ -85,7 +85,7 @@ export class PlayersService {
       .subscribe((about) => {
         // console.log(about);
         if (about[0]) {
-          this.teams$.next(about[0].teams);
+          this.teams = about[0].teams;
           this.currentGameweek = about[0].current_gameweek;
           this.gwRange$.next([1, this.currentGameweek]);
           this.loadFilter();
@@ -94,23 +94,28 @@ export class PlayersService {
   }
 
   public loadFilter(): void {
-    this.getTeams().subscribe((teams) => {
-      this.filter$.next({
-        min_minutes:
-          this.currentGameweek > 9
-            ? 450
-            : Math.max(
-                45,
-                Math.floor((this.currentGameweek * 90) / 2 / 50) * 50
-              ),
-        min_tsb: 0,
-        max_tsb: 100,
-        min_price: 3,
-        max_price: 15,
-        teams: teams,
-        positions: this.Positions,
-        excluded_players: [],
-      });
+    this.filter$.next({
+      min_minutes: 0,
+      min_tsb: 0,
+      max_tsb: 100,
+      min_price: 3,
+      max_price: 15,
+      teams: this.teams,
+      positions: this.Positions,
+      excluded_players: [],
+    });
+  }
+
+  public resetFilter(): void {
+    this.filter$.next({
+      min_minutes: 0,
+      min_tsb: 0,
+      max_tsb: 100,
+      min_price: 3,
+      max_price: 15,
+      teams: this.teams,
+      positions: this.Positions,
+      excluded_players: [],
     });
   }
 
@@ -144,8 +149,8 @@ export class PlayersService {
     return this.loading$;
   }
 
-  public getTeams(): Observable<string[]> {
-    return this.teams$;
+  public getTeams(): string[] {
+    return this.teams;
   }
 
   public getFilter(): Observable<Filter> {
@@ -166,6 +171,10 @@ export class PlayersService {
 
   public setGwRange(gwrange: number[]): void {
     this.gwRange$.next(gwrange);
+  }
+
+  public resetGwRange(): void {
+    this.gwRange$.next([1, this.currentGameweek]);
   }
 
   public setMaxMinsGwRange(mins: number): void {

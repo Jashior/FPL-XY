@@ -40,6 +40,7 @@ import { PlayerSearchComponent } from './shared/player-search/player-search.comp
 import { PlayerExcludeComponent } from './shared/player-exclude/player-exclude.component';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { ResetButtonComponent } from './shared/reset-button/reset-button.component';
 
 registerLocaleData(en);
 
@@ -64,6 +65,7 @@ const routes: Routes = [
     GraphComponent,
     PlayerSearchComponent,
     PlayerExcludeComponent,
+    ResetButtonComponent,
   ],
   imports: [
     BrowserModule,
