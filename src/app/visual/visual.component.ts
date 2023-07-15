@@ -40,6 +40,7 @@ import { Positions } from '../models/Positions';
 export class VisualComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   players$?: Observable<Player[]>;
+  players: any = [];
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
@@ -115,6 +116,7 @@ export class VisualComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$),
         debounceTime(400),
         map(([players, filter, highlights]) => {
+          this.players = players;
           if (players.length == 0) return players;
           if (filter.teams.length == 0) return [];
 
@@ -257,6 +259,10 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.CS_90 = 90 * (p.CS_t / minutes) || 0;
     }
     return p;
+  }
+
+  playersCount(): number {
+    return this.players.length;
   }
 
   handleScreenExpandedChanged(screenExpanded: boolean) {
