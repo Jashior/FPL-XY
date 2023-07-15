@@ -27,7 +27,7 @@ import { animate, state, style, transition, trigger, AnimationEvent } from '@ang
     trigger('fadeOnResize', [
       state('Resizing', style({ opacity: 0 })),
       state('Resized', style({ opacity: 1 })),
-      transition('Resizing => Resized', animate('800ms ease-in'))
+      transition('Resizing => Resized', animate('1000ms ease-in'))
     ])
   ]
 })
@@ -132,11 +132,11 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   toggleExpandScreen(expand: boolean) {
     this.resizeState = 'Resizing';
+    this.expandScreen = expand;
+    this.expandScreenChanged.emit(this.expandScreen);
     setTimeout(() => {
-      this.expandScreen = expand;
-      this.expandScreenChanged.emit(this.expandScreen);
       this.resizeState = 'Resized';
-    }, 150);
+    }, 250);
   }
 
   loadMinMax(
