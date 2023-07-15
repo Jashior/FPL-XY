@@ -40,6 +40,8 @@ import { PlayerSearchComponent } from './shared/player-search/player-search.comp
 import { PlayerExcludeComponent } from './shared/player-exclude/player-exclude.component';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 registerLocaleData(en);
 
@@ -70,6 +72,8 @@ const routes: Routes = [
     AppRoutingModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
+    NzStatisticModule,
+    NzGridModule,
     FormsModule,
     BrowserAnimationsModule,
     NzSliderModule,

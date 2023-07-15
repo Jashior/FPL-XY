@@ -20,9 +20,11 @@ import { PlayersService } from '../services/players.service';
 export class VisualComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   players$?: Observable<Player[]>;
+  players: any = [];
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
+  playersF: any = [];
 
   teams$?: Observable<string[]>;
   filter$?: Observable<Filter>;
@@ -89,6 +91,7 @@ export class VisualComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$),
         debounceTime(400),
         map(([players, filter, highlights]) => {
+          this.players = players;
           if (players.length == 0) return players;
           if (filter.teams.length == 0) return [];
 
@@ -117,6 +120,7 @@ export class VisualComponent implements OnInit, OnDestroy {
             });
           // console.log(`Finished filtering, Found ${playersF.length} players`);
 
+          this.playersF = playersF;
           return playersF;
         })
       )
@@ -231,6 +235,14 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.CS_90 = 90 * (p.CS_t / minutes) || 0;
     }
     return p;
+  }
+
+  playersCount(): number {
+    return this.players.length;
+  }
+
+  playersFilterCount(): number {
+    return this.playersF.length;
   }
 
   handleScreenExpandedChanged(screenExpanded: boolean) {
