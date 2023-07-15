@@ -4,7 +4,7 @@
 >
   <div
     *ngIf="showSidePanel"
-    class="w-96 flex flex-col justify-center align-middle text-center gap-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
+    class="w-96 flex flex-col justify-center align-middle text-center gap-4 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
   >
     <div class="w-full">
       <app-year-select></app-year-select>
@@ -27,7 +27,7 @@
     <div>
       <app-team-select></app-team-select>
     </div>
-    <div class="mt-2">
+    <div class="mt-1">
       <div>
         Min. Minutes Played: <b>{{ (filter$ | async)?.min_minutes }}</b>
       </div>
@@ -46,19 +46,26 @@
       <app-player-exclude></app-player-exclude>
     </div>
 
-    <nz-row [nzGutter]="16">
-      <nz-col [nzSpan]="12">
-        <nz-statistic [nzValue]="(playersCount() | number)!" [nzTitle]="'Total players'">
-        </nz-statistic>
-      </nz-col>
-      <nz-col [nzSpan]="12">
-        <nz-statistic [nzValue]="(playersFilterCount() | number: '1.0-2')!" [nzTitle]="'Filtered players'">
-        </nz-statistic>
-      </nz-col>
-    </nz-row>
-    <app-reset-button></app-reset-button>
+    <div class="flex flex-col gap-6 pt-1">
+      <nz-row [nzGutter]="14" class="py-0 my-0">
+        <nz-col [nzSpan]="12">
+          <nz-statistic
+            [nzValue]="(players$ | async)?.length"
+            [nzTitle]="'Total players'"
+          >
+          </nz-statistic>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <nz-statistic
+            [nzValue]="(playersF$ | async)?.length"
+            [nzTitle]="'Filtered players'"
+          >
+          </nz-statistic>
+        </nz-col>
+      </nz-row>
+      <app-reset-button></app-reset-button>
+    </div>
   </div>
-
 
   <div class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8">
     <app-graph
