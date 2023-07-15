@@ -37,11 +37,11 @@
     <div
       class="flex-col justify-center items-center lg:flex lg:flex-row lg:justify-end lg:w-full"
     >
-      <div class="pr-8 flex justify-center items-center h-full">
-        <div *ngIf="graphMode">
-          <small class="text-center">Regression: </small>
+      <div class="pr-8 flex justify-center items-center h-full lg:pb-0 pb-2">
+        <div *ngIf="graphMode" class="flex">
+          <small class="mt-1">Regression: </small>
           <nz-switch
-            class="pl-2 pb-2 lg:pb-0"
+            class="pl-2"
             nzSize="small"
             [(ngModel)]="regression"
             (ngModelChange)="loadChartOptions()"
