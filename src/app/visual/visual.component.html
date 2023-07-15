@@ -4,6 +4,7 @@
 >
   <div
     *ngIf="showSidePanel"
+    [@fadeInSidePanel]="fadeInSidePanel ? 'in' : 'out'"
     class="w-96 flex flex-col justify-center align-middle text-center gap-6 p-8 rounded-lg shadow-lg bg-bg dark:bg-bg-dark"
   >
     <div class="w-full">
@@ -48,7 +49,7 @@
     <app-reset-button></app-reset-button>
   </div>
 
-  <div class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8">
+  <div [@fadeInGraph]="fadeInGraph ? 'in' : 'out'" class="shadow-lg bg-bg dark:bg-bg-dark rounded-xl p-8">
     <app-graph
       [playersF$]="playersF$"
       [playersGW$]="playersGW$"

@@ -56,10 +56,20 @@
       </div>
       <div class="pr-8 flex justify-center items-center">
         <nz-radio-group [nzSize]="'small'" [(ngModel)]="graphMode" class="flex">
-          <label nz-radio-button [nzValue]="true" class="inline-flex">
+          <label
+            nz-radio-button
+            [nzValue]="true"
+            class="inline-flex"
+            (click)="toggleFadeTransition()"
+          >
             <span nz-icon nzType="dot-chart"></span>
           </label>
-          <label nz-radio-button [nzValue]="false" class="inline-flex">
+          <label
+            nz-radio-button
+            [nzValue]="false"
+            class="inline-flex"
+            (click)="toggleFadeTransition()"
+          >
             <span nz-icon nzType="table"></span>
           </label>
         </nz-radio-group>
@@ -133,8 +143,14 @@
     </div>
   </div>
 
-  <div *ngIf="!(loadingRaw$ | async) && !loading" class="w-full">
-    <div *ngIf="graphMode" id="graph-display">
+  <div
+    *ngIf="!(loadingRaw$ | async) && !loading"
+    class="w-full"
+    [@fadeBetweenGraphAndTable]="graphModeVisible ? 'in' : 'out'"
+    [@fadeOnResize]="resizeState"
+    id="graph-display"
+  >
+    <div *ngIf="graphMode">
       <div
         echarts
         [options]="chartOption"
@@ -148,7 +164,13 @@
         }"
       ></div>
     </div>
-
+  </div>
+  <div
+    *ngIf="!(loadingRaw$ | async) && !loading"
+    class="w-full"
+    [@fadeBetweenGraphAndTable]="graphModeVisible ? 'out' : 'in'"
+    [@fadeOnResize]="resizeState"
+  >
     <div *ngIf="!graphMode">
       <nz-table
         #filterTable
