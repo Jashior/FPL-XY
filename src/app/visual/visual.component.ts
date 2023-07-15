@@ -43,8 +43,6 @@ export class VisualComponent implements OnInit, OnDestroy {
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
-  Positions = Positions;
-
   teams: string[] = [];
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
