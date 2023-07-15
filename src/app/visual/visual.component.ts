@@ -11,7 +11,6 @@ import {
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
 import { PlayersService } from '../services/players.service';
-import { Positions } from '../models/Positions';
 
 @Component({
   selector: 'app-visual',
@@ -24,9 +23,8 @@ export class VisualComponent implements OnInit, OnDestroy {
   gwrange$?: Observable<number[]>;
   playersGW$?: Observable<Player[]>;
   playersF$?: Observable<Player[]>;
-  Positions = Positions;
 
-  teams: string[] = [];
+  teams$?: Observable<string[]>;
   filter$?: Observable<Filter>;
   highlightedPlayers$?: Observable<number[]>;
   loadingRaw$?: Observable<boolean>; // loading data

@@ -11,6 +11,8 @@ import {
 import { PlayersService } from '../services/players.service';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
+import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-graph',
@@ -460,6 +462,16 @@ export class GraphComponent implements OnInit, OnDestroy {
     const slope = numerator / denominator;
     const intercept = meanY - slope * meanX;
     return { slope, intercept };
+  }
+
+  captureScreenshot() {
+    const element: HTMLElement | null = this.graphMode ? document.getElementById('graph-display') : document.getElementsByClassName('ant-table')[0] as HTMLElement;
+    if (element) {
+      html2canvas(element).then((canvas) => {
+        const image = canvas.toDataURL('image/png');
+        saveAs(image, `${this.getTitle()}.png`);
+      });
+    }
   }
 }
 
