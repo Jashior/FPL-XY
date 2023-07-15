@@ -7,5 +7,6 @@
     [nzMarks]="marks"
     [nzMax]="maxMinutesPossible"
     (ngModelChange)="onChange()"
+    [nzTipFormatter]="getFormatter()"
   ></nz-slider>
 </div>

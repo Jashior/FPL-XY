@@ -15,6 +15,13 @@ export class MinMinutesComponent implements OnInit {
   loaded: boolean = false;
   marks: NzMarks = {};
 
+  getFormatter() {
+    return (value: number) => {
+      const percentage = Math.floor((value / this.maxMinutesPossible) * 100);
+      return `${value} (${percentage}%)`;
+    };
+  }
+
   constructor(private playersService: PlayersService) {
     this.loaded = false;
     playersService.getGameweekRange().subscribe((data) => {
