@@ -11,11 +11,24 @@ import {
 import { Filter } from '../models/Filter';
 import { Player } from '../models/Player';
 import { PlayersService } from '../services/players.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-visual',
   templateUrl: './visual.component.html',
   styleUrls: ['./visual.component.css'],
+  animations: [
+    trigger('fadeInSidePanel', [
+      state('in', style({ opacity: 1 })),
+      state('out', style({ opacity: 0 })),
+      transition('out => in', animate('300ms ease-in'))
+    ]),
+    trigger('fadeInGraph', [
+      state('in', style({ opacity: 1 })),
+      state('out', style({ opacity: 0 })),
+      transition('out => in', animate('900ms ease-in'))
+    ]),
+  ]
 })
 export class VisualComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
@@ -29,6 +42,8 @@ export class VisualComponent implements OnInit, OnDestroy {
   highlightedPlayers$?: Observable<number[]>;
   loadingRaw$?: Observable<boolean>; // loading data
   showSidePanel: boolean = true;
+  fadeInSidePanel: boolean = false;
+  fadeInGraph: boolean = false;
 
   constructor(private playersService: PlayersService) {}
 
@@ -41,6 +56,12 @@ export class VisualComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.load();
+        setTimeout(() => { 
+          this.fadeInSidePanel = true; 
+          setTimeout(() => {
+            this.fadeInGraph = true;
+          }, 450)
+        }, 1000)
       });
   }
 
