@@ -539,7 +539,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   getShareableLink() {
-    const baseUrl = `${environment.BASE_URL}/visual`;
+    const baseUrl = `${environment.BASE_URL}visual`;
 
     const filter = this.playersService.getFilter().getValue();
 

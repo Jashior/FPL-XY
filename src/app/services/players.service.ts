@@ -17,6 +17,39 @@ export interface About {
   teams: string[];
 }
 
+export const MINIMUM_FILTER_VALUES: Omit<
+  Filter,
+  'teams' | 'positions' | 'excluded_players'
+> = {
+  min_minutes: 0,
+  min_tsb: 0,
+  max_tsb: 0,
+  min_price: 3,
+  max_price: 3,
+};
+
+export const MAXIMUM_FILTER_VALUES: Omit<
+  Filter,
+  'teams' | 'positions' | 'excluded_players'
+> = {
+  min_minutes: 3420,
+  min_tsb: 100,
+  max_tsb: 100,
+  min_price: 15,
+  max_price: 15,
+};
+
+export const DEFAULT_FILTER: Filter = {
+  min_minutes: 0,
+  min_tsb: 0,
+  max_tsb: 100,
+  min_price: 3,
+  max_price: 15,
+  teams: [],
+  positions: Positions,
+  excluded_players: [],
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -34,16 +67,7 @@ export class PlayersService {
   private players$ = new BehaviorSubject<Player[]>([]);
   private gwRange$ = new BehaviorSubject<number[]>([-1, -1]);
   public maxMinsGWRange$ = new BehaviorSubject<number>(0);
-  public filter$ = new BehaviorSubject<Filter>({
-    min_minutes: 0,
-    min_tsb: 0,
-    max_tsb: 100,
-    min_price: 3,
-    max_price: 15,
-    teams: [],
-    positions: this.Positions,
-    excluded_players: [],
-  });
+  public filter$ = new BehaviorSubject<Filter>(this.getDefaultFilter());
   public highlightedPlayers$ = new BehaviorSubject<number[]>([]);
 
   // Loading states
@@ -71,6 +95,10 @@ export class PlayersService {
     });
   }
 
+  public getDefaultFilter(): Filter {
+    return { ...DEFAULT_FILTER, teams: this.teams };
+  }
+
   public setLoading(loadingState: boolean): void {
     this.loading$.next(loadingState);
   }
@@ -94,29 +122,11 @@ export class PlayersService {
   }
 
   public loadFilter(): void {
-    this.filter$.next({
-      min_minutes: 0,
-      min_tsb: 0,
-      max_tsb: 100,
-      min_price: 3,
-      max_price: 15,
-      teams: this.teams,
-      positions: this.Positions,
-      excluded_players: [],
-    });
+    this.filter$.next(this.getDefaultFilter());
   }
 
   public resetFilter(): void {
-    this.filter$.next({
-      min_minutes: 0,
-      min_tsb: 0,
-      max_tsb: 100,
-      min_price: 3,
-      max_price: 15,
-      teams: this.teams,
-      positions: this.Positions,
-      excluded_players: [],
-    });
+    this.filter$.next(this.getDefaultFilter());
   }
 
   public loadPlayers(): void {
@@ -129,15 +139,15 @@ export class PlayersService {
       });
   }
 
-  public getPlayers(): BehaviorSubject<Player[]> {
+  public getPlayers(): Observable<Player[]> {
     return this.players$;
   }
 
-  public getGameweekRange(): BehaviorSubject<number[]> {
+  public getGameweekRange(): Observable<number[]> {
     return this.gwRange$;
   }
 
-  public getMaxMinsGwRange(): BehaviorSubject<number> {
+  public getMaxMinsGwRange(): Observable<number> {
     return this.maxMinsGWRange$;
   }
 
@@ -145,7 +155,7 @@ export class PlayersService {
     return this.currentYearString;
   }
 
-  public getLoadingState(): BehaviorSubject<boolean> {
+  public getLoadingState(): Observable<boolean> {
     return this.loading$;
   }
 
@@ -153,11 +163,11 @@ export class PlayersService {
     return this.teams;
   }
 
-  public getFilter(): BehaviorSubject<Filter> {
+  public getFilter(): Observable<Filter> {
     return this.filter$;
   }
 
-  public getHighlightedPlayers(): BehaviorSubject<number[]> {
+  public getHighlightedPlayers(): Observable<number[]> {
     return this.highlightedPlayers$;
   }
 
@@ -165,11 +175,19 @@ export class PlayersService {
     return this.Positions;
   }
 
-  public getPossibleYearStrings(): BehaviorSubject<string[]> {
+  public getPossibleYearStrings(): Observable<string[]> {
     return this.possibleYearStrings$;
   }
 
   public setGwRange(gwrange: number[]): void {
+    for (let i = 0; i < gwrange.length; i++) {
+      if (gwrange[i] < 1) {
+        gwrange[i] = 1;
+      }
+      if (gwrange[i] > this.maxGameweek) {
+        gwrange[i] = this.maxGameweek;
+      }
+    }
     this.gwRange$.next(gwrange);
   }
 
@@ -185,30 +203,67 @@ export class PlayersService {
   }
 
   public setMinPrice(val: number) {
+    if (val < MINIMUM_FILTER_VALUES.min_price) {
+      val = MINIMUM_FILTER_VALUES.min_price;
+    }
+    if (val > MAXIMUM_FILTER_VALUES.min_price) {
+      val = MAXIMUM_FILTER_VALUES.min_price;
+    }
     this.filter$.next({ ...this.filter$.getValue(), min_price: val });
   }
 
   public setMaxPrice(val: number) {
+    if (val < MINIMUM_FILTER_VALUES.max_price) {
+      val = MINIMUM_FILTER_VALUES.max_price;
+    }
+    if (val > MAXIMUM_FILTER_VALUES.max_price) {
+      val = MAXIMUM_FILTER_VALUES.max_price;
+    }
     this.filter$.next({ ...this.filter$.getValue(), max_price: val });
   }
 
   public setMinTsb(val: number) {
+    if (val < MINIMUM_FILTER_VALUES.min_tsb) {
+      val = MINIMUM_FILTER_VALUES.min_tsb;
+    }
+    if (val > MAXIMUM_FILTER_VALUES.min_tsb) {
+      val = MAXIMUM_FILTER_VALUES.min_tsb;
+    }
     this.filter$.next({ ...this.filter$.getValue(), min_tsb: val });
   }
 
   public setMaxTsb(val: number) {
+    if (val < MINIMUM_FILTER_VALUES.max_tsb) {
+      val = MINIMUM_FILTER_VALUES.max_tsb;
+    }
+    if (val > MAXIMUM_FILTER_VALUES.max_tsb) {
+      val = MAXIMUM_FILTER_VALUES.max_tsb;
+    }
     this.filter$.next({ ...this.filter$.getValue(), max_tsb: val });
   }
 
   public setMinMinutes(val: number) {
+    if (val < MINIMUM_FILTER_VALUES.min_minutes) {
+      val = MINIMUM_FILTER_VALUES.min_minutes;
+    }
+    if (val > MAXIMUM_FILTER_VALUES.min_minutes) {
+      val = MAXIMUM_FILTER_VALUES.min_minutes;
+    }
     this.filter$.next({ ...this.filter$.getValue(), min_minutes: val });
   }
 
   public setPositions(val: string[]) {
+    const allPositionsExist = val.every((position) =>
+      this.Positions.includes(position)
+    );
+    if (!allPositionsExist) return;
     this.filter$.next({ ...this.filter$.getValue(), positions: val });
   }
 
   public setTeams(val: string[]) {
+    const allTeamsExist = val.every((team) => this.teams.includes(team));
+
+    if (!allTeamsExist) return;
     this.filter$.next({ ...this.filter$.getValue(), teams: val });
   }
 
