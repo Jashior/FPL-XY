@@ -116,7 +116,6 @@ export class PlayersService {
   }
 
   public setYearString(yearString: string): void {
-    console.log(`year STRING set to ${yearString}`);
     this.currentYearString = yearString;
   }
 
