@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { EChartsOption } from 'echarts';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Player } from '../models/Player';
 import {
   getAxisKeys,
@@ -15,7 +15,7 @@ import {
   getAxisViewValueArray,
   roundToNearestDictionary,
 } from '../models/Axes';
-import { PlayersService } from '../services/players.service';
+import { PlayersService, DEFAULT_FILTER } from '../services/players.service';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
 import {
@@ -61,8 +61,10 @@ export class GraphComponent implements OnInit, OnDestroy {
   playersF: Player[] = [];
   chartOption: EChartsOption = {};
   possibleAxis: any = getAxisViewValueArray();
-  selectedXAxis = 'price';
-  selectedYAxis = 'points_t';
+  DEFAULT_X_AXIS = 'price';
+  DEFAULT_Y_AXIS = 'points_t';
+  selectedXAxis = this.DEFAULT_X_AXIS;
+  selectedYAxis = this.DEFAULT_Y_AXIS;
   axisMinRange: any = {};
   axisMaxRange: any = {};
   axisMinRangeNorm: any = {};
@@ -260,18 +262,19 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   getSubtitle() {
+    let year = this.playersService.getYearString();
     if (this.getInnerWidth() < 650) {
       return `Gameweeks ${this.gwrange ? this.gwrange[0] : ''}-${
         this.gwrange ? this.gwrange[1] : ''
       }`;
     }
-    return `Gameweeks ${this.gwrange ? this.gwrange[0] : ''}-${
+    return `${year}: GW ${this.gwrange ? this.gwrange[0] : ''}-${
       this.gwrange ? this.gwrange[1] : ''
-    } • Price £${this.filter?.min_price}m-£${this.filter?.max_price}m • Over ${
-      this.filter?.min_minutes
-    } mins played • Ownership ${this.filter?.min_tsb}%-${
-      this.filter?.max_tsb
-    }%`;
+    } • Price £${this.filter?.min_price}m-£${
+      this.filter?.max_price
+    }m • At least ${this.filter?.min_minutes} mins played • Ownership ${
+      this.filter?.min_tsb
+    }%-${this.filter?.max_tsb}%`;
   }
 
   tooltipFormatter(params: any) {
@@ -335,6 +338,7 @@ export class GraphComponent implements OnInit, OnDestroy {
           overflow: 'break',
         },
         subtextStyle: {
+          fontSize: 12,
           overflow: 'break',
         },
       },
@@ -539,46 +543,99 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   getShareableLink() {
-    const baseUrl = `${environment.BASE_URL}/visual`;
+    const baseUrl = `${window.location.origin}/visual`;
 
-    const filter = this.playersService.getFilter().getValue();
+    combineLatest([
+      this.playersService.getFilter().pipe(take(1)),
+      this.playersService.getGameweekRange().pipe(take(1)),
+      this.playersService.getHighlightedPlayers().pipe(take(1)),
+    ]).subscribe(
+      ([filter, gameweekRange, highlightedPlayers]: [
+        Filter,
+        number[],
+        number[]
+      ]) => {
+        const DEFAULT_FILTER = this.playersService.getDefaultFilter();
 
-    const params = new URLSearchParams({
-      price_min: filter.min_price.toString(),
-      price_max: filter.max_price.toString(),
-      ownership_min: filter.min_tsb.toString(),
-      ownership_max: filter.max_tsb.toString(),
-      positions: filter.positions.join(',').toString(),
-      teams: filter.teams.toString(),
-      mins: filter.min_minutes.toString(),
-      gameweek_range: this.playersService
-        .getGameweekRange()
-        .getValue()
-        .join(',')
-        .toString(),
-      highlight_players: this.playersService
-        .getHighlightedPlayers()
-        .getValue()
-        .join(',')
-        .toString(),
-      exclude_players: filter.excluded_players.join(',').toString(),
-      x_axis: this.graphService.getXAxis().getValue().toString(),
-      y_axis: this.graphService.getYAxis().getValue().toString(),
-    }).toString();
+        const params = new URLSearchParams({});
 
-    const shareableLink = `${baseUrl}?${params}`;
+        if (filter.min_price !== DEFAULT_FILTER.min_price) {
+          params.set('price_min', filter.min_price.toString());
+        }
 
-    const dummyElement = document.createElement('textarea');
-    dummyElement.value = shareableLink;
-    document.body.appendChild(dummyElement);
-    dummyElement.select();
-    document.execCommand('copy');
-    document.body.removeChild(dummyElement);
+        if (filter.max_price !== DEFAULT_FILTER.max_price) {
+          params.set('price_max', filter.max_price.toString());
+        }
 
-    setTimeout(() => {
-      this.linkCopiedText = 'Copied!';
-    }, 50);
-    return shareableLink;
+        if (filter.min_tsb !== DEFAULT_FILTER.min_tsb) {
+          params.set('ownership_min', filter.min_tsb.toString());
+        }
+
+        if (filter.max_tsb !== DEFAULT_FILTER.max_tsb) {
+          params.set('ownership_max', filter.max_tsb.toString());
+        }
+
+        if (filter.positions.length !== DEFAULT_FILTER.positions.length) {
+          params.set('positions', filter.positions.join(',').toString());
+        }
+
+        if (filter.teams.length !== DEFAULT_FILTER.teams.length) {
+          params.set('teams', filter.teams.join(',').toString());
+        }
+
+        if (filter.min_minutes !== DEFAULT_FILTER.min_minutes) {
+          params.set('mins', filter.min_minutes.toString());
+        }
+
+        if (
+          gameweekRange[0] !== 1 ||
+          gameweekRange[1] !== this.playersService.getCurrentGameweek()
+        ) {
+          params.set('gameweek_range', gameweekRange.join(',').toString());
+        }
+
+        if (highlightedPlayers.length > 0) {
+          params.set(
+            'highlight_players',
+            highlightedPlayers.join(',').toString()
+          );
+        }
+
+        if (filter.excluded_players.length > 0) {
+          params.set(
+            'exclude_players',
+            filter.excluded_players.join(',').toString()
+          );
+        }
+
+        if (this.selectedXAxis !== this.DEFAULT_X_AXIS) {
+          params.set('x_axis', this.selectedXAxis);
+        }
+
+        if (this.selectedYAxis !== this.DEFAULT_Y_AXIS) {
+          params.set('y_axis', this.selectedYAxis);
+        }
+
+        if (!this.playersService.isDefaultYear()) {
+          params.set('year', this.playersService.getYearString());
+        }
+
+        const shareableLink = `${baseUrl}?${params}`;
+
+        const dummyElement = document.createElement('textarea');
+        dummyElement.value = shareableLink;
+        document.body.appendChild(dummyElement);
+        dummyElement.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummyElement);
+
+        setTimeout(() => {
+          this.linkCopiedText = 'Copied!';
+        }, 50);
+
+        return shareableLink;
+      }
+    );
   }
 
   setLinkCopyText() {

@@ -54,7 +54,11 @@ export class VisualComponent implements OnInit, OnDestroy {
   fadeInSidePanel: boolean = false;
   fadeInGraph: boolean = false;
 
-  constructor(private playersService: PlayersService, private route: ActivatedRoute, private graphService: GraphService) {}
+  constructor(
+    private playersService: PlayersService,
+    private route: ActivatedRoute,
+    private graphService: GraphService
+  ) {}
 
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
@@ -66,34 +70,52 @@ export class VisualComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.fadeInSidePanel = false;
         this.fadeInGraph = false;
-        this.parseQueryParams();
+        // this.parseQueryParams();
         this.load();
         setTimeout(() => {
           this.fadeInSidePanel = true;
           this.fadeInGraph = true;
         }, 500);
       });
-
   }
 
   parseQueryParams() {
-    this.route.queryParams.subscribe(params => {
-      const setValue = (paramName: string, serviceFunction: (value: any) => void) => {
+    this.route.queryParams.subscribe((params) => {
+      const setValue = (
+        paramName: string,
+        serviceFunction: (value: any) => void
+      ) => {
         if (params[paramName]) {
           serviceFunction(params[paramName]);
         }
       };
-  
+
       setValue('price_min', (value) => this.playersService.setMinPrice(value));
       setValue('price_max', (value) => this.playersService.setMaxPrice(value));
-      setValue('ownership_min', (value) => this.playersService.setMinTsb(value));
-      setValue('ownership_max', (value) => this.playersService.setMaxTsb(value));
-      setValue('positions', (value) => this.playersService.setPositions(value.split(',')));
-      setValue('teams', (value) => this.playersService.setTeams(value.split(',')));
-      setValue('mins', (value) => this.playersService.setMinMinutes(Number(value)));
-      setValue('gameweek_range', (value) => this.playersService.setGwRange(value.split(',')));
-      setValue('highlight_players', (value) => this.playersService.setHighlightedPlayers(value.split(',').map(Number)));
-      setValue('exclude_players', (value) => this.playersService.setExcluded(value.split(',').map(Number)));
+      setValue('ownership_min', (value) =>
+        this.playersService.setMinTsb(value)
+      );
+      setValue('ownership_max', (value) =>
+        this.playersService.setMaxTsb(value)
+      );
+      setValue('positions', (value) =>
+        this.playersService.setPositions(value.split(','))
+      );
+      setValue('teams', (value) =>
+        this.playersService.setTeams(value.split(','))
+      );
+      setValue('mins', (value) =>
+        this.playersService.setMinMinutes(Number(value))
+      );
+      setValue('gameweek_range', (value) =>
+        this.playersService.setGwRange(value.split(','))
+      );
+      setValue('highlight_players', (value) =>
+        this.playersService.setHighlightedPlayers(value.split(',').map(Number))
+      );
+      setValue('exclude_players', (value) =>
+        this.playersService.setExcluded(value.split(',').map(Number))
+      );
       setValue('x_axis', (value) => this.graphService.setXAxis(value));
       setValue('y_axis', (value) => this.graphService.setYAxis(value));
     });
