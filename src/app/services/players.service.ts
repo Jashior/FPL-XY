@@ -314,4 +314,8 @@ export class PlayersService {
   public getCurrentGameweek(): number {
     return this.currentGameweek;
   }
+
+  public isDefaultYear(): boolean {
+    return this.currentYearString == this.possibleYearStrings$.getValue()[1];
+  }
 }
