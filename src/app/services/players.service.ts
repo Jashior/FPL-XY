@@ -5,6 +5,8 @@ import { Player } from '../models/Player';
 import { HttpClient } from '@angular/common/http';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
+import { ActivatedRoute } from '@angular/router';
+import { GraphService } from './graph.service';
 
 export interface Meta {
   current_year_string: string;
@@ -69,12 +71,17 @@ export class PlayersService {
   public maxMinsGWRange$ = new BehaviorSubject<number>(0);
   public filter$ = new BehaviorSubject<Filter>(this.getDefaultFilter());
   public highlightedPlayers$ = new BehaviorSubject<number[]>([]);
+  public paramsSet = false;
 
   // Loading states
   private _loading$ = new BehaviorSubject<boolean>(true);
   private loading$ = this._loading$;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private graphService: GraphService
+  ) {
     this.initData();
   }
 
@@ -88,11 +95,16 @@ export class PlayersService {
       this.possibleYearStrings$.next(resp[0].possible_year_strings);
       // console.log(`${this.currentYearString}`);
       // console.log(`[${this.possibleYearStrings$}]`);
-      this.resetHighlightedPlayers();
-      this.loadInfoForCurrentYear();
-      this.loadPlayers();
-      this.loadFilter();
+
+      this.loadYearFromParams();
+      this.initDataForCurrentYear();
     });
+  }
+
+  initDataForCurrentYear() {
+    this.setLoading(true);
+    this.resetHighlightedPlayers();
+    this.loadInfoForCurrentYear();
   }
 
   public getDefaultFilter(): Filter {
@@ -104,7 +116,71 @@ export class PlayersService {
   }
 
   public setYearString(yearString: string): void {
+    console.log(`year STRING set to ${yearString}`);
     this.currentYearString = yearString;
+  }
+
+  public loadYearFromParams(): void {
+    this.route.queryParams.subscribe((params) => {
+      const sanitizeValue = (value: any): any => {
+        if (typeof value === 'string') {
+          return value.trim();
+        } else if (!isNaN(value)) {
+          return parseFloat(value);
+        }
+        return value;
+      };
+
+      if (params['year']) {
+        const sanitizedValue = sanitizeValue(params['year']);
+        this.setYearString(sanitizedValue);
+      }
+    });
+  }
+
+  public loadParams(): void {
+    if (this.paramsSet) {
+      return;
+    }
+
+    this.route.queryParams.subscribe((params) => {
+      const sanitizeValue = (value: any): any => {
+        if (typeof value === 'string') {
+          return value.trim();
+        } else if (!isNaN(value)) {
+          return parseFloat(value);
+        }
+        return value;
+      };
+
+      const setValue = (
+        paramName: string,
+        serviceFunction: (value: any) => void
+      ) => {
+        if (params[paramName]) {
+          const sanitizedValue = sanitizeValue(params[paramName]);
+          serviceFunction(sanitizedValue);
+        }
+      };
+
+      setValue('price_min', (value) => this.setMinPrice(value));
+      setValue('price_max', (value) => this.setMaxPrice(value));
+      setValue('ownership_min', (value) => this.setMinTsb(value));
+      setValue('ownership_max', (value) => this.setMaxTsb(value));
+      setValue('positions', (value) => this.setPositions(value.split(',')));
+      setValue('teams', (value) => this.setTeams(value.split(',')));
+      setValue('mins', (value) => this.setMinMinutes(Number(value)));
+      setValue('gameweek_range', (value) => this.setGwRange(value.split(',')));
+      setValue('highlight_players', (value) =>
+        this.setHighlightedPlayers(value.split(',').map(Number))
+      );
+      setValue('exclude_players', (value) =>
+        this.setExcluded(value.split(',').map(Number))
+      );
+      setValue('x_axis', (value) => this.graphService.setXAxis(value));
+      setValue('y_axis', (value) => this.graphService.setYAxis(value));
+      this.paramsSet = true;
+    });
   }
 
   public loadInfoForCurrentYear(): void {
@@ -117,6 +193,8 @@ export class PlayersService {
           this.currentGameweek = about[0].current_gameweek;
           this.gwRange$.next([1, this.currentGameweek]);
           this.loadFilter();
+          this.loadParams();
+          this.loadPlayers();
         }
       });
   }
@@ -272,8 +350,12 @@ export class PlayersService {
   }
 
   public setYear(val: string) {
+    const possibleYears = this.possibleYearStrings$.getValue();
+    if (!possibleYears.includes(val)) {
+      return;
+    }
     this.currentYearString = val;
-    this.initData();
+    this.initDataForCurrentYear();
   }
 
   public addHighlightedPlayer(id: number) {

@@ -29,11 +29,11 @@ const ABOUT_DICT = {
 // Example: /api/getPlayers/2022-23
 // Get all tracks with >0 minutes played
 router.get("/getPlayers/:y", async (req, res) => {
+  let year = req.params.y;
   if (developerMode) {
-    const players = require("../db/PLAYERS_2022-23.json");
+    const players = require(`../db/PLAYERS_${year}.json`);
     res.send(players);
   } else {
-    let year = req.params.y;
     let Player = PLAYER_DICT[year];
     // console.log(`Getting all  from ${year}`);
     const players = await Player.find({ total_minutes: { $gt: 0 } }).limit();
@@ -44,11 +44,11 @@ router.get("/getPlayers/:y", async (req, res) => {
 // Example /api/getAbout/2021-22
 // Meta data for that year
 router.get("/getAbout/:y", async (req, res) => {
+  let year = req.params.y;
   if (developerMode) {
-    const about = require("../db/ABOUT_2022-23.json");
+    const about = require(`../db/ABOUT_${year}.json`);
     res.send(about);
   } else {
-    let year = req.params.y;
     let About = ABOUT_DICT[year];
     // console.log(`Getting About from ${year}`);
     const about = await About.find({});
