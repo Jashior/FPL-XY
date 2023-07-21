@@ -89,7 +89,10 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  constructor(private playersService: PlayersService, private graphService: GraphService) {}
+  constructor(
+    private playersService: PlayersService,
+    private graphService: GraphService
+  ) {}
 
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
@@ -107,8 +110,18 @@ export class GraphComponent implements OnInit, OnDestroy {
         this.gwrange = gwrange;
       }),
 
-      this.graphService.getXAxis().pipe(take(1)).subscribe((axis) => {this.updateXAxis(axis);}),
-      this.graphService.getYAxis().pipe(take(1)).subscribe((axis) => {this.updateYAxis(axis);})
+      this.graphService
+        .getXAxis()
+        .pipe(take(1))
+        .subscribe((axis) => {
+          this.updateXAxis(axis);
+        }),
+      this.graphService
+        .getYAxis()
+        .pipe(take(1))
+        .subscribe((axis) => {
+          this.updateYAxis(axis);
+        })
     );
 
     if (this.playersF$) {
@@ -526,10 +539,10 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   getShareableLink() {
-    const baseUrl = environment.production ? 'https://fpl-xy.vercel.app/visual' : 'http://localhost:4200/visual';
+    const baseUrl = `${environment.BASE_URL}/visual`;
 
     const filter = this.playersService.getFilter().getValue();
-    
+
     const params = new URLSearchParams({
       price_min: filter.min_price.toString(),
       price_max: filter.max_price.toString(),
@@ -538,28 +551,38 @@ export class GraphComponent implements OnInit, OnDestroy {
       positions: filter.positions.join(',').toString(),
       teams: filter.teams.toString(),
       mins: filter.min_minutes.toString(),
-      gameweek_range: this.playersService.getGameweekRange().getValue().join(',').toString(),
-      highlight_players: this.playersService.getHighlightedPlayers().getValue().join(',').toString(),
+      gameweek_range: this.playersService
+        .getGameweekRange()
+        .getValue()
+        .join(',')
+        .toString(),
+      highlight_players: this.playersService
+        .getHighlightedPlayers()
+        .getValue()
+        .join(',')
+        .toString(),
       exclude_players: filter.excluded_players.join(',').toString(),
       x_axis: this.graphService.getXAxis().getValue().toString(),
-      y_axis:  this.graphService.getYAxis().getValue().toString()
+      y_axis: this.graphService.getYAxis().getValue().toString(),
     }).toString();
-  
+
     const shareableLink = `${baseUrl}?${params}`;
-  
+
     const dummyElement = document.createElement('textarea');
     dummyElement.value = shareableLink;
     document.body.appendChild(dummyElement);
     dummyElement.select();
     document.execCommand('copy');
     document.body.removeChild(dummyElement);
-  
-    setTimeout(() => { this.linkCopiedText = 'Copied!' }, 50);
+
+    setTimeout(() => {
+      this.linkCopiedText = 'Copied!';
+    }, 50);
     return shareableLink;
   }
 
   setLinkCopyText() {
-    this.linkCopiedText = 'Copy Link'
+    this.linkCopiedText = 'Copy Link';
   }
 }
 
