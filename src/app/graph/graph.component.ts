@@ -28,6 +28,9 @@ import {
 } from '@angular/animations';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
+import { GraphService } from '../services/graph.service';
+import { environment } from 'src/environments/environment';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-graph',
@@ -74,6 +77,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   chartInstance: any;
   graphModeVisible: boolean = true;
   resizeState: 'Resizing' | 'Resized' = 'Resized';
+  linkCopiedText: 'Copy Link' | 'Copied!' = 'Copy Link';
 
   COLOR_MAP = {
     GOALKEEPER: '#f7f494',
@@ -85,7 +89,10 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  constructor(private playersService: PlayersService) {}
+  constructor(
+    private playersService: PlayersService,
+    private graphService: GraphService
+  ) {}
 
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
@@ -101,7 +108,20 @@ export class GraphComponent implements OnInit, OnDestroy {
 
       this.playersService.getGameweekRange().subscribe((gwrange) => {
         this.gwrange = gwrange;
-      })
+      }),
+
+      this.graphService
+        .getXAxis()
+        .pipe(take(1))
+        .subscribe((axis) => {
+          this.updateXAxis(axis);
+        }),
+      this.graphService
+        .getYAxis()
+        .pipe(take(1))
+        .subscribe((axis) => {
+          this.updateYAxis(axis);
+        })
     );
 
     if (this.playersF$) {
@@ -214,11 +234,13 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   updateXAxis(axis: string): void {
+    this.graphService.setXAxis(axis);
     this.selectedXAxis = axis;
     this.loadChartOptions();
   }
 
   updateYAxis(axis: string): void {
+    this.graphService.setYAxis(axis);
     this.selectedYAxis = axis;
     this.loadChartOptions();
   }
@@ -514,6 +536,53 @@ export class GraphComponent implements OnInit, OnDestroy {
         saveAs(image, `${this.getTitle()}.png`);
       });
     }
+  }
+
+  getShareableLink() {
+    const baseUrl = `${environment.BASE_URL}/visual`;
+
+    const filter = this.playersService.getFilter().getValue();
+
+    const params = new URLSearchParams({
+      price_min: filter.min_price.toString(),
+      price_max: filter.max_price.toString(),
+      ownership_min: filter.min_tsb.toString(),
+      ownership_max: filter.max_tsb.toString(),
+      positions: filter.positions.join(',').toString(),
+      teams: filter.teams.toString(),
+      mins: filter.min_minutes.toString(),
+      gameweek_range: this.playersService
+        .getGameweekRange()
+        .getValue()
+        .join(',')
+        .toString(),
+      highlight_players: this.playersService
+        .getHighlightedPlayers()
+        .getValue()
+        .join(',')
+        .toString(),
+      exclude_players: filter.excluded_players.join(',').toString(),
+      x_axis: this.graphService.getXAxis().getValue().toString(),
+      y_axis: this.graphService.getYAxis().getValue().toString(),
+    }).toString();
+
+    const shareableLink = `${baseUrl}?${params}`;
+
+    const dummyElement = document.createElement('textarea');
+    dummyElement.value = shareableLink;
+    document.body.appendChild(dummyElement);
+    dummyElement.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummyElement);
+
+    setTimeout(() => {
+      this.linkCopiedText = 'Copied!';
+    }, 50);
+    return shareableLink;
+  }
+
+  setLinkCopyText() {
+    this.linkCopiedText = 'Copy Link';
   }
 }
 

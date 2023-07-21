@@ -88,6 +88,20 @@
         <div class="w-1"></div>
 
         <button
+          nz-button
+          nz-tooltip
+          [nzSize]="'small'"
+          nzType="default"
+          nzTooltipTitle="{{linkCopiedText}}"
+          nzTooltipPlacement="top"
+          (click)="getShareableLink()"
+          (mouseenter)="setLinkCopyText()"
+        >
+          <span nz-icon nzType="link" nzTheme="outline"></span>       
+        </button>
+        <div class="w-1"></div>
+
+        <button
           *ngIf="!expandScreen"
           nz-button
           [nzSize]="'small'"

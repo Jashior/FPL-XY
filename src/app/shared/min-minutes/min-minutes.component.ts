@@ -29,10 +29,12 @@ export class MinMinutesComponent implements OnInit, OnDestroy {
 
   ngOnInit() : void {
     this.subscriptions.push(
-      this.playersService.getGameweekRange().subscribe((data) => {
-        this.playersService.setMinMinutes(0);
-      }
-    ));
+      this.playersService.getFilter().subscribe((filter) => {
+        if (filter.min_minutes != this.minMinutesValue) {
+          this.minMinutesValue = filter.min_minutes;
+        }
+      })
+    );
 
     this.subscriptions.push(
       combineLatest([

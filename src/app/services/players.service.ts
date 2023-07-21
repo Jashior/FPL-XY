@@ -129,15 +129,15 @@ export class PlayersService {
       });
   }
 
-  public getPlayers(): Observable<Player[]> {
+  public getPlayers(): BehaviorSubject<Player[]> {
     return this.players$;
   }
 
-  public getGameweekRange(): Observable<number[]> {
+  public getGameweekRange(): BehaviorSubject<number[]> {
     return this.gwRange$;
   }
 
-  public getMaxMinsGwRange(): Observable<number> {
+  public getMaxMinsGwRange(): BehaviorSubject<number> {
     return this.maxMinsGWRange$;
   }
 
@@ -145,7 +145,7 @@ export class PlayersService {
     return this.currentYearString;
   }
 
-  public getLoadingState(): Observable<boolean> {
+  public getLoadingState(): BehaviorSubject<boolean> {
     return this.loading$;
   }
 
@@ -153,11 +153,11 @@ export class PlayersService {
     return this.teams;
   }
 
-  public getFilter(): Observable<Filter> {
+  public getFilter(): BehaviorSubject<Filter> {
     return this.filter$;
   }
 
-  public getHighlightedPlayers(): Observable<number[]> {
+  public getHighlightedPlayers(): BehaviorSubject<number[]> {
     return this.highlightedPlayers$;
   }
 
@@ -165,7 +165,7 @@ export class PlayersService {
     return this.Positions;
   }
 
-  public getPossibleYearStrings(): Observable<string[]> {
+  public getPossibleYearStrings(): BehaviorSubject<string[]> {
     return this.possibleYearStrings$;
   }
 
