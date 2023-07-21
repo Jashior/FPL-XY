@@ -262,18 +262,19 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   getSubtitle() {
+    let year = this.playersService.getYearString();
     if (this.getInnerWidth() < 650) {
       return `Gameweeks ${this.gwrange ? this.gwrange[0] : ''}-${
         this.gwrange ? this.gwrange[1] : ''
       }`;
     }
-    return `Gameweeks ${this.gwrange ? this.gwrange[0] : ''}-${
+    return `${year}: GW ${this.gwrange ? this.gwrange[0] : ''}-${
       this.gwrange ? this.gwrange[1] : ''
-    } • Price £${this.filter?.min_price}m-£${this.filter?.max_price}m • Over ${
-      this.filter?.min_minutes
-    } mins played • Ownership ${this.filter?.min_tsb}%-${
-      this.filter?.max_tsb
-    }%`;
+    } • Price £${this.filter?.min_price}m-£${
+      this.filter?.max_price
+    }m • At least ${this.filter?.min_minutes} mins played • Ownership ${
+      this.filter?.min_tsb
+    }%-${this.filter?.max_tsb}%`;
   }
 
   tooltipFormatter(params: any) {
@@ -337,6 +338,7 @@ export class GraphComponent implements OnInit, OnDestroy {
           overflow: 'break',
         },
         subtextStyle: {
+          fontSize: 12,
           overflow: 'break',
         },
       },
@@ -541,7 +543,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   getShareableLink() {
-    const baseUrl = `${environment.BASE_URL}visual`;
+    const baseUrl = `${window.location.origin}/visual`;
 
     combineLatest([
       this.playersService.getFilter().pipe(take(1)),
