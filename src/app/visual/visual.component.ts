@@ -61,6 +61,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.playersService.initData();
     this.loadingRaw$ = this.playersService.getLoadingState();
     this.loadingRaw$
       .pipe(
@@ -277,7 +278,6 @@ export class VisualComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.playersService.initData();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
