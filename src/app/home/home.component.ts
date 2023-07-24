@@ -7,7 +7,5 @@ import { PlayersService } from '../services/players.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent {
-  constructor(private playersService: PlayersService) {
-    playersService.initData();
-  }
+  constructor() {}
 }

@@ -28,15 +28,16 @@
     <div>
       <app-team-select></app-team-select>
     </div>
+
     <div class="mt-1">
+      Gameweeks
+      <app-gameweek-slider></app-gameweek-slider>
+    </div>
+    <div>
       <div>
         Min. Minutes Played: <b>{{ (filter$ | async)?.min_minutes }}</b>
       </div>
       <app-min-minutes></app-min-minutes>
-    </div>
-    <div>
-      Gameweeks
-      <app-gameweek-slider></app-gameweek-slider>
     </div>
     <div>
       Highlight

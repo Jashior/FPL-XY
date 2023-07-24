@@ -277,6 +277,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.playersService.initData();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

@@ -88,14 +88,12 @@ export class PlayersService {
   initData() {
     this.setLoading(true);
     this.http.get<Meta[]>(`${this.API_URL}/getMeta/`).subscribe((resp) => {
-      if (this.currentYearString == '') {
-        this.currentYearString == resp[0].current_year_string;
+      if (resp.length === 0) {
+        console.log('No meta data found');
+        return;
       }
-      // console.log(this.currentYearString);
+      this.currentYearString = resp[0].current_year_string;
       this.possibleYearStrings$.next(resp[0].possible_year_strings);
-      // console.log(`${this.currentYearString}`);
-      // console.log(`[${this.possibleYearStrings$}]`);
-
       this.loadYearFromParams();
       this.initDataForCurrentYear();
     });
