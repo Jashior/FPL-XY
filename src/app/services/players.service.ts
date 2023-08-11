@@ -62,9 +62,9 @@ export class PlayersService {
   private maxGameweek: number = 38;
   private currentGameweek: number = 1;
   private possibleYearStrings$ = new BehaviorSubject<string[]>([
-    '2021-22',
-    '2022-23',
     '2023-24',
+    '2022-23',
+    '2021-22',
   ]);
   private teams: string[] = [];
   private players$ = new BehaviorSubject<Player[]>([]);
