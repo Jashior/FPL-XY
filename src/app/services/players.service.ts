@@ -64,6 +64,7 @@ export class PlayersService {
   private possibleYearStrings$ = new BehaviorSubject<string[]>([
     '2021-22',
     '2022-23',
+    '2023-24',
   ]);
   private teams: string[] = [];
   private players$ = new BehaviorSubject<Player[]>([]);
