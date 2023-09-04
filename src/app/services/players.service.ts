@@ -111,6 +111,7 @@ export class PlayersService {
   }
 
   public setLoading(loadingState: boolean): void {
+    // console.log(`setting loading: ${loadingState}`);
     this.loading$.next(loadingState);
   }
 
@@ -209,7 +210,6 @@ export class PlayersService {
     this.http
       .get<Player[]>(`${this.API_URL}/getPlayers/${this.currentYearString}`)
       .subscribe((players) => {
-        // console.log(players);
         this.players$.next(players);
         this.setLoading(false);
       });

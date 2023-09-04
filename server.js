@@ -15,22 +15,22 @@ app.use(mongoSanitize());
 const routes = require("./routes/routes");
 app.use("/api", routes);
 
+// Database Connection //
+const mongoString = process.env.MONGO_URL;
+
+mongoose.connect(mongoString);
+const database = mongoose.connection;
+
+database.on("error", (error) => {
+  console.log(error);
+});
+
+database.once("connected", () => {
+  console.log("Database Connected");
+});
+
 // Static Route, serve static page in dist folder IF in production mode
 if (process.env.NODE_ENV) {
-  // Database Connection //
-  const mongoString = process.env.MONGO_URL;
-
-  mongoose.connect(mongoString);
-  const database = mongoose.connection;
-
-  database.on("error", (error) => {
-    console.log(error);
-  });
-
-  database.once("connected", () => {
-    console.log("Database Connected");
-  });
-
   // console.log(`Production Environment: serving static Front End`);
   var distDir = __dirname + "/dist/fplv";
   app.use(express.static(distDir));

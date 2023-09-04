@@ -16,5 +16,6 @@ const schema = mongoose.Schema({
 
 player2122 = mongoose.model("players2021-22", schema);
 player2223 = mongoose.model("players2022-23", schema);
+player2324 = mongoose.model("players2023-24", schema);
 
-module.exports = { player2122, player2223 };
+module.exports = { player2122, player2223, player2324 };

@@ -10,5 +10,6 @@ const schema = mongoose.Schema({
 
 about2122 = mongoose.model("about2021-22", schema);
 about2223 = mongoose.model("about2022-23", schema);
+about2324 = mongoose.model("about2023-24", schema);
 
-module.exports = { about2122, about2223 };
+module.exports = { about2122, about2223, about2324 };

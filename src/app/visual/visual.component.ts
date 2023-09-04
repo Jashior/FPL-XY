@@ -196,32 +196,52 @@ export class VisualComponent implements OnInit, OnDestroy {
       .reduce((ac, e) => ac + e);
     p.yellow_cards_90 = 90 * (p.yellow_cards_t / minutes) || 0;
 
-    p.key_passes_t = p.key_passes.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.key_passes_90 = 90 * (p.key_passes_t / minutes) || 0;
+    if (p.key_passes) {
+      p.key_passes_t = p.key_passes
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e);
+      p.key_passes_90 = 90 * (p.key_passes_t / minutes) || 0;
+    }
 
-    p.npg_t = p.npg.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.npg_90 = 90 * (p.npg_t / minutes) || 0;
+    if (p.ng) {
+      p.npg_t = p.npg.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npg_90 = 90 * (p.npg_t / minutes) || 0;
+    }
 
-    p.npxG_t = p.npxG.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.npxG_90 = 90 * (p.npxG_t / minutes) || 0;
+    if (p.npxG) {
+      p.npxG_t = p.npxG.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npxG_90 = 90 * (p.npxG_t / minutes) || 0;
+    }
 
-    p.npxGxA_t = p.npxGxA.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.npxGxA_90 = 90 * (p.npxGxA_t / minutes) || 0;
+    if (p.npxGxA) {
+      p.npxGxA_t = p.npxGxA.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npxGxA_90 = 90 * (p.npxGxA_t / minutes) || 0;
+    }
 
-    p.shots_t = p.shots.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.shots_90 = 90 * (p.shots_t / minutes) || 0;
+    if (p.shots) {
+      p.shots_t = p.shots.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.shots_90 = 90 * (p.shots_t / minutes) || 0;
+    }
 
-    p.xG_t = p.xG.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.xG_90 = 90 * (p.xG_t / minutes) || 0;
+    if (p.xG.length > 0) {
+      p.xG_t = p.xG.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xG_90 = 90 * (p.xG_t / minutes) || 0;
+    }
 
-    p.xA_t = p.xA.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.xA_90 = 90 * (p.xA_t / minutes) || 0;
+    if (p.xA.length > 0) {
+      p.xA_t = p.xA.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xA_90 = 90 * (p.xA_t / minutes) || 0;
+    }
 
-    p.xGChain_t = p.xGChain.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.xGChain_90 = 90 * (p.xGChain_t / minutes) || 0;
+    if (p.xGChain && p.xGChain.length > 0) {
+      p.xGChain_t = p.xGChain.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xGChain_90 = 90 * (p.xGChain_t / minutes) || 0;
+    }
 
-    p.xGBuildup_t = p.xGBuildup.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.xGBuildup_90 = 90 * (p.xGBuildup_t / minutes) || 0;
+    if (p.xGBuildup && p.xGBuildup.length > 0) {
+      p.xGBuildup_t = p.xGBuildup.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xGBuildup_90 = 90 * (p.xGBuildup_t / minutes) || 0;
+    }
 
     // p.npg_difference_t = p.npg_difference
     // .slice(st, end + 1)
@@ -229,43 +249,44 @@ export class VisualComponent implements OnInit, OnDestroy {
     p.npg_difference_t = p.npg_t - p.npxG_t;
 
     // Didn't introduce attacking return until 22-23 season
-    if (p.npxAttRet) {
+    if (p.npxAttRet && p.npxAttRet.length > 0) {
       p.npxAttRet_t = p.npxAttRet.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.npxAttRet_90 = 90 * (p.npxAttRet_t / minutes) || 0;
     }
 
     // Following was mostly introduced from FPL api update 22-23 season
 
-    if (p.GC) {
+    if (p.GC.length > 0) {
       p.GC_t = p.GC.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.GC_90 = 90 * (p.GC_t / minutes) || 0;
     }
-    if (p.xGC) {
+    if (p.xGC.length > 0) {
       p.xGC_t = p.xGC.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.xGC_90 = 90 * (p.xGC_t / minutes) || 0;
     }
-    if (p.saves) {
+    if (p.saves.length > 0) {
       p.saves_t = p.saves.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.saves_90 = 90 * (p.saves_t / minutes) || 0;
     }
-    if (p.pen_saves) {
+    if (p.pen_saves.length > 0) {
       p.pen_saves_t = p.pen_saves.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.pen_saves_90 = 90 * (p.pen_saves_t / minutes) || 0;
     }
-    if (p.pen_misses) {
+    if (p.pen_misses.length > 0) {
       p.pen_misses_t = p.pen_misses
         .slice(st, end + 1)
         .reduce((ac, e) => ac + e);
       p.pen_misses_90 = 90 * (p.pen_misses_t / minutes) || 0;
     }
-    if (p.OG) {
+    if (p.OG.length > 0) {
       p.OG_t = p.OG.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.OG_90 = 90 * (p.OG_t / minutes) || 0;
     }
-    if (p.CS) {
+    if (p.CS.length > 0) {
       p.CS_t = p.CS.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.CS_90 = 90 * (p.CS_t / minutes) || 0;
     }
+
     return p;
   }
 
