@@ -258,6 +258,11 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.npxAttRet_90 = 90 * (p.npxAttRet_t / minutes) || 0;
     }
 
+    if (p.npAttRet && p.npAttRet.length > 0) {
+      p.npAttRet_t = p.npAttRet.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npAttRet_90 = 90 * (p.npAttRet_t / minutes) || 0;
+    }
+
     // Following was mostly introduced from FPL api update 22-23 season
 
     if (p.GC && p.GC.length > 0) {

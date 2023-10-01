@@ -42,6 +42,9 @@ export interface Player {
   npxAttRet: number[];
   npxAttRet_t: number;
   npxAttRet_90: number;
+  npAttRet: number[];
+  npAttRet_t: number;
+  npAttRet_90: number;
   npxG: number[];
   npxG_t: number;
   npxG_90: number;
