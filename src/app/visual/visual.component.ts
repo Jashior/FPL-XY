@@ -61,8 +61,12 @@ export class VisualComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.playersService.initData();
     this.loadingRaw$ = this.playersService.getLoadingState();
+    this.loadingRaw$.pipe(take(1)).subscribe((loadingRaw) => {
+      if (!loadingRaw) {
+        this.playersService.initData();
+      }
+    });
     this.loadingRaw$
       .pipe(
         filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
@@ -203,7 +207,7 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.key_passes_90 = 90 * (p.key_passes_t / minutes) || 0;
     }
 
-    if (p.ng) {
+    if (p.npg) {
       p.npg_t = p.npg.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.npg_90 = 90 * (p.npg_t / minutes) || 0;
     }
@@ -256,33 +260,33 @@ export class VisualComponent implements OnInit, OnDestroy {
 
     // Following was mostly introduced from FPL api update 22-23 season
 
-    if (p.GC.length > 0) {
+    if (p.GC && p.GC.length > 0) {
       p.GC_t = p.GC.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.GC_90 = 90 * (p.GC_t / minutes) || 0;
     }
-    if (p.xGC.length > 0) {
+    if (p.xGC && p.xGC.length > 0) {
       p.xGC_t = p.xGC.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.xGC_90 = 90 * (p.xGC_t / minutes) || 0;
     }
-    if (p.saves.length > 0) {
+    if (p.saves && p.saves.length > 0) {
       p.saves_t = p.saves.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.saves_90 = 90 * (p.saves_t / minutes) || 0;
     }
-    if (p.pen_saves.length > 0) {
+    if (p.pen_saves && p.pen_saves.length > 0) {
       p.pen_saves_t = p.pen_saves.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.pen_saves_90 = 90 * (p.pen_saves_t / minutes) || 0;
     }
-    if (p.pen_misses.length > 0) {
+    if (p.pen_misses && p.pen_misses.length > 0) {
       p.pen_misses_t = p.pen_misses
         .slice(st, end + 1)
         .reduce((ac, e) => ac + e);
       p.pen_misses_90 = 90 * (p.pen_misses_t / minutes) || 0;
     }
-    if (p.OG.length > 0) {
+    if (p.OG && p.OG.length > 0) {
       p.OG_t = p.OG.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.OG_90 = 90 * (p.OG_t / minutes) || 0;
     }
-    if (p.CS.length > 0) {
+    if (p.CS && p.CS.length > 0) {
       p.CS_t = p.CS.slice(st, end + 1).reduce((ac, e) => ac + e);
       p.CS_90 = 90 * (p.CS_t / minutes) || 0;
     }

@@ -7,6 +7,7 @@ import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
 import { ActivatedRoute } from '@angular/router';
 import { GraphService } from './graph.service';
+import { first } from 'rxjs/operators';
 
 export interface Meta {
   current_year_string: string;
@@ -111,7 +112,6 @@ export class PlayersService {
   }
 
   public setLoading(loadingState: boolean): void {
-    // console.log(`setting loading: ${loadingState}`);
     this.loading$.next(loadingState);
   }
 
@@ -185,8 +185,10 @@ export class PlayersService {
   public loadInfoForCurrentYear(): void {
     this.http
       .get<About[]>(`${this.API_URL}/getAbout/${this.currentYearString}`)
+      .pipe(
+        first() // Add the first operator here to take only the first emitted value
+      )
       .subscribe((about) => {
-        // console.log(about);
         if (about[0]) {
           this.teams = about[0].teams;
           this.currentGameweek = about[0].current_gameweek;

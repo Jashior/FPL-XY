@@ -32,6 +32,7 @@ router.get("/getPlayers/:y", async (req, res) => {
   let year = req.params.y;
   if (developerMode) {
     const players = require(`../db/PLAYERS_${year}.json`);
+    // console.log(`sending players: length ${players.length}`);
     res.send(players);
   } else {
     let Player = PLAYER_DICT[year];
@@ -47,6 +48,7 @@ router.get("/getAbout/:y", async (req, res) => {
   let year = req.params.y;
   if (developerMode) {
     const about = require(`../db/ABOUT_${year}.json`);
+    // console.log(`sending about: length ${about.length}`);
     res.send(about);
   } else {
     let About = ABOUT_DICT[year];
@@ -60,6 +62,7 @@ router.get("/getAbout/:y", async (req, res) => {
 router.get("/getMeta/", async (req, res) => {
   if (developerMode) {
     const meta = require("../db/meta.json");
+    // console.log(`sending meta: length ${meta.length}`);
     res.send(meta);
   } else {
     // console.log(`Getting Metadata`);
