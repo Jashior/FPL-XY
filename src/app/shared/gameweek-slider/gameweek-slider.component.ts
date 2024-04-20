@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PlayersService } from 'src/app/services/players.service';
+import { GraphService } from '../../services/graph.service';
 
 @Component({
   selector: 'app-gameweek-slider',
@@ -14,13 +15,23 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
   marks = {};
   subscriptions: Subscription[] = [];
   playingThroughWeeks: boolean = false;
+  playthroughMode: boolean = false;
 
-  constructor(private playersService: PlayersService) {}
+  constructor(
+    private playersService: PlayersService,
+    private graphService: GraphService
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.playersService.getGameweekRange().subscribe((gwrange) => {
         this.gameweekRangeValue = [gwrange[0], gwrange[1]];
+      })
+    );
+
+    this.subscriptions.push(
+      this.graphService.getPlaythroughMode().subscribe((mode) => {
+        this.playthroughMode = mode;
       })
     );
 
@@ -44,7 +55,7 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
   }
 
   togglePlayWeeks() {
-    if (this.playingThroughWeeks) {
+    if (this.playthroughMode) {
       this.stopWeeks();
     } else {
       this.playWeeks();
@@ -54,27 +65,30 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
   playWeeks() {
     let currGW = this.playersService.getCurrentGameweek();
     let gw = 1;
+
+    this.playersService.setMinMinutes(0);
+    this.playersService.setGwRange([1, 38]);
+
     this.playGameweek(gw, currGW);
   }
 
   stopWeeks() {
-    this.playingThroughWeeks = false;
+    this.graphService.setPlaythroughMode(false);
   }
 
   playGameweek(current: number, end: number) {
-    this.playingThroughWeeks = true;
+    this.graphService.setPlaythroughMode(true);
 
     if (current <= end) {
       this.playersService.setMinMinutes(0);
       this.playersService.setGwRange([0, current]);
-      // Move to the next gameweek after 1.3 seconds
       setTimeout(() => {
-        if (this.playingThroughWeeks) {
+        if (this.playthroughMode) {
           this.playGameweek(current + 1, end);
         }
-      }, 900); // 1300ms
+      }, 900);
     } else {
-      this.playingThroughWeeks = false;
+      this.graphService.setPlaythroughMode(false);
     }
   }
 }

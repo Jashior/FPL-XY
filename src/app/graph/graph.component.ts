@@ -80,6 +80,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   graphModeVisible: boolean = true;
   resizeState: 'Resizing' | 'Resized' = 'Resized';
   linkCopiedText: 'Copy Link' | 'Copied!' = 'Copy Link';
+  playthroughMode: boolean = false;
 
   COLOR_MAP = {
     GOALKEEPER: '#f7f494',
@@ -98,7 +99,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
-
     this.subscriptions.push(
       this.playersService.getFilter().subscribe((filter) => {
         this.filter = filter;
@@ -123,7 +123,10 @@ export class GraphComponent implements OnInit, OnDestroy {
         .pipe(take(1))
         .subscribe((axis) => {
           this.updateYAxis(axis);
-        })
+        }),
+      this.graphService.getPlaythroughMode().subscribe((mode) => {
+        this.playthroughMode = mode;
+      })
     );
 
     if (this.playersF$) {
@@ -189,6 +192,7 @@ export class GraphComponent implements OnInit, OnDestroy {
     max: { [x: string]: number }
   ) {
     if (players.length == 0) return;
+    if (this.playthroughMode) return;
 
     let axisKeys = getAxisKeys();
 

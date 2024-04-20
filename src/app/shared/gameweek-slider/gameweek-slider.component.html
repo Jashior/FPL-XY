@@ -15,22 +15,20 @@
     <button
       [nzSize]="'small'"
       nzType="default"
-      [nzTooltipTitle]="
-        playingThroughWeeks ? 'Stop weeks' : 'Play through weeks'
-      "
+      [nzTooltipTitle]="playthroughMode ? 'Stop weeks' : 'Play through weeks'"
       nzTooltipPlacement="top"
       nz-button
       nz-tooltip
       (click)="togglePlayWeeks()"
     >
       <span
-        *ngIf="!playingThroughWeeks"
+        *ngIf="!playthroughMode"
         nz-icon
         nzType="right"
         nzTheme="outline"
       ></span>
       <span
-        *ngIf="playingThroughWeeks"
+        *ngIf="playthroughMode"
         nz-icon
         nzType="pause"
         nzTheme="outline"
