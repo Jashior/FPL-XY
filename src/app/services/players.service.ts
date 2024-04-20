@@ -8,6 +8,7 @@ import { Positions } from '../models/Positions';
 import { ActivatedRoute } from '@angular/router';
 import { GraphService } from './graph.service';
 import { first, tap } from 'rxjs/operators';
+import * as pako from 'pako';
 
 export interface Meta {
   current_year_string: string;
@@ -214,7 +215,6 @@ export class PlayersService {
 
   public loadInfoForCurrentYear(): void {
     const cacheKey = `about-${this.currentYearString}`;
-    console.log(`${cacheKey}`);
     const cachedData = sessionStorage.getItem(cacheKey);
 
     if (cachedData) {
@@ -275,7 +275,8 @@ export class PlayersService {
     const cachedData = sessionStorage.getItem(cacheKey);
 
     if (cachedData) {
-      const parsedData = JSON.parse(cachedData);
+      const decompressedData = this.decompressData(cachedData);
+      const parsedData = JSON.parse(decompressedData);
       const expiryTimestamp = parsedData?.expiry;
 
       if (expiryTimestamp && expiryTimestamp > Date.now()) {
@@ -301,14 +302,11 @@ export class PlayersService {
         tap((response: HttpResponse<Player[]>) => {
           // Cache the response data with expiry timestamp
           const expiryTimestamp = Date.now() + this.getCacheMaxAge() * 1000; // Convert seconds to milliseconds
-          const cachedDataWithExpiry = {
+          const compressedData = this.compressData({
             data: response.body,
             expiry: expiryTimestamp,
-          };
-          sessionStorage.setItem(
-            cacheKey,
-            JSON.stringify(cachedDataWithExpiry)
-          );
+          });
+          sessionStorage.setItem(cacheKey, compressedData);
         })
       )
       .subscribe(
@@ -323,6 +321,7 @@ export class PlayersService {
         }
       );
   }
+
   getCacheMaxAge() {
     // Get current date in UTC
     const currentDateUTC = new Date();
@@ -532,5 +531,36 @@ export class PlayersService {
 
   public isDefaultYear(): boolean {
     return this.currentYearString == this.possibleYearStrings$.getValue()[1];
+  }
+
+  compressData(data: any): string {
+    const json = JSON.stringify(data);
+    const compressed = pako.deflate(json);
+
+    // Convert compressed data to a Uint8Array
+    const uint8Compressed = new Uint8Array(compressed);
+
+    // Convert Uint8Array to base64
+    const base64 = this.arrayBufferToBase64(uint8Compressed.buffer);
+    return base64;
+  }
+
+  arrayBufferToBase64(buffer: ArrayBuffer): string {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  decompressData(data: string): any {
+    const binaryString = atob(data);
+    const binaryData = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      binaryData[i] = binaryString.charCodeAt(i);
+    }
+    const decompressed = pako.inflate(binaryData, { to: 'string' });
+    return decompressed;
   }
 }
