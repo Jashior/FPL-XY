@@ -92,7 +92,7 @@ export class PlayersService {
     this.setLoading(true);
 
     const cacheKey = 'meta-data';
-    const cachedData = sessionStorage.getItem(cacheKey);
+    const cachedData = localStorage.getItem(cacheKey);
 
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
@@ -104,7 +104,7 @@ export class PlayersService {
         return;
       } else {
         // Data has expired, clear it
-        sessionStorage.removeItem(cacheKey);
+        localStorage.removeItem(cacheKey);
       }
     }
     this.http.get<Meta[]>(`${this.API_URL}/getMeta/`).subscribe((resp) => {
@@ -121,7 +121,7 @@ export class PlayersService {
         data: resp[0],
         expiry: expiryTimestamp,
       };
-      sessionStorage.setItem(cacheKey, JSON.stringify(cachedDataWithExpiry));
+      localStorage.setItem(cacheKey, JSON.stringify(cachedDataWithExpiry));
     });
   }
 
@@ -215,7 +215,7 @@ export class PlayersService {
 
   public loadInfoForCurrentYear(): void {
     const cacheKey = `about-${this.currentYearString}`;
-    const cachedData = sessionStorage.getItem(cacheKey);
+    const cachedData = localStorage.getItem(cacheKey);
 
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
@@ -227,7 +227,7 @@ export class PlayersService {
         return;
       } else {
         // Data has expired, clear it
-        sessionStorage.removeItem(cacheKey);
+        localStorage.removeItem(cacheKey);
       }
     }
 
@@ -259,7 +259,7 @@ export class PlayersService {
       data: about,
       expiry: expiryTimestamp,
     };
-    sessionStorage.setItem(cacheKey, JSON.stringify(cachedDataWithExpiry));
+    localStorage.setItem(cacheKey, JSON.stringify(cachedDataWithExpiry));
   }
 
   public loadFilter(): void {
@@ -272,7 +272,7 @@ export class PlayersService {
 
   public loadPlayers(): void {
     const cacheKey = `players-${this.currentYearString}`;
-    const cachedData = sessionStorage.getItem(cacheKey);
+    const cachedData = localStorage.getItem(cacheKey);
 
     if (cachedData) {
       const decompressedData = this.decompressData(cachedData);
@@ -286,7 +286,7 @@ export class PlayersService {
         return;
       } else {
         // Data has expired, clear it
-        sessionStorage.removeItem(cacheKey);
+        localStorage.removeItem(cacheKey);
       }
     }
 
@@ -306,7 +306,7 @@ export class PlayersService {
             data: response.body,
             expiry: expiryTimestamp,
           });
-          sessionStorage.setItem(cacheKey, compressedData);
+          localStorage.setItem(cacheKey, compressedData);
         })
       )
       .subscribe(
