@@ -1,9 +1,41 @@
-<nz-slider
-  nzRange
-  [nzStep]="1"
-  [nzMin]="minGameweek"
-  [nzMax]="maxGameweek"
-  [nzMarks]="marks"
-  [(ngModel)]="gameweekRangeValue"
-  (nzOnAfterChange)="onAfterChange($event)"
-></nz-slider>
+<div class="flex flex-row justify-between">
+  <div class="w-11/12 pr-2">
+    <nz-slider
+      nzRange
+      [nzStep]="1"
+      [nzMin]="minGameweek"
+      [nzMax]="maxGameweek"
+      [nzMarks]="marks"
+      [(ngModel)]="gameweekRangeValue"
+      (nzOnAfterChange)="onAfterChange($event)"
+    >
+    </nz-slider>
+  </div>
+  <div class="w-1/12 mt-1">
+    <button
+      [nzSize]="'small'"
+      nzType="default"
+      [nzTooltipTitle]="
+        playingThroughWeeks ? 'Stop weeks' : 'Play through weeks'
+      "
+      nzTooltipPlacement="top"
+      nz-button
+      nz-tooltip
+      (click)="togglePlayWeeks()"
+    >
+      <span
+        *ngIf="!playingThroughWeeks"
+        nz-icon
+        nzType="right"
+        nzTheme="outline"
+      ></span>
+      <span
+        *ngIf="playingThroughWeeks"
+        nz-icon
+        nzType="pause"
+        nzTheme="outline"
+      ></span>
+      <!-- Use "ExclamationCircle" if "pause" is not the correct icon -->
+    </button>
+  </div>
+</div>
