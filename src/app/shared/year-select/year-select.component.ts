@@ -8,12 +8,11 @@ import { PlayersService } from 'src/app/services/players.service';
   styleUrls: ['./year-select.component.css'],
 })
 export class YearSelectComponent implements OnInit, OnDestroy {
-  selectedYear: string = "";
+  selectedYear: string = '';
   optionList: string[] = [];
   subscriptions: Subscription[] = [];
 
-  constructor(private playersService: PlayersService) {
-  }
+  constructor(private playersService: PlayersService) {}
 
   ngOnInit(): void {
     this.selectedYear = this.playersService.getYearString();

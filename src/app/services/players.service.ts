@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Player } from '../models/Player';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Filter } from '../models/Filter';
 import { Positions } from '../models/Positions';
 import { ActivatedRoute } from '@angular/router';
 import { GraphService } from './graph.service';
-import { first } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 
 export interface Meta {
   current_year_string: string;
@@ -59,7 +59,7 @@ export const DEFAULT_FILTER: Filter = {
 export class PlayersService {
   Positions = Positions;
   private API_URL = environment.BASE_API_URL;
-  private currentYearString: string = '2022-23';
+  private currentYearString: string = '2023-24';
   private maxGameweek: number = 38;
   private currentGameweek: number = 1;
   private possibleYearStrings$ = new BehaviorSubject<string[]>([
@@ -89,16 +89,46 @@ export class PlayersService {
 
   initData() {
     this.setLoading(true);
+
+    const cacheKey = 'meta-data';
+    const cachedData = sessionStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      const expiryTimestamp = parsedData?.expiry;
+
+      if (expiryTimestamp && expiryTimestamp > Date.now()) {
+        // Data is not expired, use it
+        this.processMetaData(parsedData.data);
+        return;
+      } else {
+        // Data has expired, clear it
+        sessionStorage.removeItem(cacheKey);
+      }
+    }
     this.http.get<Meta[]>(`${this.API_URL}/getMeta/`).subscribe((resp) => {
       if (resp.length === 0) {
         console.log('No meta data found');
         return;
       }
-      this.currentYearString = resp[0].current_year_string;
-      this.possibleYearStrings$.next(resp[0].possible_year_strings);
-      this.loadYearFromParams();
-      this.initDataForCurrentYear();
+
+      this.processMetaData(resp[0]);
+
+      // Cache the meta data with expiry timestamp
+      const expiryTimestamp = Date.now() + this.getCacheMaxAge() * 1000; // Convert seconds to milliseconds
+      const cachedDataWithExpiry = {
+        data: resp[0],
+        expiry: expiryTimestamp,
+      };
+      sessionStorage.setItem(cacheKey, JSON.stringify(cachedDataWithExpiry));
     });
+  }
+
+  private processMetaData(meta: Meta): void {
+    this.currentYearString = meta.current_year_string;
+    this.possibleYearStrings$.next(meta.possible_year_strings);
+    this.loadYearFromParams();
+    this.initDataForCurrentYear();
   }
 
   initDataForCurrentYear() {
@@ -183,21 +213,53 @@ export class PlayersService {
   }
 
   public loadInfoForCurrentYear(): void {
+    const cacheKey = `about-${this.currentYearString}`;
+    console.log(`${cacheKey}`);
+    const cachedData = sessionStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      const expiryTimestamp = parsedData?.expiry;
+
+      if (expiryTimestamp && expiryTimestamp > Date.now()) {
+        // Data is not expired, use it
+        this.processAboutData(parsedData.data);
+        return;
+      } else {
+        // Data has expired, clear it
+        sessionStorage.removeItem(cacheKey);
+      }
+    }
+
     this.http
       .get<About[]>(`${this.API_URL}/getAbout/${this.currentYearString}`)
       .pipe(
-        first() // Add the first operator here to take only the first emitted value
+        first(),
+        tap((about) => {
+          if (about[0]) {
+            this.processAboutData(about[0]);
+          }
+        })
       )
-      .subscribe((about) => {
-        if (about[0]) {
-          this.teams = about[0].teams;
-          this.currentGameweek = about[0].current_gameweek;
-          this.gwRange$.next([1, this.currentGameweek]);
-          this.loadFilter();
-          this.loadParams();
-          this.loadPlayers();
-        }
-      });
+      .subscribe();
+  }
+
+  private processAboutData(about: About): void {
+    this.teams = about.teams;
+    this.currentGameweek = about.current_gameweek;
+    this.gwRange$.next([1, this.currentGameweek]);
+    this.loadFilter();
+    this.loadParams();
+    this.loadPlayers();
+
+    // Cache the about data with expiry timestamp
+    const cacheKey = `about-${this.currentYearString}`;
+    const expiryTimestamp = Date.now() + this.getCacheMaxAge() * 1000; // Convert seconds to milliseconds
+    const cachedDataWithExpiry = {
+      data: about,
+      expiry: expiryTimestamp,
+    };
+    sessionStorage.setItem(cacheKey, JSON.stringify(cachedDataWithExpiry));
   }
 
   public loadFilter(): void {
@@ -209,12 +271,83 @@ export class PlayersService {
   }
 
   public loadPlayers(): void {
-    this.http
-      .get<Player[]>(`${this.API_URL}/getPlayers/${this.currentYearString}`)
-      .subscribe((players) => {
-        this.players$.next(players);
+    const cacheKey = `players-${this.currentYearString}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      const expiryTimestamp = parsedData?.expiry;
+
+      if (expiryTimestamp && expiryTimestamp > Date.now()) {
+        // Data is not expired, use it
+        this.players$.next(parsedData.data);
         this.setLoading(false);
-      });
+        return;
+      } else {
+        // Data has expired, clear it
+        sessionStorage.removeItem(cacheKey);
+      }
+    }
+
+    this.http
+      .get<Player[]>(`${this.API_URL}/getPlayers/${this.currentYearString}`, {
+        observe: 'response',
+        responseType: 'json',
+        headers: {
+          'Cache-Control': `max-age=${this.getCacheMaxAge()}`,
+        },
+      })
+      .pipe(
+        tap((response: HttpResponse<Player[]>) => {
+          // Cache the response data with expiry timestamp
+          const expiryTimestamp = Date.now() + this.getCacheMaxAge() * 1000; // Convert seconds to milliseconds
+          const cachedDataWithExpiry = {
+            data: response.body,
+            expiry: expiryTimestamp,
+          };
+          sessionStorage.setItem(
+            cacheKey,
+            JSON.stringify(cachedDataWithExpiry)
+          );
+        })
+      )
+      .subscribe(
+        (response) => {
+          this.players$.next(response.body!);
+          this.setLoading(false);
+        },
+        (error) => {
+          // Handle error
+          console.error(error);
+          this.setLoading(false);
+        }
+      );
+  }
+  getCacheMaxAge() {
+    // Get current date in UTC
+    const currentDateUTC = new Date();
+
+    // Get current date in London time (GMT/UTC+0)
+    const londonOffset = 0; // London is in GMT/UTC+0
+    const currentDateLondon = new Date(
+      currentDateUTC.getTime() + londonOffset * 60 * 1000
+    );
+
+    // Calculate time until midnight in London time
+    const midnightLondon = new Date(
+      currentDateLondon.getFullYear(),
+      currentDateLondon.getMonth(),
+      currentDateLondon.getDate() + 1,
+      0,
+      0,
+      0,
+      0
+    );
+    const msUntilMidnightLondon =
+      midnightLondon.getTime() - currentDateLondon.getTime();
+
+    // Convert milliseconds to seconds for cache max-age
+    return Math.floor(msUntilMidnightLondon / 1000);
   }
 
   public getPlayers(): Observable<Player[]> {
