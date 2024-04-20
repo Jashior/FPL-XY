@@ -63,13 +63,12 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
   }
 
   playWeeks() {
-    let currGW = this.playersService.getCurrentGameweek();
-    let gw = 1;
-
-    this.playersService.setMinMinutes(0);
-    this.playersService.setGwRange([1, 38]);
-
-    this.playGameweek(gw, currGW);
+    if (this.gameweekRangeValue && this.gameweekRangeValue[1] !== undefined) {
+      let endOfPlaythroughWeek = this.gameweekRangeValue[1];
+      this.playGameweek(1, endOfPlaythroughWeek);
+    } else {
+      this.playGameweek(1, this.playersService.getCurrentGameweek());
+    }
   }
 
   stopWeeks() {
@@ -80,8 +79,8 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
     this.graphService.setPlaythroughMode(true);
 
     if (current <= end) {
-      this.playersService.setMinMinutes(0);
       this.playersService.setGwRange([0, current]);
+      this.playersService.setMinMinutes(0);
       setTimeout(() => {
         if (this.playthroughMode) {
           this.playGameweek(current + 1, end);
