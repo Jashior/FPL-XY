@@ -65,6 +65,7 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
     this.playingThroughWeeks = true;
 
     if (current <= end) {
+      this.playersService.setMinMinutes(0);
       this.playersService.setGwRange([0, current]);
       // Move to the next gameweek after 1.3 seconds
       setTimeout(() => {

@@ -1,7 +1,7 @@
 const titleDictionary: any = {
   minutes_t: 'Minutes Played',
-  tsb: 'Ownership %',
-  price: 'Price',
+  tsb: 'Ownership % (current)',
+  price: 'Price (current)',
   points_t: 'Points',
   points_90: 'Points per 90',
   npxGxA_t: 'npxGI',
