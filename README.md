@@ -11,3 +11,9 @@ https://fpl-xy.vercel.app/home
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.8.
 
 [demo]: src/assets/dashboard_1.gif
+
+# Running Notes:
+
+May need: 
+nvm use 16
+npm install -g @angular/cli@12
