@@ -281,11 +281,17 @@ export class PlayersService {
 
       if (expiryTimestamp && expiryTimestamp > Date.now()) {
         // Data is not expired, use it
+        console.log(
+          `Player Data not expired, using it. Now: ${Date.now()}, Expires: ${expiryTimestamp}`
+        );
         this.players$.next(parsedData.data);
         this.setLoading(false);
         return;
       } else {
         // Data has expired, clear it
+        console.log(
+          `Player data expired, deleting it. Now: ${Date.now()}, Expires: ${expiryTimestamp}`
+        );
         localStorage.removeItem(cacheKey);
       }
     }
@@ -302,10 +308,12 @@ export class PlayersService {
         tap((response: HttpResponse<Player[]>) => {
           // Cache the response data with expiry timestamp
           const expiryTimestamp = Date.now() + this.getCacheMaxAge() * 1000; // Convert seconds to milliseconds
+          // const expiryTimestamp = Date.now() + 10 * 1000; // Convert seconds to milliseconds
           const compressedData = this.compressData({
             data: response.body,
             expiry: expiryTimestamp,
           });
+          console.log(`New player data set with expiry: ${expiryTimestamp}`);
           localStorage.setItem(cacheKey, compressedData);
         })
       )
@@ -320,6 +328,37 @@ export class PlayersService {
           this.setLoading(false);
         }
       );
+  }
+
+  compressData(data: any): string {
+    const json = JSON.stringify(data);
+    const compressed = pako.deflate(json);
+
+    // Convert compressed data to a Uint8Array
+    const uint8Compressed = new Uint8Array(compressed);
+
+    // Convert Uint8Array to base64
+    const base64 = this.arrayBufferToBase64(uint8Compressed.buffer);
+    return base64;
+  }
+
+  arrayBufferToBase64(buffer: ArrayBuffer): string {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  decompressData(data: string): any {
+    const binaryString = atob(data);
+    const binaryData = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      binaryData[i] = binaryString.charCodeAt(i);
+    }
+    const decompressed = pako.inflate(binaryData, { to: 'string' });
+    return decompressed;
   }
 
   getCacheMaxAge() {
@@ -531,36 +570,5 @@ export class PlayersService {
 
   public isDefaultYear(): boolean {
     return this.currentYearString == this.possibleYearStrings$.getValue()[1];
-  }
-
-  compressData(data: any): string {
-    const json = JSON.stringify(data);
-    const compressed = pako.deflate(json);
-
-    // Convert compressed data to a Uint8Array
-    const uint8Compressed = new Uint8Array(compressed);
-
-    // Convert Uint8Array to base64
-    const base64 = this.arrayBufferToBase64(uint8Compressed.buffer);
-    return base64;
-  }
-
-  arrayBufferToBase64(buffer: ArrayBuffer): string {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary);
-  }
-
-  decompressData(data: string): any {
-    const binaryString = atob(data);
-    const binaryData = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      binaryData[i] = binaryString.charCodeAt(i);
-    }
-    const decompressed = pako.inflate(binaryData, { to: 'string' });
-    return decompressed;
   }
 }
