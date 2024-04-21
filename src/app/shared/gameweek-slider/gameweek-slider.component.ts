@@ -16,6 +16,8 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   playingThroughWeeks: boolean = false;
   playthroughMode: boolean = false;
+  endOfPlaythroughWeek: number = 38;
+  startOfPlaythroughWeek: number = 1;
 
   constructor(
     private playersService: PlayersService,
@@ -64,26 +66,41 @@ export class GameweekSliderComponent implements OnInit, OnDestroy {
 
   playWeeks() {
     if (this.gameweekRangeValue && this.gameweekRangeValue[1] !== undefined) {
-      let endOfPlaythroughWeek = this.gameweekRangeValue[1];
-      this.playGameweek(1, endOfPlaythroughWeek);
+      this.endOfPlaythroughWeek = this.gameweekRangeValue[1];
     } else {
-      this.playGameweek(1, this.playersService.getCurrentGameweek());
+      this.endOfPlaythroughWeek = this.playersService.getCurrentGameweek();
     }
+
+    if (this.gameweekRangeValue && this.gameweekRangeValue[0] !== undefined) {
+      this.startOfPlaythroughWeek = this.gameweekRangeValue[0];
+    } else {
+      this.startOfPlaythroughWeek = 1;
+    }
+
+    this.playGameweek(
+      this.startOfPlaythroughWeek,
+      this.endOfPlaythroughWeek,
+      this.startOfPlaythroughWeek
+    );
   }
 
   stopWeeks() {
     this.graphService.setPlaythroughMode(false);
+    this.playersService.setGwRange([
+      this.startOfPlaythroughWeek,
+      this.endOfPlaythroughWeek,
+    ]);
   }
 
-  playGameweek(current: number, end: number) {
+  playGameweek(start: number, end: number, current: number) {
     this.graphService.setPlaythroughMode(true);
 
     if (current <= end) {
-      this.playersService.setGwRange([0, current]);
+      this.playersService.setGwRange([start, current]);
       this.playersService.setMinMinutes(0);
       setTimeout(() => {
         if (this.playthroughMode) {
-          this.playGameweek(current + 1, end);
+          this.playGameweek(start, end, current + 1);
         }
       }, 900);
     } else {
