@@ -166,84 +166,84 @@ export class VisualComponent implements OnInit, OnDestroy {
   calcPlayerStatsInGW(p: Player, gwrange: number[]): Player {
     let st = gwrange[0];
     let end = gwrange[1];
-    let minutes = p.minutes.slice(st, end + 1).reduce((ac, e) => ac + e);
+
+    let minutes = p.minutes.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.minutes_t = minutes;
 
-    p.assists_t = p.assists.slice(st, end + 1).reduce((ac, e) => ac + e);
+    p.assists_t = p.assists.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.assists_90 = 90 * (p.assists_t / minutes) || 0;
 
-    p.bonus_t = p.bonus.slice(st, end + 1).reduce((ac, e) => ac + e);
+    p.bonus_t = p.bonus.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.bonus_90 = 90 * (p.bonus_t / minutes) || 0;
 
-    p.bps_t = p.bps.slice(st, end + 1).reduce((ac, e) => ac + e);
+    p.bps_t = p.bps.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.bps_90 = 90 * (p.bps_t / minutes) || 0;
 
-    p.goals_t = p.goals.slice(st, end + 1).reduce((ac, e) => ac + e);
+    p.goals_t = p.goals.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.goals_90 = 90 * (p.goals_t / minutes) || 0;
 
     p.goals_assists_t = p.goals_assists
       .slice(st, end + 1)
-      .reduce((ac, e) => ac + e);
+      .reduce((ac, e) => ac + e, 0);
     p.goals_assists_90 = 90 * (p.goals_assists_t / minutes) || 0;
 
-    p.points_t = p.points.slice(st, end + 1).reduce((ac, e) => ac + e);
+    p.points_t = p.points.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.points_90 = 90 * (p.points_t / minutes) || 0;
 
-    p.points_t = p.points.slice(st, end + 1).reduce((ac, e) => ac + e);
-    p.points_90 = 90 * (p.points_t / minutes) || 0;
-
-    p.red_cards_t = p.red_cards.slice(st, end + 1).reduce((ac, e) => ac + e);
+    p.red_cards_t = p.red_cards.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
     p.red_cards_90 = 90 * (p.red_cards_t / minutes) || 0;
 
     p.yellow_cards_t = p.yellow_cards
       .slice(st, end + 1)
-      .reduce((ac, e) => ac + e);
+      .reduce((ac, e) => ac + e, 0);
     p.yellow_cards_90 = 90 * (p.yellow_cards_t / minutes) || 0;
 
     if (p.key_passes) {
       p.key_passes_t = p.key_passes
         .slice(st, end + 1)
-        .reduce((ac, e) => ac + e);
+        .reduce((ac, e) => ac + e, 0);
       p.key_passes_90 = 90 * (p.key_passes_t / minutes) || 0;
     }
 
     if (p.npg) {
-      p.npg_t = p.npg.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npg_t = p.npg.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.npg_90 = 90 * (p.npg_t / minutes) || 0;
     }
 
     if (p.npxG) {
-      p.npxG_t = p.npxG.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npxG_t = p.npxG.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.npxG_90 = 90 * (p.npxG_t / minutes) || 0;
     }
 
     if (p.npxGxA) {
-      p.npxGxA_t = p.npxGxA.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npxGxA_t = p.npxGxA.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.npxGxA_90 = 90 * (p.npxGxA_t / minutes) || 0;
     }
 
     if (p.shots) {
-      p.shots_t = p.shots.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.shots_t = p.shots.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.shots_90 = 90 * (p.shots_t / minutes) || 0;
     }
 
     if (p.xG.length > 0) {
-      p.xG_t = p.xG.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xG_t = p.xG.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xG_90 = 90 * (p.xG_t / minutes) || 0;
     }
 
     if (p.xA.length > 0) {
-      p.xA_t = p.xA.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xA_t = p.xA.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xA_90 = 90 * (p.xA_t / minutes) || 0;
     }
 
     if (p.xGChain && p.xGChain.length > 0) {
-      p.xGChain_t = p.xGChain.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xGChain_t = p.xGChain.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xGChain_90 = 90 * (p.xGChain_t / minutes) || 0;
     }
 
     if (p.xGBuildup && p.xGBuildup.length > 0) {
-      p.xGBuildup_t = p.xGBuildup.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xGBuildup_t = p.xGBuildup
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e, 0);
       p.xGBuildup_90 = 90 * (p.xGBuildup_t / minutes) || 0;
     }
 
@@ -254,45 +254,49 @@ export class VisualComponent implements OnInit, OnDestroy {
 
     // Didn't introduce attacking return until 22-23 season
     if (p.npxAttRet && p.npxAttRet.length > 0) {
-      p.npxAttRet_t = p.npxAttRet.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npxAttRet_t = p.npxAttRet
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e, 0);
       p.npxAttRet_90 = 90 * (p.npxAttRet_t / minutes) || 0;
     }
 
     if (p.npAttRet && p.npAttRet.length > 0) {
-      p.npAttRet_t = p.npAttRet.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.npAttRet_t = p.npAttRet.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.npAttRet_90 = 90 * (p.npAttRet_t / minutes) || 0;
     }
 
     // Following was mostly introduced from FPL api update 22-23 season
 
     if (p.GC && p.GC.length > 0) {
-      p.GC_t = p.GC.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.GC_t = p.GC.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.GC_90 = 90 * (p.GC_t / minutes) || 0;
     }
     if (p.xGC && p.xGC.length > 0) {
-      p.xGC_t = p.xGC.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.xGC_t = p.xGC.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xGC_90 = 90 * (p.xGC_t / minutes) || 0;
     }
     if (p.saves && p.saves.length > 0) {
-      p.saves_t = p.saves.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.saves_t = p.saves.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.saves_90 = 90 * (p.saves_t / minutes) || 0;
     }
     if (p.pen_saves && p.pen_saves.length > 0) {
-      p.pen_saves_t = p.pen_saves.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.pen_saves_t = p.pen_saves
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e, 0);
       p.pen_saves_90 = 90 * (p.pen_saves_t / minutes) || 0;
     }
     if (p.pen_misses && p.pen_misses.length > 0) {
       p.pen_misses_t = p.pen_misses
         .slice(st, end + 1)
-        .reduce((ac, e) => ac + e);
+        .reduce((ac, e) => ac + e, 0);
       p.pen_misses_90 = 90 * (p.pen_misses_t / minutes) || 0;
     }
     if (p.OG && p.OG.length > 0) {
-      p.OG_t = p.OG.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.OG_t = p.OG.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.OG_90 = 90 * (p.OG_t / minutes) || 0;
     }
     if (p.CS && p.CS.length > 0) {
-      p.CS_t = p.CS.slice(st, end + 1).reduce((ac, e) => ac + e);
+      p.CS_t = p.CS.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.CS_90 = 90 * (p.CS_t / minutes) || 0;
     }
 

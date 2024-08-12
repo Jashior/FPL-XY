@@ -7,27 +7,32 @@ dotenv.config();
 const Player2122 = require("../models/Player").player2122;
 const Player2223 = require("../models/Player").player2223;
 const Player2324 = require("../models/Player").player2324;
+const Player2425 = require("../models/Player").player2425;
 
 // About Models (year metadata)
 const About2122 = require("../models/About").about2122;
 const About2223 = require("../models/About").about2223;
 const About2324 = require("../models/About").about2324;
+const About2425 = require("../models/About").about2425;
 
 // Meta
 const Meta = require("../models/Meta").meta;
 
 // DEV
 const developerMode = !process.env.NODE_ENV;
+// const developerMode = false;
 
 const PLAYER_DICT = {
   "2021-22": Player2122,
   "2022-23": Player2223,
   "2023-24": Player2324,
+  "2024-25": Player2425,
 };
 const ABOUT_DICT = {
   "2021-22": About2122,
   "2022-23": About2223,
   "2023-24": About2324,
+  "2024-25": About2425,
 };
 
 // Example: /api/getPlayers/2022-23

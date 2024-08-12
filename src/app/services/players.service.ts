@@ -60,10 +60,11 @@ export const DEFAULT_FILTER: Filter = {
 export class PlayersService {
   Positions = Positions;
   private API_URL = environment.BASE_API_URL;
-  private currentYearString: string = '2023-24';
+  private currentYearString: string = '2024-25';
   private maxGameweek: number = 38;
   private currentGameweek: number = 1;
   private possibleYearStrings$ = new BehaviorSubject<string[]>([
+    '2024-25',
     '2023-24',
     '2022-23',
     '2021-22',
