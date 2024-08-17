@@ -220,6 +220,10 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.npxGxA_90 = 90 * (p.npxGxA_t / minutes) || 0;
     }
 
+    if (p.xGI && p.xGI.length > 0) {
+      p.xGI_t = p.xGI.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
+      p.xGI_90 = 90 * (p.xGI_t / minutes) || 0;
+    }
     if (p.xGI_FPL && p.xGI_FPL.length > 0) {
       p.xGI_FPL_t = p.xGI_FPL.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xGI_FPL_90 = 90 * (p.xGI_FPL_t / minutes) || 0;

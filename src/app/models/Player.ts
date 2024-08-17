@@ -51,6 +51,9 @@ export interface Player {
   npxGxA: number[];
   npxGxA_t: number;
   npxGxA_90: number;
+  xGI: number[];
+  xGI_t: number;
+  xGI_90: number;
   xGI_FPL: number[];
   xGI_FPL_t: number;
   xGI_FPL_90: number;
