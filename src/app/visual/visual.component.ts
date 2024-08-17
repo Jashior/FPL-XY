@@ -220,6 +220,11 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.npxGxA_90 = 90 * (p.npxGxA_t / minutes) || 0;
     }
 
+    if (p.xGI_FPL && p.xGI_FPL.length > 0) {
+      p.xGI_FPL_t = p.xGI_FPL.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
+      p.xGI_FPL_90 = 90 * (p.xGI_FPL_t / minutes) || 0;
+    }
+
     if (p.shots) {
       p.shots_t = p.shots.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.shots_90 = 90 * (p.shots_t / minutes) || 0;
@@ -230,9 +235,19 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.xG_90 = 90 * (p.xG_t / minutes) || 0;
     }
 
+    if (p.xG_FPL && p.xG_FPL.length > 0) {
+      p.xG_FPL_t = p.xG_FPL.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
+      p.xG_FPL_90 = 90 * (p.xG_FPL_t / minutes) || 0;
+    }
+
     if (p.xA.length > 0) {
       p.xA_t = p.xA.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xA_90 = 90 * (p.xA_t / minutes) || 0;
+    }
+
+    if (p.xA_FPL && p.xA_FPL.length > 0) {
+      p.xA_FPL_t = p.xA_FPL.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
+      p.xA_FPL_90 = 90 * (p.xA_FPL_t / minutes) || 0;
     }
 
     if (p.xGChain && p.xGChain.length > 0) {
