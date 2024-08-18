@@ -9,9 +9,13 @@
         (ngModelChange)="updateXAxis($event)"
         [nzDropdownMatchSelectWidth]="false"
         [nzShowSearch]="true"
+        [ngClass]="{
+          'border-red-700 border-2 rounded-md': isSelectedAxisDisabled()
+        }"
       >
         <nz-option
           *ngFor="let axis of possibleAxis"
+          [nzDisabled]="axis.disabled"
           [nzLabel]="axis['viewValue']"
           [nzValue]="axis['value']"
         ></nz-option>
@@ -29,6 +33,7 @@
       >
         <nz-option
           *ngFor="let axis of possibleAxis"
+          [nzDisabled]="axis.disabled"
           [nzLabel]="axis['viewValue']"
           [nzValue]="axis['value']"
         ></nz-option>

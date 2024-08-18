@@ -31,7 +31,7 @@ import { saveAs } from 'file-saver';
 import { GraphService } from '../services/graph.service';
 import { environment } from 'src/environments/environment';
 import { take } from 'rxjs/operators';
-
+import { Axis } from '../models/Axes';
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
@@ -60,7 +60,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   normAxis: boolean = true;
   playersF: Player[] = [];
   chartOption: EChartsOption = {};
-  possibleAxis: any = getAxisViewValueArray();
+  possibleAxis: Axis[] = getAxisViewValueArray();
   DEFAULT_X_AXIS = 'price';
   DEFAULT_Y_AXIS = 'points_t';
   selectedXAxis = this.DEFAULT_X_AXIS;
@@ -134,6 +134,9 @@ export class GraphComponent implements OnInit, OnDestroy {
         this.playersF$?.subscribe((players) => {
           this.loading = true;
           this.playersF = players;
+          if (players.length > 0) {
+            this.adjustAvailableAxes(players[0]);
+          }
           this.loadMinMax(
             players,
             this.axisMinRangeNorm,
@@ -154,6 +157,21 @@ export class GraphComponent implements OnInit, OnDestroy {
     }
   }
 
+  adjustAvailableAxes(player: Player) {
+    let axes = getAxisKeys();
+    for (let a of axes) {
+      if (a in player) {
+        this.possibleAxis = this.possibleAxis.map((x: any) =>
+          x.value === a ? { ...x, disabled: false } : x
+        );
+      } else {
+        this.possibleAxis = this.possibleAxis.map((x: any) =>
+          x.value === a ? { ...x, disabled: true } : x
+        );
+      }
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
@@ -162,6 +180,14 @@ export class GraphComponent implements OnInit, OnDestroy {
     return window.matchMedia('(prefers-color-scheme: dark)')['matches']
       ? 'chalk'
       : 'vintage';
+  }
+
+  isSelectedAxisDisabled(): boolean {
+    const selectedAxis = this.possibleAxis.find(
+      (a) => a.value === this.selectedXAxis
+    );
+    let isDisabled = selectedAxis?.disabled ?? false;
+    return isDisabled;
   }
 
   sortFnX = (a: Player, b: Player) =>

@@ -1,3 +1,9 @@
+export interface Axis {
+  value: string;
+  viewValue: string;
+  disabled: boolean;
+}
+
 const titleDictionary: any = {
   minutes_t: 'Minutes Played',
   tsb: 'Ownership % (latest)',
@@ -136,13 +142,14 @@ export function getAxisKeys(): string[] {
   return Object.keys(titleDictionary);
 }
 
-export function getAxisViewValueArray(): {
-  value: string;
-  viewValue: string;
-}[] {
+export function getAxisViewValueArray(): Axis[] {
   let viewValueArr = [];
   for (let key of getAxisKeys()) {
-    viewValueArr.push({ value: key, viewValue: titleDictionary[key] });
+    viewValueArr.push({
+      value: key,
+      viewValue: titleDictionary[key],
+      disabled: false,
+    });
   }
   return viewValueArr;
 }
