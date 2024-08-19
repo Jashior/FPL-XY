@@ -12,6 +12,10 @@
 .anticon-reload:hover{
     color: #177DDC
 }
+.import-icon-button:hover{
+    cursor: pointer;
+    color: #177DDC
+}
 .ant-slider-dot-active {
     border-color: #177DDC;
 }

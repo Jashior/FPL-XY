@@ -40,7 +40,22 @@
       <app-min-minutes></app-min-minutes>
     </div>
     <div>
-      Highlight
+      <div class="flex flex-row justify-center gap-2">
+        <div>
+          Highlight
+        </div>
+        <div
+          *ngIf="areWeMaximumYear"
+          nz-tooltip
+          nzTooltipTitle="Import your team"
+          nzTooltipPlacement="top"
+          (click)="showHighlightTeamModal()"
+        >
+        <span nz-icon nzType="file-add" nzTheme="fill" class="import-icon-button"></span>
+      </div>
+  </div>
+   
+
       <app-player-search></app-player-search>
     </div>
     <div>
@@ -91,3 +106,13 @@
     </div>
   </div>
 </ng-template>
+
+<nz-modal [(nzVisible)]="fplTeamModalIsVisible" 
+  nzTitle="Enter Your FPL team ID" 
+  nzCentered
+  (nzOnCancel)="handleCancelHighlightTeamModal()" 
+  (nzOnOk)="handleOkHighlightTeamModal()">
+  <ng-container *nzModalContent>
+    <input type="text" nz-input nzSize="large" [(ngModel)]="fplTeamId" (keydown.enter)="handleOkHighlightTeamModal()" />
+  </ng-container>
+</nz-modal>
