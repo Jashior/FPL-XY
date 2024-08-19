@@ -18,6 +18,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 
 import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -27,6 +28,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 import { PriceSliderComponent } from './shared/price-slider/price-slider.component';
 import { TsbSliderComponent } from './shared/tsb-slider/tsb-slider.component';
@@ -79,6 +81,7 @@ const routes: Routes = [
     FormsModule,
     BrowserAnimationsModule,
     NzSliderModule,
+    NzInputModule,
     NzInputNumberModule,
     NzSelectModule,
     NzSkeletonModule,
@@ -92,6 +95,7 @@ const routes: Routes = [
     NzRadioModule,
     NzButtonModule,
     NzToolTipModule,
+    NzModalModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'), // or import('./path-to-my-custom-echarts')
     }),
