@@ -21,6 +21,7 @@ import {
 import { Positions } from '../models/Positions';
 import { ActivatedRoute } from '@angular/router';
 import { GraphService } from '../services/graph.service';
+import { FplService } from '../services/fpl.service';
 
 @Component({
   selector: 'app-visual',
@@ -53,11 +54,15 @@ export class VisualComponent implements OnInit, OnDestroy {
   showSidePanel: boolean = true;
   fadeInSidePanel: boolean = false;
   fadeInGraph: boolean = false;
+  fplTeamModalIsVisible = false;
+  fplTeamId: string = "";
+  areWeMaximumYear: boolean = true;
 
   constructor(
     private playersService: PlayersService,
     private route: ActivatedRoute,
-    private graphService: GraphService
+    private graphService: GraphService,
+    private fplService: FplService
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +80,7 @@ export class VisualComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.fadeInSidePanel = false;
         this.fadeInGraph = false;
+        this.areWeMaximumYear = this.playersService.getAreWeMaximumYear();
         // this.parseQueryParams();
         this.load();
         setTimeout(() => {
@@ -82,6 +88,7 @@ export class VisualComponent implements OnInit, OnDestroy {
           this.fadeInGraph = true;
         }, 500);
       });
+  
   }
 
   load() {
@@ -328,6 +335,26 @@ export class VisualComponent implements OnInit, OnDestroy {
 
   handleScreenExpandedChanged(screenExpanded: boolean) {
     this.showSidePanel = !screenExpanded;
+  }
+
+  
+  showHighlightTeamModal(): void {
+    this.fplTeamModalIsVisible = true;
+  }
+
+  handleOkHighlightTeamModal(): void {
+    this.fplService.getGameWeekPicks(this.fplTeamId, this.playersService.getCurrentGameweek()).subscribe((result) => {
+      result.picks.forEach(pick => {
+        this.playersService.addHighlightedPlayer(pick.element);
+      });
+    });
+
+    this.fplTeamModalIsVisible = false;
+    this.fplTeamId = '';
+  }
+
+  handleCancelHighlightTeamModal(): void {
+    this.fplTeamModalIsVisible = false;
   }
 
   ngOnDestroy(): void {

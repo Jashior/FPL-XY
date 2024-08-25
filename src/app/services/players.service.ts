@@ -76,6 +76,7 @@ export class PlayersService {
   public filter$ = new BehaviorSubject<Filter>(this.getDefaultFilter());
   public highlightedPlayers$ = new BehaviorSubject<number[]>([]);
   public paramsSet = false;
+  public areWeMaximumYear: boolean = true;
 
   // Loading states
   private _loading$ = new BehaviorSubject<boolean>(true);
@@ -131,6 +132,15 @@ export class PlayersService {
     this.possibleYearStrings$.next(meta.possible_year_strings);
     this.loadYearFromParams();
     this.initDataForCurrentYear();
+    this.setAreWeMaximumYear(meta.possible_year_strings, this.currentYearString);
+  }
+
+  setAreWeMaximumYear(yearStrings: string[], currentYearString: string){
+    this.areWeMaximumYear = currentYearString == yearStrings[yearStrings.length - 1];
+  }
+
+  getAreWeMaximumYear(): boolean{
+    return this.areWeMaximumYear
   }
 
   initDataForCurrentYear() {
@@ -527,6 +537,7 @@ export class PlayersService {
       return;
     }
     this.currentYearString = val;
+    this.setAreWeMaximumYear(possibleYears, this.currentYearString);
     this.initDataForCurrentYear();
   }
 
