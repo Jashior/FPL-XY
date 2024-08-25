@@ -39,8 +39,8 @@ export const MAXIMUM_FILTER_VALUES: Omit<
   min_minutes: 3420,
   min_tsb: 100,
   max_tsb: 100,
-  min_price: 15,
-  max_price: 15,
+  min_price: 16,
+  max_price: 16,
 };
 
 export const DEFAULT_FILTER: Filter = {
@@ -48,7 +48,7 @@ export const DEFAULT_FILTER: Filter = {
   min_tsb: 0,
   max_tsb: 100,
   min_price: 3,
-  max_price: 15,
+  max_price: 16,
   teams: [],
   positions: Positions,
   excluded_players: [],

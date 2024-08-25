@@ -13,8 +13,7 @@ export class PriceSliderComponent implements OnInit, OnDestroy {
   innerWidth: any;
   subscriptions: Subscription[] = [];
 
-  constructor(private playersService: PlayersService) {
-  }
+  constructor(private playersService: PlayersService) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -28,11 +27,11 @@ export class PriceSliderComponent implements OnInit, OnDestroy {
     this.innerWidth = window.innerWidth;
     if (this.innerWidth > 1300) {
       this.marks = {
-        5: `5m`,
-        7.5: `7.5m`,
+        4: `4m`,
+        6: `6m`,
+        8: `8m`,
         10: `10m`,
-        12.5: `12.5m`,
-        15: `15m`,
+        16: `16m`,
       };
     }
   }
