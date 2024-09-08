@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "FPLXY",
+      name: "FPL-XY",
       script: "./server.js",
       watch: false,
       force: true,
