@@ -60,7 +60,8 @@ export class GraphComponent implements OnInit, OnDestroy {
   normAxis: boolean = true;
   playersF: Player[] = [];
   chartOption: EChartsOption = {};
-  possibleAxis: Axis[] = getAxisViewValueArray();
+  possibleXAxis: Axis[] = getAxisViewValueArray();
+  possibleYAxis: Axis[] = getAxisViewValueArray();
   DEFAULT_X_AXIS = 'price';
   DEFAULT_Y_AXIS = 'points_t';
   selectedXAxis = this.DEFAULT_X_AXIS;
@@ -160,15 +161,23 @@ export class GraphComponent implements OnInit, OnDestroy {
   adjustAvailableAxes(player: Player) {
     let axes = getAxisKeys();
     for (let a of axes) {
-      if (a in player) {
-        this.possibleAxis = this.possibleAxis.map((x: any) =>
-          x.value === a ? { ...x, disabled: false } : x
-        );
-      } else {
-        this.possibleAxis = this.possibleAxis.map((x: any) =>
-          x.value === a ? { ...x, disabled: true } : x
-        );
-      }
+      const existsInPlayer = a in player;
+
+      this.possibleXAxis = this.possibleXAxis.map((x: any) => {
+        if (x.value === a) {
+          // Only enable if it exists in the player data AND it's not currently selected as the Y-axis
+          x.disabled = !(existsInPlayer && x.value !== this.selectedYAxis);
+        }
+        return x;
+      });
+
+      this.possibleYAxis = this.possibleYAxis.map((x: any) => {
+        if (x.value === a) {
+          // Only enable if it exists in the player data AND it's not currently selected as the X-axis
+          x.disabled = !(existsInPlayer && x.value !== this.selectedXAxis);
+        }
+        return x;
+      });
     }
   }
 
@@ -182,9 +191,23 @@ export class GraphComponent implements OnInit, OnDestroy {
       : 'vintage';
   }
 
-  isSelectedAxisDisabled(): boolean {
-    const selectedAxis = this.possibleAxis.find(
+  // isSelectedAxisDisabled(): boolean {
+  //   const selectedAxis = this.possibleAxis.find(
+  //     (a) => a.value === this.selectedXAxis
+  //   );
+  //   let isDisabled = selectedAxis?.disabled ?? false;
+  //   return isDisabled;
+  // }
+  isSelectedXAxisDisabled(): boolean {
+    const selectedAxis = this.possibleXAxis.find(
       (a) => a.value === this.selectedXAxis
+    );
+    let isDisabled = selectedAxis?.disabled ?? false;
+    return isDisabled;
+  }
+  isSelectedYAxisDisabled(): boolean {
+    const selectedAxis = this.possibleYAxis.find(
+      (a) => a.value === this.selectedYAxis
     );
     let isDisabled = selectedAxis?.disabled ?? false;
     return isDisabled;
@@ -268,15 +291,26 @@ export class GraphComponent implements OnInit, OnDestroy {
   updateXAxis(axis: string): void {
     this.graphService.setXAxis(axis);
     this.selectedXAxis = axis;
+    this.possibleYAxis = [
+      ...this.possibleYAxis.map((yAxisOption) => {
+        yAxisOption.disabled = yAxisOption.value === axis;
+        return yAxisOption;
+      }),
+    ];
     this.loadChartOptions();
   }
 
   updateYAxis(axis: string): void {
     this.graphService.setYAxis(axis);
     this.selectedYAxis = axis;
+    this.possibleXAxis = [
+      ...this.possibleXAxis.map((xAxisOption) => {
+        xAxisOption.disabled = xAxisOption.value === axis;
+        return xAxisOption;
+      }),
+    ];
     this.loadChartOptions();
   }
-
   getTitle() {
     return `${getAxisTitle(this.selectedYAxis)} against ${getAxisTitle(
       this.selectedXAxis

@@ -10,11 +10,11 @@
         [nzDropdownMatchSelectWidth]="false"
         [nzShowSearch]="true"
         [ngClass]="{
-          'border-red-700 border-2 rounded-md': isSelectedAxisDisabled()
+          'border-red-700 border-2 rounded-md': isSelectedXAxisDisabled()
         }"
       >
         <nz-option
-          *ngFor="let axis of possibleAxis"
+          *ngFor="let axis of possibleXAxis"
           [nzDisabled]="axis.disabled"
           [nzLabel]="axis['viewValue']"
           [nzValue]="axis['value']"
@@ -30,9 +30,12 @@
         (ngModelChange)="updateYAxis($event)"
         [nzDropdownMatchSelectWidth]="false"
         [nzShowSearch]="true"
+        [ngClass]="{
+          'border-red-700 border-2 rounded-md': isSelectedYAxisDisabled()
+        }"
       >
         <nz-option
-          *ngFor="let axis of possibleAxis"
+          *ngFor="let axis of possibleYAxis"
           [nzDisabled]="axis.disabled"
           [nzLabel]="axis['viewValue']"
           [nzValue]="axis['value']"
