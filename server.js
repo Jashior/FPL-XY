@@ -29,20 +29,20 @@ database.once("connected", () => {
   console.log("Database Connected");
 });
 
+console.log(process.env.NODE_ENV);
 // Static Route, serve static page in dist folder IF in production mode
 if (process.env.NODE_ENV) {
-  // console.log(`Production Environment: serving static Front End`);
-  var distDir = __dirname + "/dist/fplv";
+  const distDir = __dirname + "/dist/fplv";
   app.use(express.static(distDir));
   app.get("*", function (req, res) {
     res.sendFile("index.html", { root: distDir });
   });
-  // app.use(express.static("./dist/fplv"));
-  // app.get("/*", function (req, res) {
-  //   res.sendFile("index.html", { root: "dist/fplv" });
-  // });
-} else {
-  console.log(`Development Environment: NOT serving static Front End`);
+
+  if (process.env.NODE_ENV === "production") {
+    console.log(`Production Environment: serving static Front End`);
+  } else {
+    console.log(`Development Environment: serving static Front End`);
+  }
 }
 
 // Server start
