@@ -12,9 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          repository: Jashior/FPL-XY  # Specify your repo
-          ssh-key: ${{ secrets.DEPLOY_USER_SSH_KEY }} # For private repo access
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -33,14 +30,14 @@ jobs:
         with:
           host: 65.109.8.91
           username: jason
-          ssh-key: ${{ secrets.DEPLOY_USER_SSH_KEY }}
+          key: ${{ secrets.DEPLOY_USER_SSH_KEY }}
           debug: true
           script: |
             ls -a
             echo "Connection successful"
             cd /home/dev/FPL-XY
             git pull
-            npm ci
+            npm i
             pm2 restart FPL-XY
 
           # Additional steps if needed for subdomain deployment:
