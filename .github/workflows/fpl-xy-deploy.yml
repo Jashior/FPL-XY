@@ -33,13 +33,15 @@ jobs:
           key: ${{ secrets.DEPLOY_USER_SSH_KEY }}
           debug: true
           script: |
-            ls -a
             echo "Connection successful"
             cd /home/dev/FPL-XY
-            git pull
+            git fetch
+            git reset --hard origin/master
             npm i
             pm2 restart FPL-XY
 
-          # Additional steps if needed for subdomain deployment:
-          # - Configure Nginx/Apache to serve the app from the subdomain
-          # - ... (Other necessary steps based on your server setup)
+
+     # Add steps here to configure Nginx/Apache for subdomain deployment
+      # - Create/modify virtual host for fpl.zanaris.dev
+      # - Point to the build output directory
+      # - Reload/restart the web server
