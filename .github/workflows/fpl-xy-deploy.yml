@@ -1,0 +1,48 @@
+name: Deploy FPL-XY to Subdomain
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: Jashior/FPL-XY  # Specify your repo
+          ssh-key: ${{ secrets.DEPLOY_USER_SSH_KEY }} # For private repo access
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          nvm use 20 
+          npm install
+
+      - name: Build Angular app
+        run: npm run build-ssl
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: 65.109.8.91
+          username: jason
+          key: ${{ secrets.DEPLOY_USER_SSH_KEY }}
+          script: |
+            cd /home/dev/FPL-XY
+            git pull
+            nvm use 20 
+            npm install
+            npm run build-ssl
+            pm2 restart FPL-XY
+
+          # Additional steps if needed for subdomain deployment:
+          # - Configure Nginx/Apache to serve the app from the subdomain
+          # - ... (Other necessary steps based on your server setup)
