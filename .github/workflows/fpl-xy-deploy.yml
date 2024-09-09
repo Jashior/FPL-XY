@@ -1,4 +1,4 @@
-name: Deploy FPL-XY to subdomain fpl.zanaris.dev
+name: Deploy FPL-XY to domain fpl.zanaris.dev
 
 on:
   push:
@@ -23,7 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          nvm use 20 
           npm install
 
       - name: Build Angular app
@@ -38,7 +37,6 @@ jobs:
           script: |
             cd /home/dev/FPL-XY
             git pull
-            nvm use 20 
             npm install
             npm run build-ssl
             pm2 restart FPL-XY
