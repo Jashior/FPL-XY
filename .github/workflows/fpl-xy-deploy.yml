@@ -25,15 +25,23 @@ jobs:
       - name: Build Angular app
         run: npm run build-ssl
 
+      - name: Add Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 65.109.8.91 >> ~/.ssh/known_hosts
+          
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/ssh-action@master
         with:
           host: 65.109.8.91
           username: jason
           key: ${{ secrets.DEPLOY_USER_SSH_KEY }}
+          port: 22 
           debug: true
           script: |
             echo "Connection successful"
+            echo "Deploying commit: $GITHUB_SHA"
+            echo "Repository: $GITHUB_REPOSITORY"
             cd /home/dev/FPL-XY
             git fetch
             git reset --hard origin/master
