@@ -360,6 +360,7 @@ export class GraphComponent implements OnInit, OnDestroy {
       <small><u>${getAxisTitle(x)}:</u></small> ${data[x].toFixed(2)}
       </br>
       <small><u>${getAxisTitle(y)}:</u></small> ${data[y].toFixed(2)} 
+      </br>
       </div>
       `;
       return toolTipString;
@@ -405,6 +406,20 @@ export class GraphComponent implements OnInit, OnDestroy {
           fontSize: 12,
           overflow: 'break',
         },
+      },
+      graphic: {
+        elements: [
+          {
+            type: 'text',
+            left: 'center',
+            bottom: 10,
+            style: {
+              text: 'graphed at fpl.zanaris.dev',
+              fill: 'rgba(86, 86, 86, 1)',
+              fontSize: 10,
+            },
+          },
+        ],
       },
       tooltip: {
         formatter: this.tooltipFormatter,
@@ -463,21 +478,54 @@ export class GraphComponent implements OnInit, OnDestroy {
           label: {
             show: true,
             position: 'right',
-            formatter: function (param) {
-              function getLabel(data: any) {
-                return `${data.name}`;
+            // formatter: function (param) {
+            //   function getLabel(data: any) {
+            //     return `${data.name}`;
+            //   }
+            //   return getLabel(param.data);
+            // },
+            formatter: (param) => {
+              function getLabel(data: any, highlighted: any) {
+                if (highlighted.length == 0) {
+                  return `{default|${data.name}}`;
+                }
+                const isHighlighted = highlighted.includes(data.fpl_id);
+                return `{${isHighlighted ? 'highlight' : 'faded'}|${
+                  data.name
+                }}`;
               }
-              return getLabel(param.data);
+              return getLabel(param.data, this.highlighted);
             },
             fontSize: 13,
             minMargin: 2,
             opacity: 1,
             silent: true,
+            rich: {
+              highlight: {
+                fontSize: 13,
+                color: '#ffffff',
+              },
+              default: {
+                fontSize: 9,
+              },
+              faded: {
+                fontSize: 8,
+                opacity: 0.7,
+              },
+            },
           },
           labelLayout: {
-            moveOverlap: 'shuffleX',
+            moveOverlap: 'shuffleY',
             hideOverlap: true,
             fontSize: 9,
+          },
+          emphasis: {
+            label: {
+              show: true,
+            },
+            itemStyle: {
+              opacity: 1,
+            },
           },
           markLine: {
             animation: false,
@@ -528,15 +576,15 @@ export class GraphComponent implements OnInit, OnDestroy {
           dimension: this.playersF[0]
             ? Object.keys(this.playersF[0]).indexOf('highlight')
             : 0,
-          itemWidth: 12,
           left: 'center',
           inRange: {
             symbolSize: [6, 10, 14],
-            opacity: [0.25, 0.75, 1],
+            opacity: [0.2, 0.75, 1],
             liftZ: [0, 50, 100],
           },
           showLabel: true,
           show: false,
+          z: 10,
         },
       ],
     };

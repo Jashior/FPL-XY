@@ -1,0 +1,4 @@
+.echart-container .ec-text {
+    pointer-events: none; /* Prevent pointer events on the text */
+    cursor: default;      /* Set the cursor to the default arrow */
+  }
