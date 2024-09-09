@@ -3,7 +3,7 @@ name: Deploy FPL-XY to Subdomain
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
