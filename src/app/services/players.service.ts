@@ -109,9 +109,10 @@ export class PlayersService {
         localStorage.removeItem(cacheKey);
       }
     }
+
     this.http.get<Meta[]>(`${this.API_URL}/getMeta/`).subscribe((resp) => {
       if (resp.length === 0) {
-        console.log('No meta data found');
+        console.error('ERROR: No data found (getMeta)');
         return;
       }
 
@@ -132,15 +133,19 @@ export class PlayersService {
     this.possibleYearStrings$.next(meta.possible_year_strings);
     this.loadYearFromParams();
     this.initDataForCurrentYear();
-    this.setAreWeMaximumYear(meta.possible_year_strings, this.currentYearString);
+    this.setAreWeMaximumYear(
+      meta.possible_year_strings,
+      this.currentYearString
+    );
   }
 
-  setAreWeMaximumYear(yearStrings: string[], currentYearString: string){
-    this.areWeMaximumYear = currentYearString == yearStrings[yearStrings.length - 1];
+  setAreWeMaximumYear(yearStrings: string[], currentYearString: string) {
+    this.areWeMaximumYear =
+      currentYearString == yearStrings[yearStrings.length - 1];
   }
 
-  getAreWeMaximumYear(): boolean{
-    return this.areWeMaximumYear
+  getAreWeMaximumYear(): boolean {
+    return this.areWeMaximumYear;
   }
 
   initDataForCurrentYear() {
@@ -258,7 +263,9 @@ export class PlayersService {
   private processAboutData(about: About): void {
     this.teams = about.teams;
     this.currentGameweek = about.current_gameweek;
-    this.gwRange$.next([1, this.currentGameweek]);
+
+    this.setGwRange([1, this.currentGameweek]);
+
     this.loadFilter();
     this.loadParams();
     this.loadPlayers();
@@ -293,7 +300,7 @@ export class PlayersService {
       if (expiryTimestamp && expiryTimestamp > Date.now()) {
         // Data is not expired, use it
         console.log(
-          `Player Data not expired, using it. Now: ${Date.now()}, Expires: ${expiryTimestamp}`
+          `Player Data not expired, using cached data. Now: ${Date.now()}, Expires: ${expiryTimestamp}`
         );
         this.players$.next(parsedData.data);
         this.setLoading(false);
@@ -324,7 +331,9 @@ export class PlayersService {
             data: response.body,
             expiry: expiryTimestamp,
           });
-          console.log(`New player data set with expiry: ${expiryTimestamp}`);
+          console.log(
+            `New player data cache set with expiry: ${expiryTimestamp}`
+          );
           localStorage.setItem(cacheKey, compressedData);
         })
       )
@@ -542,21 +551,17 @@ export class PlayersService {
   }
 
   public addHighlightedPlayer(id: number) {
-    // console.log(`adding ${id}`);
     let newHighlightedPlayers = [
       ...new Set([...this.highlightedPlayers$.getValue(), id]),
     ];
-    // console.log(`new ${newHighlightedPlayers}`);
 
     this.highlightedPlayers$.next(newHighlightedPlayers);
   }
 
   public removeHighlightedPlayer(id: number) {
-    // console.log(`removing ${id}`);
     let newHighlightedPlayers = this.highlightedPlayers$
       .getValue()
       .filter((e) => e !== id);
-    // console.log(`new ${newHighlightedPlayers}`);
     this.highlightedPlayers$.next(newHighlightedPlayers);
   }
 

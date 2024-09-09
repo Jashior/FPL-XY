@@ -502,7 +502,7 @@ export class GraphComponent implements OnInit, OnDestroy {
             silent: true,
             rich: {
               highlight: {
-                fontSize: 13,
+                fontSize: 12,
                 color: '#ffffff',
               },
               default: {

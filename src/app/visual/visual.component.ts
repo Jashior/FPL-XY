@@ -55,7 +55,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   fadeInSidePanel: boolean = false;
   fadeInGraph: boolean = false;
   fplTeamModalIsVisible = false;
-  fplTeamId: string = "";
+  fplTeamId: string = '';
   areWeMaximumYear: boolean = true;
 
   constructor(
@@ -67,11 +67,12 @@ export class VisualComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadingRaw$ = this.playersService.getLoadingState();
-    this.loadingRaw$.pipe(take(1)).subscribe((loadingRaw) => {
-      if (!loadingRaw) {
-        this.playersService.initData();
-      }
-    });
+    // Not sure I need this following? was causing data to be initData() twice
+    // this.loadingRaw$.pipe(take(1)).subscribe((loadingRaw) => {
+    //   if (!loadingRaw) {
+    //     this.playersService.initData();
+    //   }
+    // });
     this.loadingRaw$
       .pipe(
         filter((loadingRaw) => loadingRaw === false), // Changed the filter condition to false
@@ -88,7 +89,6 @@ export class VisualComponent implements OnInit, OnDestroy {
           this.fadeInGraph = true;
         }, 500);
       });
-  
   }
 
   load() {
@@ -337,17 +337,21 @@ export class VisualComponent implements OnInit, OnDestroy {
     this.showSidePanel = !screenExpanded;
   }
 
-  
   showHighlightTeamModal(): void {
     this.fplTeamModalIsVisible = true;
   }
 
   handleOkHighlightTeamModal(): void {
-    this.fplService.getGameWeekPicks(this.fplTeamId, this.playersService.getCurrentGameweek()).subscribe((result) => {
-      result.picks.forEach(pick => {
-        this.playersService.addHighlightedPlayer(pick.element);
+    this.fplService
+      .getGameWeekPicks(
+        this.fplTeamId,
+        this.playersService.getCurrentGameweek()
+      )
+      .subscribe((result) => {
+        result.picks.forEach((pick) => {
+          this.playersService.addHighlightedPlayer(pick.element);
+        });
       });
-    });
 
     this.fplTeamModalIsVisible = false;
     this.fplTeamId = '';
