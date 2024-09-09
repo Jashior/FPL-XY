@@ -470,6 +470,7 @@ export class GraphComponent implements OnInit, OnDestroy {
             opacity: 0.75,
           },
           symbolSize: 8,
+          zlevel: 5,
           encode: {
             x: this.selectedXAxis,
             y: this.selectedYAxis,
@@ -507,17 +508,17 @@ export class GraphComponent implements OnInit, OnDestroy {
                 opacity: 1,
               },
               default: {
-                fontSize: 10,
-                opacity: 1,
+                fontSize: 9.5,
+                opacity: 0.85,
               },
               faded: {
                 fontSize: 8,
-                opacity: 0.7,
+                opacity: 0.65,
               },
             },
           },
           labelLayout: {
-            moveOverlap: 'shuffleY',
+            moveOverlap: 'shuffleX',
             hideOverlap: true,
             fontSize: 9,
           },
@@ -571,6 +572,7 @@ export class GraphComponent implements OnInit, OnDestroy {
           },
           showLabel: false,
           show: false,
+          z: 50,
         },
         {
           type: 'piecewise',
@@ -580,13 +582,12 @@ export class GraphComponent implements OnInit, OnDestroy {
             : 0,
           left: 'center',
           inRange: {
-            symbolSize: [6, 10, 14],
+            symbolSize: [6, 10, 13],
             opacity: [0.2, 0.75, 1],
-            liftZ: [0, 50, 100],
+            liftZ: [0, 50, 500],
           },
-          showLabel: true,
+          showLabel: false,
           show: false,
-          z: 10,
         },
       ],
     };
