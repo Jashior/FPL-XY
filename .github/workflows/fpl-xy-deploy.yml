@@ -29,17 +29,19 @@ jobs:
         run: npm run build-ssl
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@v0.1.1
+        uses: appleboy/ssh-action@v0.1.4
         with:
-          verbose: true
           host: 65.109.8.91
           username: jason
           key: ${{ secrets.DEPLOY_USER_SSH_KEY }}
           script: |
+            whoami
+            echo "$HOST"
+            ls -a
+            echo "Connection successful"
             cd /home/dev/FPL-XY
             git pull
-            npm install
-            npm run build-ssl
+            npm ci
             pm2 restart FPL-XY
 
           # Additional steps if needed for subdomain deployment:
