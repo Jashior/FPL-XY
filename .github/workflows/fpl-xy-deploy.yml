@@ -1,4 +1,4 @@
-name: Deploy FPL-XY to Subdomain
+name: Deploy FPL-XY to domain fpl.zanaris.dev
 
 on:
   push:
