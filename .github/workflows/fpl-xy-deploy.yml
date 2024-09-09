@@ -46,7 +46,15 @@ jobs:
             git fetch
             git reset --hard origin/master
             npm i
-            pm2 restart FPL-XY
+
+            # Check if FPL-XY is running in PM2
+            if pm2 list | grep -q "FPL-XY"; then
+              echo "FPL-XY is already running, restarting..."
+              pm2 restart FPL-XY
+            else
+              echo "FPL-XY is not running, starting..."
+              pm2 start ecosystem.config.js  # Or the appropriate command to start your app
+            fi
 
 
      # Add steps here to configure Nginx/Apache for subdomain deployment
