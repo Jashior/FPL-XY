@@ -4,7 +4,8 @@ An Angular app to visualize statistics of the players of Fantasy Premier League.
 
 https://fpl.zanaris.dev
 
-[visualisation]: src/assets/dashboard_1.gif
+
+<img src="src/assets/dashboard_1.gif" alt="Visualisation of Dashboard 1" />
 
 # Running Notes:
 
