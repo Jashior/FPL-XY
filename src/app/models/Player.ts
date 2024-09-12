@@ -102,4 +102,10 @@ export interface Player {
   CS_t: number;
   CS_90: number;
   total_minutes: number;
+  points_nobonus: number[];
+  points_nobonus_t: number;
+  points_nobonus_90: number;
+  xPoints_nobonus: number[];
+  xPoints_nobonus_t: number;
+  xPoints_nobonus_90: number;
 }
