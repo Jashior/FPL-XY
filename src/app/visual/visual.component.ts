@@ -341,6 +341,15 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.xPoints_nobonus_90 = 90 * (p.xPoints_nobonus_t / minutes) || 0;
     }
 
+    // 2025-26
+    if (p.defensive_contribution && p.defensive_contribution.length > 0) {
+      p.defensive_contribution_t = p.defensive_contribution
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e, 0);
+      p.defensive_contribution_90 =
+        90 * (p.defensive_contribution_t / minutes) || 0;
+    }
+
     return p;
   }
 

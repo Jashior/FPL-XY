@@ -50,6 +50,8 @@ const titleDictionary: any = {
   red_cards_90: 'Red Cards per 90',
   key_passes_t: 'Key Passes',
   key_passes_90: 'Key Passes per 90',
+  defensive_contribution_t: 'Defensive Contribution',
+  defensive_contribution_90: 'Defensive Contribution per 90',
   npg_difference_t: '(npg - npxG) (Understat)',
   xGBuildup_t: 'xG Build up',
   xGBuildup_90: 'xG Build up per 90',
@@ -140,6 +142,8 @@ export const roundToNearestDictionary: any = {
   OG_90: 0.05,
   CS_t: 1,
   CS_90: 0.05,
+  defensive_contribution_t: 1,
+  defensive_contribution_90: 0.05,
 };
 
 export function getAxisTitle(axis: string): string {

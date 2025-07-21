@@ -108,4 +108,7 @@ export interface Player {
   xPoints_nobonus: number[];
   xPoints_nobonus_t: number;
   xPoints_nobonus_90: number;
+  defensive_contribution: number[];
+  defensive_contribution_t: number;
+  defensive_contribution_90: number;
 }
