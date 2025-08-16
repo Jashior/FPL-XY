@@ -171,6 +171,7 @@ export class VisualComponent implements OnInit, OnDestroy {
   }
 
   calcPlayerStatsInGW(p: Player, gwrange: number[]): Player {
+    console.log(p);
     let st = gwrange[0];
     let end = gwrange[1];
 
@@ -348,6 +349,13 @@ export class VisualComponent implements OnInit, OnDestroy {
         .reduce((ac, e) => ac + e, 0);
       p.defensive_contribution_90 =
         90 * (p.defensive_contribution_t / minutes) || 0;
+    }
+
+    if (p.defensive_points && p.defensive_points.length > 0) {
+      p.defensive_points_t = p.defensive_points
+        .slice(st, end + 1)
+        .reduce((ac, e) => ac + e, 0);
+      p.defensive_points_90 = 90 * (p.defensive_points_t / minutes) || 0;
     }
 
     return p;

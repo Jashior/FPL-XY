@@ -2,6 +2,11 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// export const environment = {
+//   production: false,
+//   BASE_API_URL: 'https://fpl-api.zanaris.dev/api',
+// };
+
 export const environment = {
   production: false,
   BASE_API_URL: 'http://localhost:8080/api',

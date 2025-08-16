@@ -111,4 +111,7 @@ export interface Player {
   defensive_contribution: number[];
   defensive_contribution_t: number;
   defensive_contribution_90: number;
+  defensive_points: number[];
+  defensive_points_t: number;
+  defensive_points_90: number;
 }
