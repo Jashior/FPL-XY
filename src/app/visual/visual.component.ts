@@ -171,7 +171,6 @@ export class VisualComponent implements OnInit, OnDestroy {
   }
 
   calcPlayerStatsInGW(p: Player, gwrange: number[]): Player {
-    console.log(p);
     let st = gwrange[0];
     let end = gwrange[1];
 
