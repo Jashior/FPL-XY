@@ -236,12 +236,12 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.xGI_FPL_90 = 90 * (p.xGI_FPL_t / minutes) || 0;
     }
 
-    if (p.shots) {
+    if (p.shots && p.shots.length > 0) {
       p.shots_t = p.shots.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.shots_90 = 90 * (p.shots_t / minutes) || 0;
     }
 
-    if (p.xG.length > 0) {
+    if (p.xG && p.xG.length > 0) {
       p.xG_t = p.xG.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xG_90 = 90 * (p.xG_t / minutes) || 0;
     }
@@ -251,7 +251,7 @@ export class VisualComponent implements OnInit, OnDestroy {
       p.xG_FPL_90 = 90 * (p.xG_FPL_t / minutes) || 0;
     }
 
-    if (p.xA.length > 0) {
+    if (p.xA && p.xA.length > 0) {
       p.xA_t = p.xA.slice(st, end + 1).reduce((ac, e) => ac + e, 0);
       p.xA_90 = 90 * (p.xA_t / minutes) || 0;
     }
